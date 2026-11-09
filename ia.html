@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>e-kigai | Stratégie iA & Agents</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.29.7/babel.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Space+Grotesk:wght@300;500;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --cream: #ffffef;
+            --dark: #3b3b3b;
+            --green: #00bf63;
+            --neon-green: #39ff14;
+            --alert-red: #ff3333;
+            --paper-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+        }
+
+        body {
+            background-color: var(--cream);
+            color: var(--dark);
+            font-family: 'Space Grotesk', sans-serif;
+            background-image: var(--paper-grain);
+            overflow-x: hidden;
+            cursor: crosshair;
+        }
+
+        .hand-font { font-family: 'Gochi Hand', cursive; }
+        .mono-font { font-family: 'Courier Prime', monospace; }
+
+        /* Sticker Style */
+        .sticker {
+            background: white;
+            border: 2px solid var(--dark);
+            box-shadow: 4px 4px 0px var(--dark);
+            transition: all 0.2s ease;
+        }
+        .sticker:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px var(--green);
+        }
+
+        /* Glitch Effect Text */
+        .glitch-text {
+            position: relative;
+        }
+        .glitch-text::before, .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .glitch-text::before {
+            left: 2px;
+            text-shadow: -1px 0 #ff00c1;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+        .glitch-text::after {
+            left: -2px;
+            text-shadow: -1px 0 #00fff9;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+        @keyframes glitch-anim {
+            0% { clip: rect(10px, 9999px, 30px, 0); }
+            20% { clip: rect(80px, 9999px, 100px, 0); }
+            40% { clip: rect(5px, 9999px, 40px, 0); }
+            60% { clip: rect(50px, 9999px, 60px, 0); }
+            80% { clip: rect(20px, 9999px, 90px, 0); }
+            100% { clip: rect(70px, 9999px, 80px, 0); }
+        }
+        @keyframes glitch-anim2 {
+            0% { clip: rect(60px, 9999px, 70px, 0); }
+            20% { clip: rect(10px, 9999px, 30px, 0); }
+            40% { clip: rect(90px, 9999px, 100px, 0); }
+            60% { clip: rect(30px, 9999px, 40px, 0); }
+            80% { clip: rect(50px, 9999px, 70px, 0); }
+            100% { clip: rect(20px, 9999px, 30px, 0); }
+        }
+
+        /* Cyberpunk Grid */
+        .cyber-grid {
+            background-image: linear-gradient(rgba(0, 255, 0, 0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 255, 0, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // SVG Icons
+        const ScribbleIcon = ({ path, className }) => (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className} style={{overflow: 'visible'}}>
+                {path}
+            </svg>
+        );
+
+        const Icons = {
+            ArrowLeft: <path d="M19 12H5M12 19l-7-7 7-7" />,
+            Bot: <g><rect x="3" y="11" width="18" height="10" rx="2" /><circle cx="12" cy="5" r="2" /><path d="M12 7v4" /><line x1="8" y1="16" x2="8" y2="16" /><line x1="16" y1="16" x2="16" y2="16" /></g>,
+            Skull: <g><circle cx="9" cy="12" r="1" /><circle cx="15" cy="12" r="1" /><path d="M8 20v2h8v-2" /><path d="M12.5 17l-.5-4" /><path d="M16 20a2 2 0 0 0 1.56-3.25 8 8 0 1 0-11.12 0A2 2 0 0 0 8 20" /></g>,
+            Eye: <g><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></g>,
+            ShieldAlert: <g><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" /><path d="M12 8v4" /><path d="M12 16h.01" /></g>,
+            Brain: <g><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z" /><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z" /><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4" /><path d="M17.599 6.5a3 3 0 0 0 .399-1.375" /><path d="M6.003 5.125A3 3 0 0 0 6.401 6.5" /><path d="M3.477 10.899a4 4 0 0 1 .556-6.588" /><path d="M12 13.5a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4" /><path d="M12 18a6 6 0 0 1-6-6" /><path d="M12 18V5" /></g>,
+            TrendingUp: <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />,
+            GraduationCap: <path d="M22 10v6M2 10l10-5 10 5-10 5zM6 12v5c3 3 9 3 12 0v-5" />,
+            Youtube: <g><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z" /><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" /></g>
+        };
+
+        const IAStrategyPage = () => {
+            return (
+                <div className="min-h-screen pb-20 relative">
+                    
+                    {/* --- DECORATION --- */}
+                    <div className="fixed inset-0 pointer-events-none z-0 opacity-5" style={{backgroundImage: 'radial-gradient(#00bf63 1px, transparent 1px)', backgroundSize: '30px 30px'}}></div>
+
+                    {/* --- NAV: RETOUR --- */}
+                    <nav className="fixed w-full z-50 top-6 left-6 pointer-events-none">
+                        <a href="index.html" className="sticker bg-white px-4 py-2 inline-flex items-center gap-2 pointer-events-auto hover:bg-black hover:text-white transition-colors group">
+                            <ScribbleIcon path={Icons.ArrowLeft} className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+                            <span className="font-bold font-mono">Retour</span>
+                        </a>
+                    </nav>
+
+                    {/* --- HERO SECTION --- */}
+                    <header className="pt-32 pb-24 px-4 text-center relative z-10">
+                        <div className="inline-block relative">
+                            <h1 className="text-6xl md:text-9xl font-bold tracking-tighter mb-4 text-black uppercase leading-[0.8]">
+                                E-KIG<span className="text-green-600 glitch-text" data-text="AI">AI</span>
+                            </h1>
+                            <div className="absolute -bottom-10 right-0 bg-black text-green-400 px-4 py-2 font-mono text-sm border-2 border-green-400 transform rotate-2">
+                                &gt; SYSTEM.INIT(STRATEGY) <span className="animate-pulse">_</span>
+                            </div>
+                        </div>
+                        <p className="hand-font text-2xl mt-12 text-gray-600 max-w-3xl mx-auto border-t-2 border-dashed border-gray-300 pt-6">
+                            L'IA n'est pas une option. C'est le nouveau terrain de jeu.<br/>
+                            Nous transformons vos collaborateurs en <span className="highlight bg-green-200 px-1">Architectes Agentiques</span>.
+                        </p>
+                    </header>
+
+                    {/* --- 0. ACCOMPAGNEMENT STRATÉGIQUE (NEW) --- */}
+                    <section className="max-w-5xl mx-auto px-4 mb-32 relative z-10">
+                        <div className="bg-white border-4 border-black p-8 md:p-12 shadow-[10px_10px_0px_#00bf63] relative transform -rotate-1">
+                            <div className="absolute -top-5 left-10 bg-black text-[#39ff14] px-4 py-1 font-mono text-sm border-2 border-[#39ff14] shadow-sm flex items-center gap-2">
+                                <span className="animate-pulse">●</span> MODULE: CONSULTING
+                            </div>
+                            
+                            <h2 className="text-3xl md:text-5xl font-bold mb-8 font-sans uppercase">
+                                Accompagnement <span className="text-green-600 decoration-wavy underline">Stratégique</span>
+                            </h2>
+                            
+                            <div className="grid md:grid-cols-2 gap-12 items-center">
+                                <div className="space-y-6 font-mono text-sm md:text-base">
+                                    <p>
+                                        <strong>e-kigai</strong> dépasse le simple portage. Nous agissons comme cabinet de conseil stratégique pour négocier le virage de l'Intelligence Artificielle.
+                                    </p>
+                                    <p>
+                                        Notre mission : opérer la <span className="bg-yellow-200 px-1 font-bold border border-black transform rotate-1 inline-block">"trans"-formation</span> de vos collaborateurs.
+                                    </p>
+                                    <ul className="space-y-3 mt-4">
+                                        <li className="flex items-center gap-2">
+                                            <span className="text-green-600 font-bold">>></span>
+                                            De simples utilisateurs... à <strong>Pilotes d'IA</strong>.
+                                        </li>
+                                        <li className="flex items-center gap-2">
+                                            <span className="text-green-600 font-bold">>></span>
+                                            D'exécutants... à <strong>Architectes Agentiques</strong>.
+                                        </li>
+                                    </ul>
+                                </div>
+                                
+                                <div className="bg-[#f3f4f6] p-6 border-2 border-black border-dashed relative transform rotate-1">
+                                    <div className="absolute -right-4 -top-4 bg-white p-2 border-2 border-black rounded-full text-green-600">
+                                        <ScribbleIcon path={Icons.GraduationCap} className="w-8 h-8"/>
+                                    </div>
+                                    <h3 className="font-bold hand-font text-2xl mb-4 text-green-600">L'Excellence Certifiée</h3>
+                                    <p className="font-mono text-xs opacity-80 mb-6 leading-relaxed">
+                                        Pour garantir cette montée en compétence, nous ne bricolons pas. Nous déployons des parcours certifiants co-construits avec l'élite académique.
+                                    </p>
+                                    <div className="sticker bg-white border-black px-4 py-3 text-center shadow-sm transform -rotate-1">
+                                        <span className="font-bold font-sans text-sm">PARTENARIAT ÉCOLES D'INGÉNIEURS</span>
+                                        <div className="w-full h-px bg-gray-300 my-1"></div>
+                                        <span className="text-[10px] font-mono text-gray-500 uppercase">Certification Reconnue</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* --- 1. LE CONSTAT (THE BURNED EARTH) --- */}
+                    <section className="max-w-5xl mx-auto px-4 mb-32 relative z-10">
+                        <div className="bg-[#1a1a1a] text-white p-8 md:p-16 relative shadow-[15px_15px_0px_#ff3333] border-2 border-white overflow-hidden">
+                            <div className="absolute top-0 left-0 w-full h-full cyber-grid opacity-20 pointer-events-none"></div>
+                            
+                            <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
+                                <div>
+                                    <div className="text-red-500 font-mono font-bold mb-4 flex items-center gap-2">
+                                        <ScribbleIcon path={Icons.Skull} className="w-6 h-6"/>
+                                        ERREUR 404 : JUNIOR NOT FOUND
+                                    </div>
+                                    <h2 className="text-4xl font-bold mb-6">La fin de "l'osmose"</h2>
+                                    <p className="font-mono text-sm leading-relaxed opacity-80 mb-6">
+                                        "Pour Noé, notre junior, c’est une terre brûlée. Nettoyer la data, échouer sur une première version, comprendre pourquoi la formule casse... Tout ça a été aspiré par la machine."
+                                    </p>
+                                    <div className="bg-red-900/30 border border-red-500 p-4 text-xs font-mono text-red-300">
+                                        <span className="font-bold">CONSÉQUENCE CRITIQUE :</span><br/>
+                                        Le terrain d'entraînement traditionnel a disparu. L'IA exécute, le junior ne pratique plus.
+                                    </div>
+                                </div>
+                                <div className="text-center md:text-right">
+                                    <div className="hand-font text-6xl md:text-8xl text-gray-700 leading-none opacity-50 rotate-[-5deg]">
+                                        OSMOSE <br/> IS <br/> DEAD.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* --- 2. LA DETTE D'APPRENTISSAGE --- */}
+                    <section className="max-w-4xl mx-auto px-4 mb-32 relative z-10">
+                        <div className="sticker bg-white p-8 rotate-1 border-red-500 shadow-[8px_8px_0px_#ff3333]">
+                            <h3 className="text-2xl font-bold mb-4 flex items-center gap-3 uppercase font-sans">
+                                <ScribbleIcon path={Icons.TrendingUp} className="w-8 h-8 text-red-500"/>
+                                La Dette d'Apprentissage
+                            </h3>
+                            <p className="font-mono text-lg mb-6">
+                                "Vous gagnez du débit aujourd’hui... mais vous perdez la fabrique de jugement et de leadership à moyen terme."
+                            </p>
+                            <div className="grid md:grid-cols-2 gap-8 border-t-2 border-black pt-6">
+                                <div>
+                                    <h4 className="font-bold hand-font text-xl mb-2">Le Scénario du Pire :</h4>
+                                    <p className="font-mono text-sm">
+                                        Gel des embauches en 2026/27 -> Pénurie de Seniors en 2031 -> Pénurie de VP en 2036.
+                                    </p>
+                                </div>
+                                <div>
+                                    <h4 className="font-bold hand-font text-xl mb-2 text-green-600">L'Impératif :</h4>
+                                    <p className="font-mono text-sm">
+                                        Créer une génération qui n'exécute plus, mais qui <strong>SUPERVISE</strong>, <strong>AUDITE</strong> et <strong>CONTREDIT</strong> la machine.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* --- 3. LE NOUVEAU RÔLE : SUPERVISEUR D'AGENTS --- */}
+                    <section className="max-w-6xl mx-auto px-4 mb-32 relative z-10">
+                        <div className="text-center mb-12">
+                            <h2 className="text-4xl md:text-6xl font-bold bg-black text-white inline-block px-6 py-2 rotate-[-1deg]">
+                                WANTED : SUPERVISEUR D'IA
+                            </h2>
+                        </div>
+
+                        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {[
+                                {title: "AUDITEUR", icon: Icons.Eye, desc: "Ne plus faire, mais savoir quand l'IA a mal fait."},
+                                {title: "CONTRADICTEUR", icon: Icons.ShieldAlert, desc: "Déconstruire les résultats 'trop lisses' ou biaisés."},
+                                {title: "DÉTECTIVE", icon: Icons.Bot, desc: "Trouver les omissions et les conflits ignorés par l'agent."},
+                                {title: "ARCHITECTE", icon: Icons.Brain, desc: "Cadrer le problème avant de lancer l'agent."}
+                            ].map((item, i) => (
+                                <div key={i} className="bg-white border-2 border-black p-6 hover:-translate-y-2 transition-transform shadow-lg group">
+                                    <div className="w-12 h-12 bg-green-100 rounded-full border border-black flex items-center justify-center mb-4 group-hover:bg-green-400 transition-colors">
+                                        <ScribbleIcon path={item.icon} className="w-6 h-6"/>
+                                    </div>
+                                    <h3 className="font-bold text-xl mb-2 font-mono">{item.title}</h3>
+                                    <p className="font-mono text-xs opacity-70 border-t border-dashed border-gray-300 pt-2">
+                                        {item.desc}
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* --- 4. THE MISSING MIDDLE & SKILLS --- */}
+                    <section className="max-w-5xl mx-auto px-4 mb-32 relative z-10">
+                        <div className="bg-[#f3f4f6] border-4 border-black p-8 md:p-12 relative overflow-hidden">
+                            {/* Tape */}
+                            <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-32 h-8 bg-yellow-200/80 rotate-2 border-l border-r border-dashed border-gray-400"></div>
+
+                            <div className="grid md:grid-cols-2 gap-16">
+                                <div>
+                                    <h3 className="text-2xl font-bold mb-4 font-sans underline decoration-wavy decoration-green-500">Le "Missing Middle"</h3>
+                                    <p className="font-mono text-sm mb-4">
+                                        "Dans 5 ans, nous aurons des IA très capables et des seniors épuisés. Personne entre les deux."
+                                    </p>
+                                    <div className="bg-white p-4 border border-black rotate-[-1deg] shadow-sm">
+                                        <p className="hand-font text-lg text-red-600 font-bold">
+                                            Urgence : Former la génération intermédiaire.
+                                        </p>
+                                        <p className="font-mono text-xs mt-1">Ni exécutants, ni dirigeants. Gouverneurs d'autonomie.</p>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 className="text-2xl font-bold mb-4 font-sans underline decoration-wavy decoration-green-500">Nouvelles Compétences</h3>
+                                    <ul className="space-y-3 font-mono text-sm">
+                                        <li className="flex items-start gap-2">
+                                            <span className="text-green-600 font-bold">[1]</span>
+                                            Problem Framing (Cadrage)
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <span className="text-green-600 font-bold">[2]</span>
+                                            Interprétation de Logs/Traces
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <span className="text-green-600 font-bold">[3]</span>
+                                            Détection de biais
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <span className="text-green-600 font-bold">[4]</span>
+                                            Gouvernance des Agents
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* --- 5. LE RÔLE DU SENIOR (TISSU CICATRICIEL) --- */}
+                    <section className="max-w-4xl mx-auto px-4 mb-32 relative z-10 text-center">
+                        <h2 className="text-5xl font-bold mb-8 hand-font transform rotate-2">Le Tissu Cicatriciel 🧠</h2>
+                        <div className="bg-yellow-50 p-8 border-2 border-black shadow-[8px_8px_0px_#000] text-left transform rotate-[-1deg] relative">
+                            <p className="font-mono text-lg leading-relaxed mb-6">
+                                "Le tissu cicatriciel, c’est l’expérience qui ne s’enseigne pas. C’est savoir qu’un client dit 'peut-être' quand il veut dire 'non'. C’est naviguer la politique interne."
+                            </p>
+                            <div className="border-t-2 border-black pt-6">
+                                <h4 className="font-bold font-sans uppercase mb-2">Nouvelle Mission du Senior :</h4>
+                                <ul className="list-disc pl-5 font-mono text-sm space-y-2">
+                                    <li><strong>Transmettre explicitement</strong> l'intuition (l'osmose est morte).</li>
+                                    <li><strong>Animer des revues</strong> pour déconstruire les décisions de l'IA.</li>
+                                    <li><strong>Garantir la mémoire</strong> organisationnelle.</li>
+                                </ul>
+                            </div>
+                            <div className="absolute -right-4 -bottom-4 sticker bg-green-400 px-4 py-2 font-bold font-mono text-sm border-black rotate-[-5deg]">
+                                MENTORAT ACTIF
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* --- 6. LA GOUVERNANCE (THE FIREWALL) --- */}
+                    <section className="py-20 px-4 bg-black text-white relative mb-20">
+                         <div className="max-w-3xl mx-auto text-center border-4 border-green-500 p-8 md:p-12 relative">
+                            <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-black px-4 text-green-500 font-bold font-mono text-xl">
+                                GARDE-FOUS
+                            </div>
+                            
+                            <h2 className="text-3xl md:text-5xl font-bold mb-6">
+                                "La valeur n’est plus dans l’outil. Elle est dans la garantie qu’il ne brûle pas la maison."
+                            </h2>
+                            <p className="font-mono text-sm opacity-70 mb-8">
+                                4 projets agentiques sur 10 échouent par manque de supervision.
+                                Chez e-kigai, nous formons les gardiens du temple.
+                            </p>
+                            
+                            <div className="inline-block border border-green-500 p-4 font-mono text-green-400 animate-pulse">
+                                SYSTEM_STATUS: SECURE
+                            </div>
+                         </div>
+                    </section>
+
+                    {/* --- 7. PARTENAIRE (LE SAMOURAI) --- */}
+                    <section className="max-w-6xl mx-auto px-4 mb-32 relative z-10">
+                        <div className="bg-[#111] text-[#ececec] p-8 md:p-16 border-4 border-red-600 shadow-[10px_10px_0px_#000] relative overflow-hidden">
+                            {/* Decor */}
+                            <div className="absolute top-0 right-0 bg-red-600 text-black px-4 py-1 font-bold font-mono text-sm transform rotate-45 translate-x-8 translate-y-4">
+                                PARTNER
+                            </div>
+
+                            <div className="grid lg:grid-cols-2 gap-12 items-center">
+                                {/* Text Content */}
+                                <div>
+                                    <h2 className="text-4xl font-bold mb-4 font-sans uppercase tracking-tight">
+                                        IA & Stratégie <br/>
+                                        <span className="text-red-500">Le SamourAI</span>
+                                    </h2>
+                                    <p className="font-mono text-sm mb-6 leading-relaxed opacity-80 border-l-2 border-red-500 pl-4">
+                                        "Je ne teste pas les gadgets. J'analyse le système. L'IA est une restructuration complète."
+                                    </p>
+                                    
+                                    <div className="space-y-4 mb-8">
+                                        <h3 className="font-bold text-red-400 font-mono text-xs uppercase">Les 4 Axes de la Révolution :</h3>
+                                        <ul className="grid grid-cols-1 gap-2 font-mono text-sm">
+                                            <li className="flex items-start gap-2">
+                                                <span className="text-red-500">⬢</span> 
+                                                <span><strong>Stratégie :</strong> Qui détient la puissance ?</span>
+                                            </li>
+                                            <li className="flex items-start gap-2">
+                                                <span className="text-red-500">⬢</span> 
+                                                <span><strong>Carrière :</strong> S'adapter structurellement.</span>
+                                            </li>
+                                            <li className="flex items-start gap-2">
+                                                <span className="text-red-500">⬢</span> 
+                                                <span><strong>Finance :</strong> Suivre l'argent.</span>
+                                            </li>
+                                            <li className="flex items-start gap-2">
+                                                <span className="text-red-500">⬢</span> 
+                                                <span><strong>Technologie :</strong> Architecture & Outils.</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <a href="https://www.youtube.com/@SamouraiDansant/videos" target="_blank" className="inline-flex items-center gap-2 bg-red-600 text-black px-6 py-3 font-bold font-mono hover:bg-white hover:text-red-600 transition-colors border-2 border-transparent hover:border-red-600">
+                                        <ScribbleIcon path={Icons.Youtube} className="w-5 h-5"/>
+                                        VOIR LA CHAÎNE
+                                    </a>
+                                </div>
+
+                                {/* Video Embed */}
+                                <div className="relative">
+                                    <div className="bg-black border-2 border-white p-2 shadow-[8px_8px_0px_#333]">
+                                        <div className="aspect-w-16 aspect-h-9 w-full">
+                                            <iframe 
+                                                src="https://www.youtube.com/embed/xzuqbLzx8tY" 
+                                                title="État de l’IA 2026"
+                                                className="w-full h-64 md:h-80 object-cover" 
+                                                frameBorder="0" 
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                                allowFullScreen>
+                                            </iframe>
+                                        </div>
+                                        <div className="mt-2 font-mono text-xs text-center opacity-50">
+                                            État de l’IA 2026: Évaluation Comparative
+                                        </div>
+                                    </div>
+                                    {/* Decorative Japanese character or symbol if possible, or just abstract shapes */}
+                                    <div className="absolute -bottom-6 -right-6 text-red-500/20 text-9xl font-black select-none z-0">
+                                        AI
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* --- CTA FINAL --- */}
+                    <section className="py-24 text-center px-4">
+                        <h2 className="text-4xl font-bold mb-8">Prêt à upgrader votre OS ?</h2>
+                        <a href="mailto:contact@e-kigai.fr?subject=Transformation IA" className="sticker bg-green-500 text-black px-8 py-4 font-bold text-xl inline-block hover:bg-black hover:text-green-500 border-2 border-black transition-colors btn-wobble">
+                            LANCER LA TRANSFORMATION
+                        </a>
+                    </section>
+
+                    <footer className="text-center mt-10 font-mono text-xs opacity-50 pb-10">
+                        © 2026 e-kigai. Intelligence Augmentée. <a href="index.html" className="underline">Retour au site principal</a>
+                    </footer>
+
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<IAStrategyPage />);
+    </script>
+</body>
+</html>

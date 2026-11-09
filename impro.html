@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improvisaction Tech - Le Choc des Cerveaux</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=League+Spartan:wght@300;400;700;900&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'impro-yellow': '#FFD700',
+                        'impro-black': '#000000',
+                        'impro-white': '#FFFFFF',
+                    },
+                    fontFamily: {
+                        'sans': ['League Spartan', 'sans-serif'],
+                        'display': ['Archivo Black', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'brutal': '8px 8px 0px 0px #000000',
+                        'brutal-hover': '4px 4px 0px 0px #000000',
+                        'brutal-sm': '4px 4px 0px 0px #000000',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #FFFFFF;
+            color: #000000;
+            overflow-x: hidden;
+        }
+
+        .text-outline {
+            -webkit-text-stroke: 1px #000000;
+            color: transparent;
+        }
+
+        .marquee-container {
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 20s linear infinite;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Glitch Effect for Headers */
+        .glitch-wrapper {
+            position: relative;
+        }
+        
+        .glitch-wrapper::before,
+        .glitch-wrapper::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch-wrapper::before {
+            left: 2px;
+            text-shadow: -1px 0 #FFD700;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+
+        .glitch-wrapper::after {
+            left: -2px;
+            text-shadow: -1px 0 #000000;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(32px, 9999px, 18px, 0); }
+            20% { clip: rect(6px, 9999px, 88px, 0); }
+            40% { clip: rect(62px, 9999px, 12px, 0); }
+            60% { clip: rect(19px, 9999px, 44px, 0); }
+            80% { clip: rect(76px, 9999px, 3px, 0); }
+            100% { clip: rect(24px, 9999px, 91px, 0); }
+        }
+
+        @keyframes glitch-anim2 {
+            0% { clip: rect(12px, 9999px, 8px, 0); }
+            20% { clip: rect(86px, 9999px, 38px, 0); }
+            40% { clip: rect(32px, 9999px, 42px, 0); }
+            60% { clip: rect(9px, 9999px, 24px, 0); }
+            80% { clip: rect(16px, 9999px, 73px, 0); }
+            100% { clip: rect(44px, 9999px, 11px, 0); }
+        }
+
+        .rotate-hover:hover {
+            transform: rotate(-2deg) scale(1.02);
+            transition: transform 0.2s ease;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FFFFFF;
+            border-left: 2px solid black;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #FFD700;
+            border: 2px solid black;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased selection:bg-impro-yellow selection:text-black">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-white border-b-4 border-black top-0 left-0">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="#" class="font-display font-bold text-2xl tracking-tighter hover:text-impro-yellow transition-colors">
+                IMPROVISACTION<span class="text-impro-yellow text-4xl">.</span>TECH
+            </a>
+            
+            <!-- Global Menu Button -->
+            <button onclick="document.getElementById('global-menu').classList.toggle('hidden')" class="text-3xl hover:text-impro-yellow transition-colors cursor-pointer focus:outline-none">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+        
+        <!-- Global Dropdown Menu -->
+        <div id="global-menu" class="hidden absolute top-full left-0 w-full bg-impro-yellow border-b-4 border-black p-4 flex flex-col space-y-2 font-bold text-xl md:text-2xl text-center shadow-brutal z-40">
+            <a href="#le-concept" onclick="document.getElementById('global-menu').classList.add('hidden')" class="hover:bg-black hover:text-white py-3 border-2 border-transparent hover:border-black transition-all">LE CONCEPT</a>
+            <a href="#le-duo" onclick="document.getElementById('global-menu').classList.add('hidden')" class="hover:bg-black hover:text-white py-3 border-2 border-transparent hover:border-black transition-all">LE DUO</a>
+            <a href="#les-programmes" onclick="document.getElementById('global-menu').classList.add('hidden')" class="hover:bg-black hover:text-white py-3 border-2 border-transparent hover:border-black transition-all">PROGRAMMES</a>
+            <a href="#contact" onclick="document.getElementById('global-menu').classList.add('hidden')" class="hover:bg-black hover:text-white py-3 border-2 border-transparent hover:border-black transition-all">CONTACT</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="pt-32 pb-20 bg-impro-yellow border-b-4 border-black relative overflow-hidden">
+        <!-- Background Elements -->
+        <div class="absolute top-20 right-10 text-9xl opacity-10 pointer-events-none rotate-12">
+            <i class="fa-solid fa-robot"></i>
+        </div>
+        <div class="absolute bottom-10 left-10 text-9xl opacity-10 pointer-events-none -rotate-12">
+            <i class="fa-solid fa-masks-theater"></i>
+        </div>
+
+        <div class="container mx-auto px-4 text-center relative z-10">
+            <div class="inline-block bg-white border-2 border-black px-4 py-1 mb-6 transform -rotate-2 shadow-brutal-sm font-bold uppercase tracking-widest text-sm">
+                Attention : Contenu hautement interactif
+            </div>
+            <h1 class="font-display font-extrabold text-5xl md:text-8xl leading-none mb-6 glitch-wrapper" data-text="LE CHOC DES CERVEAUX">
+                LE CHOC DES <br> CERVEAUX
+            </h1>
+            <p class="text-xl md:text-3xl font-medium max-w-3xl mx-auto mb-10 leading-relaxed">
+                Quand le <span class="bg-white px-2 border-2 border-black rotate-1 inline-block shadow-brutal-sm">Stand-up</span> percute la <span class="bg-black text-white px-2 -rotate-1 inline-block">Cyber-Stratégie</span>.
+                <br>Arrêtez de dormir en formation.
+            </p>
+            <div class="flex flex-col md:flex-row justify-center items-center gap-6">
+                <a href="#les-programmes" class="bg-black text-white text-xl font-bold py-4 px-10 border-2 border-black shadow-brutal hover:bg-white hover:text-black hover:shadow-brutal-hover hover:translate-x-1 hover:translate-y-1 transition-all">
+                    DÉCOUVRIR LE SHOW
+                </a>
+                <a href="#le-duo" class="bg-white text-black text-xl font-bold py-4 px-10 border-2 border-black shadow-brutal hover:bg-impro-yellow hover:shadow-brutal-hover hover:translate-x-1 hover:translate-y-1 transition-all">
+                    QUI SONT CES FOUS ?
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Marquee -->
+    <div class="bg-black text-impro-yellow border-b-4 border-black py-3 font-mono font-bold text-xl uppercase overflow-hidden">
+        <div class="marquee-container">
+            <div class="marquee-content">
+                IA Générative • Cybersécurité • Improvisation Théâtrale • Prompt Engineering • Stand-up • Gouvernance • Social Engineering • Rires • Phishing • IA Générative • Cybersécurité • Improvisation Théâtrale • Prompt Engineering • Stand-up • Gouvernance • Social Engineering • Rires • Phishing •
+            </div>
+        </div>
+    </div>
+
+    <!-- Le Duo -->
+    <section id="le-duo" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="font-display font-black text-5xl md:text-6xl text-center mb-16 uppercase">
+                <span class="text-outline">Le Duo</span> Explosif
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto items-stretch">
+                
+                <!-- Jean-Charles -->
+                <div class="bg-white border-4 border-black p-8 shadow-brutal rotate-hover relative group">
+                    <div class="absolute -top-6 -right-6 bg-impro-yellow border-2 border-black rounded-full w-20 h-20 flex items-center justify-center text-3xl shadow-brutal-sm z-10 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-microphone-lines"></i>
+                    </div>
+                    <div class="h-48 bg-gray-100 border-2 border-black mb-6 flex items-center justify-center overflow-hidden">
+                        <!-- Placeholder for photo -->
+                        <i class="fa-solid fa-user-astronaut text-8xl text-gray-300"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-3xl mb-1">JEAN-CHARLES MULLIER</h3>
+                    <p class="font-mono text-sm bg-black text-white inline-block px-2 py-1 mb-4">Le Miroir Comportemental</p>
+                    <p class="text-lg leading-relaxed">
+                        Ex-Leader du <strong>Jamel Comedy Club</strong>. <br>
+                        Il incarne vos pires cauchemars managériaux pour mieux les désamorcer. Son super-pouvoir ? Transformer une salle de codir glaciale en club de stand-up.
+                    </p>
+                    <ul class="mt-6 space-y-2 font-bold">
+                        <li><i class="fa-solid fa-check text-impro-yellow bg-black p-1 mr-2 text-xs"></i> Expert Communication</li>
+                        <li><i class="fa-solid fa-check text-impro-yellow bg-black p-1 mr-2 text-xs"></i> Improvisateur</li>
+                        <li><i class="fa-solid fa-check text-impro-yellow bg-black p-1 mr-2 text-xs"></i> Briseur de glace</li>
+                    </ul>
+                </div>
+
+                <!-- Mehdi -->
+                <div class="bg-black text-white border-4 border-black p-8 shadow-brutal rotate-hover relative group md:mt-12">
+                     <div class="absolute -top-6 -left-6 bg-white text-black border-2 border-black rounded-full w-20 h-20 flex items-center justify-center text-3xl shadow-brutal-sm z-10 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+                    <div class="h-48 bg-gray-800 border-2 border-white mb-6 flex items-center justify-center overflow-hidden">
+                        <!-- Placeholder for photo -->
+                         <i class="fa-solid fa-user-secret text-8xl text-gray-600"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-3xl mb-1 text-impro-yellow">MEHDI TERBECHE</h3>
+                    <p class="font-mono text-sm bg-white text-black inline-block px-2 py-1 mb-4">L'Architecte Digital</p>
+                    <p class="text-lg leading-relaxed">
+                        Expert en <strong>Stratégie Digitale & IA</strong>. <br>
+                        Il traduit le jargon technique en plan d'action. Son super-pouvoir ? Vous faire comprendre le Prompt Engineering avant que vous ayez fini votre café.
+                    </p>
+                    <ul class="mt-6 space-y-2 font-bold">
+                        <li><i class="fa-solid fa-check text-black bg-impro-yellow p-1 mr-2 text-xs"></i> Expert Cybersécurité</li>
+                        <li><i class="fa-solid fa-check text-black bg-impro-yellow p-1 mr-2 text-xs"></i> Stratège IA</li>
+                        <li><i class="fa-solid fa-check text-black bg-impro-yellow p-1 mr-2 text-xs"></i> Consultant SI</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Programmes -->
+    <section id="les-programmes" class="py-20 bg-gray-50 border-t-4 border-black">
+        <div class="container mx-auto px-4">
+            <h2 class="font-display font-black text-5xl md:text-7xl text-center mb-6">
+                CHOISISSEZ VOTRE <span class="bg-impro-yellow px-2">POISON</span>
+            </h2>
+            <p class="text-center text-xl max-w-2xl mx-auto mb-16">
+                Deux thèmes, deux niveaux, zéro PowerPoint ennuyeux.
+            </p>
+
+            <!-- Tabs Controls -->
+            <div class="flex flex-col md:flex-row justify-center gap-6 mb-12">
+                <button onclick="switchTab('ai')" id="btn-ai" class="text-2xl font-display font-bold py-4 px-8 border-4 border-black bg-impro-yellow shadow-brutal transition-all hover:-translate-y-1">
+                    <i class="fa-solid fa-microchip mr-2"></i> INTELLIGENCE ARTIFICIELLE
+                </button>
+                <button onclick="switchTab('cyber')" id="btn-cyber" class="text-2xl font-display font-bold py-4 px-8 border-4 border-black bg-white shadow-brutal transition-all hover:-translate-y-1 opacity-60 hover:opacity-100">
+                    <i class="fa-solid fa-shield-halved mr-2"></i> CYBERSÉCURITÉ
+                </button>
+            </div>
+
+            <!-- Content Area -->
+            <div class="max-w-6xl mx-auto min-h-[600px] relative">
+                
+                <!-- AI Section -->
+                <div id="content-ai" class="grid md:grid-cols-2 gap-8 transition-opacity duration-300">
+                    
+                    <!-- Strategic Level -->
+                    <div class="bg-white border-4 border-black p-8 relative">
+                        <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-black text-white px-4 py-1 font-bold border-2 border-white shadow-md uppercase text-sm">Niveau Stratégique</div>
+                        <h3 class="font-display font-bold text-3xl mb-4 mt-4 leading-tight">L'IA au Codir : Visionnaire ou Illusionniste ?</h3>
+                        <div class="space-y-6">
+                            <div class="bg-impro-yellow bg-opacity-20 p-4 border-l-4 border-black">
+                                <h4 class="font-bold uppercase text-sm mb-2"><i class="fa-solid fa-theater-masks mr-2"></i>Le Show</h4>
+                                <p>Sketch du manager dépassé qui bluffe avec des mots comme "Machine Learning" face aux vraies questions.</p>
+                            </div>
+                            <div class="bg-gray-100 p-4 border-l-4 border-gray-400">
+                                <h4 class="font-bold uppercase text-sm mb-2"><i class="fa-solid fa-glasses mr-2"></i>L'Expertise</h4>
+                                <ul class="list-disc list-inside text-sm space-y-1">
+                                    <li>Gouvernance et sécurité des données</li>
+                                    <li>Change Management & rôles</li>
+                                    <li>Cartographie des cas d'usage</li>
+                                </ul>
+                            </div>
+                            <div class="font-mono text-sm border-t-2 border-dashed border-black pt-4">
+                                <span class="bg-black text-white px-2 py-1">ACTION</span> Atelier Impro-Stratégie : Annoncer l'IA aux équipes.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Operational Level -->
+                    <div class="bg-white border-4 border-black p-8 relative">
+                         <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-impro-yellow text-black px-4 py-1 font-bold border-2 border-black shadow-md uppercase text-sm">Niveau Opérationnel</div>
+                        <h3 class="font-display font-bold text-3xl mb-4 mt-4 leading-tight">Mon Nouveau Collègue s'appelle Algorithme</h3>
+                        <div class="space-y-6">
+                            <div class="bg-impro-yellow bg-opacity-20 p-4 border-l-4 border-black">
+                                <h4 class="font-bold uppercase text-sm mb-2"><i class="fa-solid fa-theater-masks mr-2"></i>Le Show</h4>
+                                <p>"ChatGPT est un stagiaire ivre" : One-man-show interactif sur les peurs classiques liées à l'IA.</p>
+                            </div>
+                            <div class="bg-gray-100 p-4 border-l-4 border-gray-400">
+                                <h4 class="font-bold uppercase text-sm mb-2"><i class="fa-solid fa-glasses mr-2"></i>L'Expertise</h4>
+                                <ul class="list-disc list-inside text-sm space-y-1">
+                                    <li>Prompt Engineering (gagner 2h/jour)</li>
+                                    <li>Démystification (Copilot, Midjourney)</li>
+                                    <li>Éthique et hallucinations</li>
+                                </ul>
+                            </div>
+                            <div class="font-mono text-sm border-t-2 border-dashed border-black pt-4">
+                                <span class="bg-black text-white px-2 py-1">ACTION</span> Battle de Prompts sur cas réels.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cyber Section -->
+                <div id="content-cyber" class="grid md:grid-cols-2 gap-8 hidden transition-opacity duration-300">
+                    
+                    <!-- Strategic Level -->
+                    <div class="bg-black text-white border-4 border-black p-8 relative shadow-brutal">
+                        <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-white text-black px-4 py-1 font-bold border-2 border-black shadow-md uppercase text-sm">Niveau Stratégique</div>
+                        <h3 class="font-display font-bold text-3xl mb-4 mt-4 leading-tight text-impro-yellow">Hack-Moi Si Tu Peux : Gouvernance</h3>
+                        <div class="space-y-6">
+                            <div class="bg-white bg-opacity-10 p-4 border-l-4 border-impro-yellow">
+                                <h4 class="font-bold uppercase text-sm mb-2"><i class="fa-solid fa-theater-masks mr-2"></i>Le Show</h4>
+                                <p>Le PDG se réveille avec un Ransomware. Panique, humour noir et chaos décisionnel.</p>
+                            </div>
+                            <div class="bg-gray-800 p-4 border-l-4 border-gray-600">
+                                <h4 class="font-bold uppercase text-sm mb-2"><i class="fa-solid fa-glasses mr-2"></i>L'Expertise</h4>
+                                <ul class="list-disc list-inside text-sm space-y-1">
+                                    <li>Maturité cyber & failles humaines</li>
+                                    <li>Communication de crise</li>
+                                    <li>Cadre légal (RGPD)</li>
+                                </ul>
+                            </div>
+                            <div class="font-mono text-sm border-t-2 border-dashed border-white pt-4">
+                                <span class="bg-impro-yellow text-black px-2 py-1">ACTION</span> Simulation "War Room" chronométrée.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Operational Level -->
+                    <div class="bg-black text-white border-4 border-black p-8 relative shadow-brutal">
+                         <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-impro-yellow text-black px-4 py-1 font-bold border-2 border-black shadow-md uppercase text-sm">Niveau Opérationnel</div>
+                        <h3 class="font-display font-bold text-3xl mb-4 mt-4 leading-tight text-impro-yellow">Le Maillon Faible, C'est Pas Moi !</h3>
+                        <div class="space-y-6">
+                            <div class="bg-white bg-opacity-10 p-4 border-l-4 border-impro-yellow">
+                                <h4 class="font-bold uppercase text-sm mb-2"><i class="fa-solid fa-theater-masks mr-2"></i>Le Show</h4>
+                                <p>Démonstration live de Social Engineering : comment obtenir un mot de passe avec du bagou.</p>
+                            </div>
+                            <div class="bg-gray-800 p-4 border-l-4 border-gray-600">
+                                <h4 class="font-bold uppercase text-sm mb-2"><i class="fa-solid fa-glasses mr-2"></i>L'Expertise</h4>
+                                <ul class="list-disc list-inside text-sm space-y-1">
+                                    <li>Anatomie du Phishing</li>
+                                    <li>Hygiène numérique (Mots de passe, WiFi)</li>
+                                    <li>Procédures d'escalade</li>
+                                </ul>
+                            </div>
+                            <div class="font-mono text-sm border-t-2 border-dashed border-white pt-4">
+                                <span class="bg-impro-yellow text-black px-2 py-1">ACTION</span> Détecteur de Mensonges Digital.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Methodology -->
+    <section class="py-20 bg-impro-yellow border-t-4 border-b-4 border-black overflow-hidden">
+        <div class="container mx-auto px-4">
+            <h2 class="font-display font-black text-4xl md:text-6xl mb-12 text-center">LA MÉTHODE <br> EN 5 ÉTAPES</h2>
+            
+            <div class="flex flex-wrap justify-center gap-4">
+                <div class="w-full md:w-1/6 bg-white border-2 border-black p-4 shadow-brutal-sm hover:rotate-3 transition-transform cursor-default">
+                    <span class="text-4xl font-black block mb-2">01</span>
+                    <h4 class="font-bold uppercase">Briser la glace</h4>
+                    <p class="text-sm">Le Show pour capter l'attention.</p>
+                </div>
+                 <div class="w-full md:w-1/6 bg-white border-2 border-black p-4 shadow-brutal-sm hover:-rotate-3 transition-transform cursor-default md:mt-8">
+                    <span class="text-4xl font-black block mb-2">02</span>
+                    <h4 class="font-bold uppercase">Miroir</h4>
+                    <p class="text-sm">L'impro révèle le réel.</p>
+                </div>
+                 <div class="w-full md:w-1/6 bg-white border-2 border-black p-4 shadow-brutal-sm hover:rotate-3 transition-transform cursor-default">
+                    <span class="text-4xl font-black block mb-2">03</span>
+                    <h4 class="font-bold uppercase">Éclairage</h4>
+                    <p class="text-sm">Expertise pointue & outils.</p>
+                </div>
+                 <div class="w-full md:w-1/6 bg-white border-2 border-black p-4 shadow-brutal-sm hover:-rotate-3 transition-transform cursor-default md:mt-8">
+                    <span class="text-4xl font-black block mb-2">04</span>
+                    <h4 class="font-bold uppercase">Action</h4>
+                    <p class="text-sm">Ateliers concrets.</p>
+                </div>
+                 <div class="w-full md:w-1/6 bg-white border-2 border-black p-4 shadow-brutal-sm hover:rotate-3 transition-transform cursor-default">
+                    <span class="text-4xl font-black block mb-2">05</span>
+                    <h4 class="font-bold uppercase">Ancrage</h4>
+                    <p class="text-sm">Débriefing croisé.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact CTA -->
+    <section id="contact" class="py-24 bg-white relative">
+        <div class="container mx-auto px-4 text-center">
+            <div class="max-w-4xl mx-auto border-4 border-black p-8 md:p-16 bg-white shadow-brutal relative">
+                <!-- Decorative screws -->
+                <div class="absolute top-4 left-4 w-4 h-4 bg-black rounded-full"></div>
+                <div class="absolute top-4 right-4 w-4 h-4 bg-black rounded-full"></div>
+                <div class="absolute bottom-4 left-4 w-4 h-4 bg-black rounded-full"></div>
+                <div class="absolute bottom-4 right-4 w-4 h-4 bg-black rounded-full"></div>
+
+                <h2 class="font-display font-black text-4xl md:text-6xl mb-6 uppercase">Prêt à hacker l'ennui ?</h2>
+                <p class="text-xl mb-10 font-medium">Réservez votre "Tech-Comedy Show" pédagogique maintenant.</p>
+                
+                <form class="space-y-4 max-w-md mx-auto text-left">
+                    <div>
+                        <label class="font-bold block mb-1">Votre Nom</label>
+                        <input type="text" class="w-full border-2 border-black p-3 bg-gray-50 focus:bg-impro-yellow focus:outline-none transition-colors" placeholder="Jean-Michel DSI">
+                    </div>
+                    <div>
+                        <label class="font-bold block mb-1">Votre Email</label>
+                        <input type="email" class="w-full border-2 border-black p-3 bg-gray-50 focus:bg-impro-yellow focus:outline-none transition-colors" placeholder="email@entreprise.com">
+                    </div>
+                    <button type="button" class="w-full bg-black text-white font-bold text-xl py-4 border-2 border-black hover:bg-impro-yellow hover:text-black shadow-brutal hover:shadow-brutal-hover transition-all uppercase">
+                        Envoyer la bombe <i class="fa-solid fa-paper-plane ml-2"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white py-10 border-t-4 border-white">
+        <div class="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
+            <div class="font-display font-bold text-2xl mb-4 md:mb-0">
+                IMPROVISACTION<span class="text-impro-yellow">.</span>TECH
+            </div>
+            <div class="text-sm font-mono text-gray-400 text-center md:text-right">
+                &copy; 2024 Improvisaction. <br>Design Décalé. Contenu Sérieux.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function switchTab(tab) {
+            const contentAi = document.getElementById('content-ai');
+            const contentCyber = document.getElementById('content-cyber');
+            const btnAi = document.getElementById('btn-ai');
+            const btnCyber = document.getElementById('btn-cyber');
+
+            if (tab === 'ai') {
+                contentAi.classList.remove('hidden');
+                contentCyber.classList.add('hidden');
+                
+                // Style Active
+                btnAi.classList.add('bg-impro-yellow', 'opacity-100');
+                btnAi.classList.remove('bg-white', 'opacity-60');
+                
+                // Style Inactive
+                btnCyber.classList.add('bg-white', 'opacity-60');
+                btnCyber.classList.remove('bg-impro-yellow', 'opacity-100');
+            } else {
+                contentAi.classList.add('hidden');
+                contentCyber.classList.remove('hidden');
+
+                // Style Active
+                btnCyber.classList.add('bg-impro-yellow', 'opacity-100');
+                btnCyber.classList.remove('bg-white', 'opacity-60');
+
+                // Style Inactive
+                btnAi.classList.add('bg-white', 'opacity-60');
+                btnAi.classList.remove('bg-impro-yellow', 'opacity-100');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Collabs — Cabinet de conseil agentique</title>
+<meta name="description" content="Collabs est le premier cabinet de conseil agentique : diagnostic financé par BPI, transformation, change management, architecture agentique et digital agentic workspace.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ivory:#FAF9F5;
+  --cream:#F0EEE6;
+  --sand:#E8E4D9;
+  --ink:#191917;
+  --slate:#54514A;
+  --clay:#D97757;
+  --clay-dark:#C05E3D;
+  --line:#DEDACE;
+  --radius:14px;
+  --max:1140px;
+  --serif:"Source Serif 4",Georgia,serif;
+  --sans:"Inter",-apple-system,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);color:var(--ink);background:var(--ivory);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+h1,h2,h3,.serif{font-family:var(--serif);font-weight:500;line-height:1.15;letter-spacing:-0.01em}
+a{color:inherit;text-decoration:none}
+img{max-width:100%}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+.eyebrow{font-family:var(--sans);font-size:.78rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--clay)}
+.btn{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--sans);font-weight:500;font-size:.95rem;padding:.85rem 1.5rem;border-radius:999px;transition:all .2s ease;cursor:pointer;border:none}
+.btn-primary{background:var(--ink);color:var(--ivory)}
+.btn-primary:hover{background:var(--clay)}
+.btn-ghost{border:1px solid var(--ink);color:var(--ink);background:transparent}
+.btn-ghost:hover{background:var(--ink);color:var(--ivory)}
+.btn-clay{background:var(--clay);color:#fff}
+.btn-clay:hover{background:var(--clay-dark)}
+section{padding:96px 0}
+:focus-visible{outline:2px solid var(--clay);outline-offset:3px}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:50;background:rgba(250,249,245,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:68px}
+.logo{font-family:var(--serif);font-size:1.45rem;font-weight:600;letter-spacing:-.02em}
+.logo span{color:var(--clay)}
+.nav-links{display:flex;gap:2rem;align-items:center;font-size:.92rem;font-weight:500}
+.nav-links a:not(.btn){color:var(--slate);transition:color .2s}
+.nav-links a:not(.btn):hover{color:var(--ink)}
+.nav-links .btn{padding:.55rem 1.2rem}
+.burger{display:none;background:none;border:none;font-size:1.5rem;cursor:pointer}
+
+/* HERO */
+.hero{background:var(--cream);padding:110px 0 90px;position:relative;overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:64px;align-items:center}
+.hero h1{font-size:clamp(2.4rem,5vw,3.9rem);margin:1.1rem 0 1.4rem}
+.hero h1 em{font-style:italic;color:var(--clay)}
+.hero p.lead{font-size:1.2rem;color:var(--slate);max-width:34rem;margin-bottom:2.2rem}
+.hero-cta{display:flex;gap:1rem;flex-wrap:wrap}
+.hero-note{margin-top:1.2rem;font-size:.85rem;color:var(--slate)}
+.hero-note strong{color:var(--ink)}
+/* orchestration visual */
+.orch{position:relative;aspect-ratio:1/1;max-width:430px;margin-left:auto}
+.orch svg{width:100%;height:100%}
+@keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+.orch .flow{stroke:var(--clay);stroke-width:1.5;stroke-dasharray:4 6;animation:dash 8s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-200}}
+@media (prefers-reduced-motion:reduce){.orch .flow{animation:none}}
+
+/* TRUST STRIP */
+.strip{border-bottom:1px solid var(--line);background:var(--ivory);padding:28px 0}
+.strip .wrap{display:flex;justify-content:space-between;gap:2rem;flex-wrap:wrap;font-size:.9rem;color:var(--slate)}
+.strip b{color:var(--ink);font-weight:600}
+
+/* MANIFESTO */
+.manifesto h2{font-size:clamp(1.8rem,3.4vw,2.6rem);max-width:46rem;margin-top:1rem}
+.manifesto .cols{display:grid;grid-template-columns:repeat(3,1fr);gap:2.5rem;margin-top:3.5rem}
+.manifesto .cols h3{font-size:1.15rem;margin-bottom:.6rem}
+.manifesto .cols p{color:var(--slate);font-size:.95rem}
+.manifesto .cols .num{font-family:var(--serif);font-size:2rem;color:var(--clay);display:block;margin-bottom:.8rem}
+
+/* OFFRES */
+.offres{background:var(--cream)}
+.offres-head{display:flex;justify-content:space-between;align-items:end;gap:2rem;margin-bottom:3rem;flex-wrap:wrap}
+.offres-head h2{font-size:clamp(1.9rem,3.5vw,2.7rem);max-width:32rem;margin-top:1rem}
+.parcours{display:flex;flex-direction:column;gap:1rem}
+.step{display:grid;grid-template-columns:90px 1fr auto;gap:2rem;align-items:start;background:var(--ivory);border:1px solid var(--line);border-radius:var(--radius);padding:2rem 2.2rem;transition:border-color .2s, transform .2s}
+.step:hover{border-color:var(--clay);transform:translateX(6px)}
+.step .phase{font-family:var(--serif);font-size:.85rem;color:var(--clay);text-transform:uppercase;letter-spacing:.1em;padding-top:.35rem}
+.step h3{font-size:1.35rem;margin-bottom:.5rem}
+.step p{color:var(--slate);font-size:.95rem;max-width:44rem}
+.step .tag{font-size:.75rem;font-weight:600;background:var(--sand);color:var(--ink);padding:.35rem .8rem;border-radius:999px;white-space:nowrap}
+.step .tag.bpi{background:var(--clay);color:#fff}
+.step .tool{font-family:var(--sans);font-weight:600;color:var(--clay)}
+.step ul{list-style:none;margin-top:.8rem;display:flex;gap:1.5rem;flex-wrap:wrap}
+.step ul li{font-size:.85rem;color:var(--slate);display:flex;align-items:center;gap:.4rem}
+.step ul li::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--clay);flex-shrink:0}
+
+/* PRODUITS */
+.produits .grid2{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:3rem}
+.prod-card{background:var(--ink);color:var(--ivory);border-radius:var(--radius);padding:2.6rem;display:flex;flex-direction:column;gap:1rem;position:relative;overflow:hidden}
+.prod-card.alt{background:var(--clay);color:#fff}
+.prod-card .eyebrow{color:var(--ivory);opacity:.7}
+.prod-card h3{font-size:1.8rem}
+.prod-card p{opacity:.85;font-size:.97rem;max-width:30rem}
+.prod-card .feat{margin-top:.5rem;display:flex;flex-direction:column;gap:.5rem;font-size:.9rem}
+.prod-card .feat span{display:flex;gap:.6rem;align-items:baseline}
+.prod-card .feat span::before{content:"→";color:var(--clay)}
+.prod-card.alt .feat span::before{color:var(--ink)}
+.prod-card a{margin-top:auto;align-self:start;font-weight:600;font-size:.92rem;border-bottom:1px solid currentColor;padding-bottom:2px}
+
+/* FONDATEURS */
+.fondateurs{background:var(--cream)}
+.fond-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:3rem}
+.fond-card{background:var(--ivory);border:1px solid var(--line);border-radius:var(--radius);padding:2.4rem;display:flex;flex-direction:column;gap:1rem}
+.avatar{width:72px;height:72px;border-radius:50%;background:var(--clay);color:#fff;font-family:var(--serif);font-size:1.6rem;display:flex;align-items:center;justify-content:center}
+.fond-card.b .avatar{background:var(--ink)}
+.fond-card h3{font-size:1.4rem}
+.fond-card .role{font-size:.85rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--clay)}
+.fond-card p{color:var(--slate);font-size:.95rem}
+
+/* POURQUOI */
+.pourquoi .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem}
+.why-card{border:1px solid var(--line);border-radius:var(--radius);padding:2rem;background:var(--ivory)}
+.why-card h3{font-size:1.1rem;margin-bottom:.6rem}
+.why-card p{color:var(--slate);font-size:.92rem}
+.why-card .ic{font-family:var(--serif);color:var(--clay);font-size:1.6rem;display:block;margin-bottom:1rem}
+
+/* CTA */
+.cta{background:var(--ink);color:var(--ivory);text-align:center}
+.cta h2{font-size:clamp(2rem,4vw,3rem);max-width:38rem;margin:1rem auto 1.2rem}
+.cta h2 em{color:var(--clay);font-style:italic}
+.cta p{color:#B8B5AC;max-width:32rem;margin:0 auto 2.4rem}
+.cta .eyebrow{color:var(--clay)}
+
+/* FOOTER */
+footer{background:var(--ivory);border-top:1px solid var(--line);padding:56px 0 32px;font-size:.88rem;color:var(--slate)}
+.foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:3rem;margin-bottom:3rem}
+.foot-grid h4{font-family:var(--sans);font-size:.8rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);margin-bottom:1rem}
+.foot-grid a{display:block;margin-bottom:.5rem}
+.foot-grid a:hover{color:var(--clay)}
+.foot-bottom{border-top:1px solid var(--line);padding-top:1.5rem;display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;font-size:.8rem}
+
+/* MENTIONS */
+.mentions{padding:64px 0;background:var(--cream)}
+.mentions h2{font-size:1.6rem;margin-bottom:1.5rem}
+.mentions dl{display:grid;grid-template-columns:max-content 1fr;gap:.6rem 2rem;font-size:.92rem;max-width:52rem}
+.mentions dt{font-weight:600;color:var(--ink)}
+.mentions dd{color:var(--slate)}
+
+@media (max-width:900px){
+  .hero-grid,.produits .grid2,.fond-grid{grid-template-columns:1fr}
+  .orch{margin:0 auto;max-width:320px}
+  .manifesto .cols,.pourquoi .grid3{grid-template-columns:1fr}
+  .step{grid-template-columns:1fr;gap:.8rem}
+  .step .tag{justify-self:start}
+  .foot-grid{grid-template-columns:1fr}
+  .nav-links{display:none;position:absolute;top:68px;left:0;right:0;background:var(--ivory);flex-direction:column;padding:1.5rem;border-bottom:1px solid var(--line);gap:1.2rem}
+  .nav-links.open{display:flex}
+  .burger{display:block}
+  section{padding:64px 0}
+  .mentions dl{grid-template-columns:1fr;gap:.2rem}
+  .mentions dd{margin-bottom:.8rem}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-inner">
+    <a href="#" class="logo">
+      <img src="logo-c.png" alt="Collabs - Cabinet de conseil agentique" style="height: 40px; width: auto; display: block;">
+    </a>
+    <button class="burger" aria-label="Menu" onclick="document.getElementById('nl').classList.toggle('open')">☰</button>
+    <div class="nav-links" id="nl">
+      <a href="#offres">Notre parcours</a>
+      <a href="#produits">Nos outils</a>
+      <a href="#fondateurs">L'équipe</a>
+      <a href="#pourquoi">Pourquoi Collabs</a>
+      <a href="#contact" class="btn btn-clay">Diagnostic financé BPI</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">Le premier cabinet de conseil agentique</span>
+      <h1>Vos équipes ne travailleront plus jamais <em>seules</em>.</h1>
+      <p class="lead">Collabs conçoit, déploie et pilote des organisations où humains et agents IA collaborent. Du diagnostic à l'espace de travail agentique, nous transformons votre entreprise de bout en bout.</p>
+      <div class="hero-cta">
+        <a href="#contact" class="btn btn-primary">Démarrer mon diagnostic</a>
+        <a href="#offres" class="btn btn-ghost">Découvrir le parcours</a>
+      </div>
+      <p class="hero-note"><strong>Diagnostic agentique finançable par BPI France</strong> — éligibilité vérifiée en 48&nbsp;h.</p>
+    </div>
+    <div class="orch" aria-hidden="true">
+      <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+        <line class="flow" x1="200" y1="200" x2="200" y2="60" fill="none"/>
+        <line class="flow" x1="200" y1="200" x2="330" y2="130" fill="none"/>
+        <line class="flow" x1="200" y1="200" x2="330" y2="270" fill="none"/>
+        <line class="flow" x1="200" y1="200" x2="200" y2="340" fill="none"/>
+        <line class="flow" x1="200" y1="200" x2="70" y2="270" fill="none"/>
+        <line class="flow" x1="200" y1="200" x2="70" y2="130" fill="none"/>
+        <circle cx="200" cy="200" r="46" fill="#D97757"/>
+        <text x="200" y="206" text-anchor="middle" fill="#fff" font-family="Source Serif 4,serif" font-size="15" font-weight="600">Orchestrateur</text>
+        <g font-family="Inter,sans-serif" font-size="11" fill="#191917">
+          <circle cx="200" cy="60" r="30" fill="#F0EEE6" stroke="#D97757"/><text x="200" y="64" text-anchor="middle">Ventes</text>
+          <circle cx="330" cy="130" r="30" fill="#F0EEE6" stroke="#D97757"/><text x="330" y="134" text-anchor="middle">Finance</text>
+          <circle cx="330" cy="270" r="30" fill="#F0EEE6" stroke="#D97757"/><text x="330" y="274" text-anchor="middle">RH</text>
+          <circle cx="200" cy="340" r="30" fill="#F0EEE6" stroke="#D97757"/><text x="200" y="344" text-anchor="middle">Support</text>
+          <circle cx="70" cy="270" r="30" fill="#F0EEE6" stroke="#D97757"/><text x="70" y="274" text-anchor="middle">Ops</text>
+          <circle cx="70" cy="130" r="30" fill="#F0EEE6" stroke="#D97757"/><text x="70" y="134" text-anchor="middle">Marketing</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<div class="strip">
+  <div class="wrap">
+    <span><b>SCOP</b> — un cabinet coopératif, aligné sur vos intérêts</span>
+    <span><b>Financement BPI</b> — diagnostic éligible aux aides</span>
+    <span><b>2 outils propriétaires</b> — collabs-orga &amp; collabs-team</span>
+    <span><b>Basé à Anglet</b> — interventions partout en France</span>
+  </div>
+</div>
+
+<section class="manifesto" id="manifeste">
+  <div class="wrap">
+    <span class="eyebrow">Notre conviction</span>
+    <h2>L'IA agentique n'est pas un projet informatique. C'est une refonte de l'organisation du travail.</h2>
+    <div class="cols">
+      <div>
+        <span class="num serif">I.</span>
+        <h3>Les agents sont des collaborateurs</h3>
+        <p>Un agent IA n'est pas un logiciel de plus : il prend des décisions, exécute des processus et interagit avec vos équipes. Il faut le recruter, l'intégrer et le manager comme tel.</p>
+      </div>
+      <div>
+        <span class="num serif">II.</span>
+        <h3>L'architecture précède la technologie</h3>
+        <p>Avant de choisir un modèle ou une plateforme, il faut dessiner qui fait quoi : périmètres, responsabilités, points de contrôle humains. C'est le métier de Collabs.</p>
+      </div>
+      <div>
+        <span class="num serif">III.</span>
+        <h3>Sans adoption, pas de transformation</h3>
+        <p>80&nbsp;% de l'échec des projets IA tient à l'humain, pas à la technique. Le change management n'est pas une option : c'est le cœur de notre accompagnement.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="offres" id="offres">
+  <div class="wrap">
+    <div class="offres-head">
+      <div>
+        <span class="eyebrow">Le parcours Collabs</span>
+        <h2>Cinq étapes pour devenir une organisation agentique.</h2>
+      </div>
+      <a href="#contact" class="btn btn-ghost">Parler à un expert</a>
+    </div>
+
+    <div class="parcours">
+      <article class="step">
+        <span class="phase">Étape 1</span>
+        <div>
+          <h3>Diagnostic agentique</h3>
+          <p>Cartographie de vos processus, identification des cas d'usage agentiques à plus fort ROI, évaluation de votre maturité data et organisationnelle. Vous repartez avec une feuille de route chiffrée et priorisée.</p>
+          <ul><li>Audit des processus</li><li>Matrice de cas d'usage</li><li>Feuille de route ROI</li></ul>
+        </div>
+        <span class="tag bpi">Financé par BPI</span>
+      </article>
+
+      <article class="step">
+        <span class="phase">Étape 2</span>
+        <div>
+          <h3>Accompagnement complet de la transformation agentique</h3>
+          <p>De la stratégie à la mise en production : nous pilotons votre transformation de bout en bout — gouvernance, sécurité, choix technologiques, déploiement progressif et mesure d'impact.</p>
+          <ul><li>Gouvernance &amp; sécurité IA</li><li>Pilotage de bout en bout</li><li>Mesure d'impact continue</li></ul>
+        </div>
+        <span class="tag">Programme sur mesure</span>
+      </article>
+
+      <article class="step">
+        <span class="phase">Étape 3</span>
+        <div>
+          <h3>Change management agentique</h3>
+          <p>Préparer vos équipes à collaborer avec des agents : nouveaux rôles, nouvelles compétences, nouveaux rituels. Formation, coaching managérial et accompagnement des métiers pour une adoption durable.</p>
+          <ul><li>Formation des équipes</li><li>Redéfinition des rôles</li><li>Coaching des managers</li></ul>
+        </div>
+        <span class="tag">Adoption durable</span>
+      </article>
+
+      <article class="step">
+        <span class="phase">Étape 4</span>
+        <div>
+          <h3>Architecture agentique avec <span class="tool">collabs-orga</span></h3>
+          <p>Notre outil propriétaire modélise votre organisation cible : agents spécialisés, orchestrateur, flux inter-agents, points de supervision humaine. Une architecture visuelle, documentée et actionnable.</p>
+          <ul><li>Modélisation SIPOC des agents</li><li>Flux d'orchestration</li><li>Points de contrôle humains</li></ul>
+        </div>
+        <span class="tag">Outil propriétaire</span>
+      </article>
+
+      <article class="step">
+        <span class="phase">Étape 5</span>
+        <div>
+          <h3>Digital agentic workspace avec <span class="tool">collabs-team</span></h3>
+          <p>L'espace de travail où vos collaborateurs et vos agents opèrent ensemble au quotidien : attribution des tâches, supervision des agents, traçabilité des décisions et amélioration continue.</p>
+          <ul><li>Collaboration humain-agent</li><li>Supervision en temps réel</li><li>Traçabilité des décisions</li></ul>
+        </div>
+        <span class="tag">Outil propriétaire</span>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="produits" id="produits">
+  <div class="wrap">
+    <span class="eyebrow">Nos outils</span>
+    <h2 style="font-size:clamp(1.9rem,3.5vw,2.7rem);margin-top:1rem;max-width:36rem">Deux plateformes propriétaires, un même objectif : rendre l'agentique opérationnelle.</h2>
+    <div class="grid2">
+      <div class="prod-card">
+        <span class="eyebrow">Concevoir</span>
+        <h3>collabs-orga</h3>
+        <p>L'atelier d'architecture agentique. Dessinez votre organisation cible, définissez chaque agent, son périmètre et ses interactions — puis exportez une architecture prête à implémenter.</p>
+        <div class="feat">
+          <span>Bibliothèque d'agents métiers (ventes, finance, RH, ops…)</span>
+          <span>Modélisation des flux et de l'orchestration</span>
+          <span>Export documentation &amp; spécifications techniques</span>
+        </div>
+        <a href="#contact">Demander une démo</a>
+      </div>
+      <div class="prod-card alt">
+        <span class="eyebrow">Opérer</span>
+        <h3>collabs-team</h3>
+        <p>Le digital agentic workspace. Vos équipes pilotent leurs agents, suivent leurs travaux, valident les décisions critiques et améliorent les performances en continu.</p>
+        <div class="feat">
+          <span>Tableau de bord humains + agents unifié</span>
+          <span>Validation humaine des actions sensibles</span>
+          <span>Journal d'audit et traçabilité complète</span>
+        </div>
+        <a href="#contact">Demander une démo</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="fondateurs" id="fondateurs">
+  <div class="wrap">
+    <span class="eyebrow">L'équipe fondatrice</span>
+    <h2 style="font-size:clamp(1.9rem,3.5vw,2.7rem);margin-top:1rem;max-width:34rem">La recherche et le terrain, réunis dans un même cabinet.</h2>
+    <div class="fond-grid">
+      <div class="fond-card">
+        <div class="avatar">N</div>
+        <span class="role">Co-fondateur — Direction scientifique</span>
+        <h3>Nassim</h3>
+        <p>Docteur en IA agentique, Nassim conçoit les architectures multi-agents de Collabs. Il garantit la rigueur scientifique de chaque mission : des agents fiables, supervisables et alignés sur vos objectifs métiers.</p>
+      </div>
+      <div class="fond-card b">
+        <div class="avatar">M</div>
+        <span class="role">Co-fondateur — Président</span>
+        <h3>Mehdi</h3>
+        <p>Serial-entrepreneur et expert en IA, Mehdi a bâti et dirigé plusieurs entreprises technologiques. Il apporte le pragmatisme du terrain : chaque transformation doit produire des résultats mesurables, vite.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pourquoi" id="pourquoi">
+  <div class="wrap">
+    <span class="eyebrow">Pourquoi Collabs</span>
+    <h2 style="font-size:clamp(1.9rem,3.5vw,2.7rem);margin-top:1rem;max-width:36rem">Ce qui nous distingue des cabinets de conseil classiques.</h2>
+    <div class="grid3">
+      <div class="why-card">
+        <span class="ic">①</span>
+        <h3>100&nbsp;% agentique</h3>
+        <p>Nous ne faisons qu'une chose : la transformation agentique. Pas de conseil généraliste — une expertise pointue, du diagnostic à l'exploitation.</p>
+      </div>
+      <div class="why-card">
+        <span class="ic">②</span>
+        <h3>Du conseil + des outils</h3>
+        <p>Là où d'autres livrent des slides, nous livrons des architectures actionnables (collabs-orga) et un espace de travail opérationnel (collabs-team).</p>
+      </div>
+      <div class="why-card">
+        <span class="ic">③</span>
+        <h3>Un modèle coopératif</h3>
+        <p>Collabs est une SCOP : nos consultants sont associés, engagés sur la durée et alignés sur la réussite de votre projet, pas sur le volume de jours vendus.</p>
+      </div>
+      <div class="why-card">
+        <span class="ic">④</span>
+        <h3>Financement facilité</h3>
+        <p>Votre diagnostic agentique est éligible au financement BPI France. Nous montons le dossier avec vous : zéro friction pour démarrer.</p>
+      </div>
+      <div class="why-card">
+        <span class="ic">⑤</span>
+        <h3>L'humain au centre</h3>
+        <p>Chaque architecture intègre des points de supervision humaine. Les agents amplifient vos équipes, ils ne les remplacent pas.</p>
+      </div>
+      <div class="why-card">
+        <span class="ic">⑥</span>
+        <h3>Science + business</h3>
+        <p>Un docteur en IA agentique et un serial-entrepreneur à la direction : la rigueur académique au service de résultats concrets.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta" id="contact">
+  <div class="wrap">
+    <span class="eyebrow">Premier pas</span>
+    <h2>Votre diagnostic agentique, <em>financé par BPI</em>.</h2>
+    <p>Un échange de 30 minutes pour vérifier votre éligibilité et identifier vos trois premiers cas d'usage agentiques. Sans engagement.</p>
+    <a href="mailto:commercial@e-kegai.fr" class="btn btn-clay">Réserver un échange</a>
+  </div>
+</section>
+
+<section class="mentions" id="mentions">
+  <div class="wrap">
+    <h2>Mentions légales</h2>
+    <dl>
+      <dt>Dénomination</dt><dd>Collabs</dd>
+      <dt>Forme juridique</dt><dd>Société coopérative et participative par actions simplifiée (SCOP SAS) à capital variable</dd>
+      <dt>Capital social minimum</dt><dd>100,00&nbsp;€</dd>
+      <dt>Siège social</dt><dd>1 Allée des Écuries, 64600 Anglet, France</dd>
+      <dt>Immatriculation</dt><dd>RCS de Bayonne — SIREN 999 138 050</dd>
+      <dt>Code APE</dt><dd>7022Z — Conseil pour les affaires et autres conseils de gestion</dd>
+      <dt>TVA intracommunautaire</dt><dd>FR90999138050</dd>
+      <dt>Directeur de la publication</dt><dd>M. Mehdi TERBECHE (Président)</dd>
+    </dl>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a href="#" class="logo" style="font-size:1.3rem">Co<span style="color:var(--clay)">ll</span>abs</a>
+        <p style="margin-top:1rem;max-width:22rem">Le cabinet de conseil agentique. Nous transformons les organisations en faisant collaborer humains et agents IA.</p>
+      </div>
+      <div>
+        <h4>Cabinet</h4>
+        <a href="#offres">Le parcours</a>
+        <a href="#produits">collabs-orga</a>
+        <a href="#produits">collabs-team</a>
+        <a href="#fondateurs">L'équipe</a>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <a href="mailto:contact@collabs.fr">contact@collabs.fr</a>
+        <a href="#mentions">Mentions légales</a>
+        <span>1 Allée des Écuries<br>64600 Anglet, France</span>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Collabs — SCOP SAS à capital variable</span>
+      <span>RCS Bayonne 999 138 050 — APE 7022Z</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

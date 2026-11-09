@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>e-kigai | L'Indépendance qui redonne du sens</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.29.7/babel.min.js"></script>
+
+    <!-- Google Fonts: Space Grotesk (Brutal) & Gochi Hand (Manuscrit) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --cream: #ffffef;
+            --dark: #3b3b3b;
+            --green: #00bf63;
+            --paper-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+        }
+
+        body {
+            background-color: var(--cream);
+            color: var(--dark);
+            font-family: 'Space Grotesk', sans-serif;
+            background-image: var(--paper-grain);
+            overflow-x: hidden;
+            cursor: crosshair; /* Curseur artistique */
+        }
+
+        h1, h2, h3, .brutal-font {
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: -0.04em;
+        }
+
+        .hand-font {
+            font-family: 'Gochi Hand', cursive;
+        }
+
+        /* Effet "Papier Déchiré" via CSS Clip-path */
+        .torn-paper-top {
+            clip-path: polygon(0% 10px, 5% 0px, 10% 12px, 15% 2px, 20% 10px, 25% 0px, 30% 12px, 35% 2px, 40% 10px, 45% 0px, 50% 12px, 55% 2px, 60% 10px, 65% 0px, 70% 12px, 75% 2px, 80% 10px, 85% 0px, 90% 12px, 95% 2px, 100% 10px, 100% 100%, 0% 100%);
+        }
+        
+        .torn-paper-bottom {
+            clip-path: polygon(0% 0%, 100% 0%, 100% calc(100% - 10px), 95% 100%, 90% calc(100% - 12px), 85% 100%, 80% calc(100% - 10px), 75% 100%, 70% calc(100% - 12px), 65% 100%, 60% calc(100% - 10px), 55% 100%, 50% calc(100% - 12px), 45% 100%, 40% calc(100% - 10px), 35% 100%, 30% calc(100% - 12px), 25% 100%, 20% calc(100% - 10px), 15% 100%, 10% calc(100% - 12px), 5% 100%, 0% calc(100% - 10px));
+        }
+
+        /* Style Neo-Brutalist Sticker */
+        .sticker {
+            background: white;
+            border: 2px solid var(--dark);
+            box-shadow: 4px 4px 0px var(--dark);
+            transition: all 0.2s ease;
+        }
+        .sticker:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px var(--green);
+        }
+
+        /* Blob organique (forme aléatoire) */
+        .organic-blob {
+            border-radius: 64% 36% 29% 71% / 58% 38% 62% 42%;
+            animation: morph 8s ease-in-out infinite;
+        }
+        @keyframes morph {
+            0% { border-radius: 64% 36% 29% 71% / 58% 38% 62% 42%; }
+            50% { border-radius: 36% 64% 71% 29% / 42% 62% 38% 58%; }
+            100% { border-radius: 64% 36% 29% 71% / 58% 38% 62% 42%; }
+        }
+
+        /* Effet de texte surligné */
+        .marker-highlight {
+            background: linear-gradient(120deg, rgba(0,191,99,0) 0%, rgba(0,191,99,0.4) 100%);
+            background-repeat: no-repeat;
+            background-size: 100% 40%;
+            background-position: 0 88%;
+        }
+
+        /* Animation de flottement */
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(2deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        /* Marquee (Texte défilant) */
+        .marquee-container {
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 20s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Bouton "Wobble" */
+        .btn-wobble:hover {
+            animation: wobble 0.5s ease-in-out;
+        }
+        @keyframes wobble {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-3deg); }
+            75% { transform: rotate(3deg); }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // Icônes "gribouillées" SVG
+        const ScribbleIcon = ({ path, className }) => (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className} style={{overflow: 'visible'}}>
+                {path}
+            </svg>
+        );
+
+        const Icons = {
+            Star: <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />,
+            Heart: <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />,
+            Bolt: <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />,
+            Smile: <g><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></g>,
+            Arrow: <path d="M17 8l4 4m0 0l-4 4m4-4H3" />,
+            Leaf: <g><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" /><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" /></g>,
+            Bike: <path d="M5.5 17a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zm13 0a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zM15 6h5v5M6 9l3 3h4l2-3" />,
+            Gift: <path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" />,
+            Ticket: <path d="M3 6h18v12H3zM3 11h18M8 6v12" />,
+            Sun: <g><circle cx="12" cy="12" r="5" /><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" /></g>,
+            Music: <path d="M9 18V5l12-2v13M9 9l12-2M6 15h3M18 13h3" />
+        };
+
+        const App = () => {
+            const [isMenuOpen, setIsMenuOpen] = useState(false);
+            const [scrollY, setScrollY] = useState(0);
+
+            useEffect(() => {
+                const handleScroll = () => setScrollY(window.scrollY);
+                window.addEventListener('scroll', handleScroll);
+                return () => window.removeEventListener('scroll', handleScroll);
+            }, []);
+
+            const colors = {
+                cream: '#ffffef',
+                dark: '#3b3b3b',
+                green: '#00bf63',
+            };
+
+            return (
+                <div className="min-h-screen relative overflow-hidden">
+                    
+                    {/* --- DECORATIVE ELEMENTS --- */}
+                    <div className="fixed top-20 left-10 w-32 h-32 bg-green-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 pointer-events-none animate-pulse"></div>
+                    <div className="fixed bottom-20 right-10 w-48 h-48 bg-yellow-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 pointer-events-none animate-pulse" style={{animationDelay: '1s'}}></div>
+
+                    {/* --- NAV: STICKER STYLE --- */}
+                    <nav className="fixed w-full z-50 top-4 px-4 pointer-events-none">
+                        <div className="max-w-7xl mx-auto flex justify-between items-center">
+                            {/* Logo Sticker */}
+                            <div className="sticker bg-white px-3 py-1 rotate-[-2deg] pointer-events-auto cursor-pointer transform hover:rotate-0 transition-transform">
+                                <img src="logo-ekigai.png" alt="e-kigai logo" className="h-10 w-auto object-contain" />
+                            </div>
+
+                            {/* Desktop Menu Tape */}
+                            <div className="hidden xl:flex gap-4 pointer-events-auto items-center">
+                                <a href="manifeste.html" className="relative group">
+                                    <div className="bg-white/80 backdrop-blur-sm px-4 py-1 border border-black transform transition-transform group-hover:-translate-y-1 rotate-[1deg]">
+                                        <span className="font-medium font-mono text-sm">Manifeste</span>
+                                    </div>
+                                    <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-4 bg-white/40 rotate-2"></div>
+                                </a>
+                                <a href="projet-cae.html" className="relative group">
+                                    <div className="bg-white/80 backdrop-blur-sm px-4 py-1 border border-black transform transition-transform group-hover:-translate-y-1 rotate-[-1deg]">
+                                        <span className="font-medium font-mono text-sm">La CAE</span>
+                                    </div>
+                                    <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-4 bg-white/40 rotate-2"></div>
+                                </a>
+                                <a href="formateurs-nda.html" className="relative group">
+                                    <div className="bg-yellow-200 backdrop-blur-sm px-4 py-1 border border-black transform transition-transform group-hover:-translate-y-1 rotate-[-1deg]">
+                                        <span className="font-medium font-mono text-sm">Devenir formateur</span>
+                                    </div>
+                                    <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-4 bg-white/40 rotate-2"></div>
+                                </a>
+                                <a href="#process" className="relative group">
+                                    <div className="bg-white/80 backdrop-blur-sm px-4 py-1 border border-black transform transition-transform group-hover:-translate-y-1 rotate-[1deg]">
+                                        <span className="font-medium font-mono text-sm">Process</span>
+                                    </div>
+                                    <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-4 bg-white/40 rotate-2"></div>
+                                </a>
+                                <a href="https://mte.typeform.com/e-kigai" className="relative group">
+                                    <div className="bg-white/80 backdrop-blur-sm px-4 py-1 border border-black transform transition-transform group-hover:-translate-y-1 rotate-[-1deg]">
+                                        <span className="font-medium font-mono text-sm">Rejoindre</span>
+                                    </div>
+                                    <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-4 bg-white/40 rotate-2"></div>
+                                </a>
+                                {/* CTA Ma Simulation */}
+                                <a href="simul.html" className="relative group ml-4 hover:scale-105 transition-transform duration-300">
+                                    <div className="bg-green-400 backdrop-blur-sm px-4 py-1 border border-black transform rotate-[2deg] shadow-[2px_2px_0px_rgba(0,0,0,1)]">
+                                        <span className="font-bold font-mono text-sm">Ma Simulation</span>
+                                    </div>
+                                    <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-4 bg-white/40 rotate-2"></div>
+                                </a>
+                            </div>
+
+                            {/* Mobile Hamburger */}
+                            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="xl:hidden sticker p-2 pointer-events-auto bg-green-400 border-black">
+                                <div className="space-y-1">
+                                    <div className="w-6 h-0.5 bg-black"></div>
+                                    <div className="w-6 h-0.5 bg-black"></div>
+                                    <div className="w-6 h-0.5 bg-black"></div>
+                                </div>
+                            </button>
+                        </div>
+
+                        {/* Mobile Menu Overlay */}
+                        {isMenuOpen && (
+                            <div className="absolute top-full left-0 w-full mt-2 px-4 pointer-events-auto xl:hidden">
+                                <div className="bg-white border-2 border-black p-4 shadow-[8px_8px_0px_rgba(0,0,0,1)] flex flex-col gap-4 transform rotate-1">
+                                    <a href="manifeste.html" className="font-bold font-mono hover:text-green-600 border-b border-gray-100 pb-2">Manifeste</a>
+                                    <a href="formateurs-nda.html" className="font-bold font-mono hover:text-green-600 border-b border-gray-100 pb-2">Devenir formateur</a>
+                                    <a href="#ledeal" className="font-bold font-mono hover:text-green-600 border-b border-gray-100 pb-2">Le Deal</a>
+                                    <a href="#process" className="font-bold font-mono hover:text-green-600 border-b border-gray-100 pb-2">Process</a>
+                                    <a href="https://mte.typeform.com/e-kigai" className="font-bold font-mono hover:text-green-600 border-b border-gray-100 pb-2">Rejoindre</a>
+                                    <a href="simul.html" className="bg-green-400 border border-black p-3 text-center font-bold font-mono shadow-[2px_2px_0px_black] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all">
+                                        Ma Simulation ⚡️
+                                    </a>
+                                </div>
+                            </div>
+                        )}
+                    </nav>
+
+                    {/* --- HERO: COLLAGE STYLE --- */}
+                    <section className="min-h-screen flex items-center justify-center pt-24 pb-12 relative">
+                        {/* Background Grid (Hand drawn look) */}
+                        <div className="absolute inset-0 z-0 opacity-10 pointer-events-none" 
+                             style={{backgroundImage: 'linear-gradient(#3b3b3b 1px, transparent 1px), linear-gradient(90deg, #3b3b3b 1px, transparent 1px)', backgroundSize: '40px 40px'}}>
+                        </div>
+
+                        <div className="max-w-7xl mx-auto px-4 grid lg:grid-cols-12 gap-12 items-center relative z-10 w-full">
+                            
+                            {/* Text Content */}
+                            <div className="lg:col-span-7 space-y-8 relative">
+                                {/* Sticker Badge */}
+                                <div className="inline-block transform -rotate-3 sticker bg-yellow-200 px-4 py-1 rounded-full border-black">
+                                    <span className="hand-font font-bold text-lg">C'est pas une enième société de portage</span>
+                                </div>
+
+                                <h1 className="text-6xl md:text-8xl font-bold leading-[0.9] text-black mix-blend-darken">
+                                    REDONNE <br/>
+                                   
+                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-green-400 italic font-serif">DU SENS</span> <br/>
+                                    au mode FREELANCE !
+                                </h1>
+                                <p className="text-xl md:text-2xl font-mono opacity-80 max-w-lg bg-white/60 p-4 border-l-4 border-green-500 backdrop-blur-sm transform rotate-1">
+                                    La sécurité du CDI. <br/>La liberté totale. <br/>
+                                    L'impact en prime. <span className="hand-font text-green-600 font-bold block mt-2 text-3xl">Bienvenue chez e-kigai.</span>
+                                </p>
+
+                                <div className="flex flex-col sm:flex-row gap-6 pt-6">
+                                    <a href="simul.html" className="sticker bg-black text-white px-8 py-4 text-xl font-bold rounded-none hover:bg-green-600 hover:text-black hover:border-black transition-colors btn-wobble flex items-center gap-3">
+                                        SIMULER MON REVENU <ScribbleIcon path={Icons.Arrow} className="w-6 h-6" />
+                                    </a>
+                                    <a href="manifeste.html" className="hand-font text-xl underline decoration-wavy decoration-green-500 hover:text-green-600 self-center">
+                                        Voir le manifeste ->
+                                    </a>
+                                </div>
+                            </div>
+
+                            {/* Visual Collage */}
+                            <div className="lg:col-span-5 relative h-[500px] hidden lg:block">
+                                {/* Elements flottants style "Scrapbook" */}
+                                <div className="absolute top-10 right-10 w-64 h-80 bg-white border-2 border-black p-2 transform rotate-3 shadow-[8px_8px_0px_rgba(0,0,0,1)] floating">
+                                    <div className="w-full h-4/5 bg-gray-200 overflow-hidden relative border border-black mb-2">
+                                        <img src="https://images.unsplash.com/photo-1566140967404-b8b3932483f5?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" className="object-cover w-full h-full grayscale hover:grayscale-0 transition-all duration-500" />
+                                    </div>
+                                    <div className="hand-font text-center font-bold text-xl">La Team 🌱</div>
+                                    {/* Fake Tape */}
+                                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-24 h-8 bg-yellow-200/80 rotate-[-2deg]"></div>
+                                </div>
+
+                                <div className="absolute bottom-20 left-0 w-48 bg-green-400 border-2 border-black p-4 transform -rotate-6 shadow-[4px_4px_0px_#000] z-20 floating" style={{animationDelay: '-2s'}}>
+                                    <div className="font-mono text-xs mb-2">STATUT JURIDIQUE</div>
+                                    <div className="font-bold text-3xl leading-none">SCOP</div>
+                                    <div className="text-xs mt-1 border-t border-black pt-1">Entrepreneur-Salarié</div>
+                                </div>
+
+                                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-0 organic-blob w-72 h-72 bg-purple-200 mix-blend-multiply opacity-50 blur-xl"></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* --- MARQUEE SEPARATOR --- */}
+                    <div className="bg-black text-white py-4 border-y-4 border-green-500 transform -rotate-1 scale-105 torn-paper-top torn-paper-bottom z-20 relative">
+                        <div className="marquee-container">
+                            <div className="marquee-content font-mono text-2xl font-bold uppercase">
+                                • Pas de bullshit • Transparence Totale • 1 homme = 1 voix • Impact Local • Zéro Admin • Liberté • Pas de bullshit • Transparence Totale • 1 homme = 1 voix • Impact Local • Zéro Admin • Liberté • 
+                            </div>
+                            <div className="marquee-content font-mono text-2xl font-bold uppercase" aria-hidden="true">
+                                Pas de bullshit • Transparence Totale • 1 homme = 1 voix • Impact Local • Zéro Admin • Liberté • Pas de bullshit • Transparence Totale • 1 homme = 1 voix • Impact Local • Zéro Admin • Liberté • 
+                            </div>
+                        </div>
+                    </div>
+{/* --- NEW SECTION: MICRO vs E-KIGAI (THE DUO) --- */}
+                    <section id="micro-vs-ekigai" className="py-24 px-4 bg-blue-50 relative overflow-hidden transform -rotate-1 my-12 mx-auto max-w-7xl border-4 border-black shadow-[10px_10px_0px_rgba(0,0,0,1)]" style={{borderRadius: '20px'}}>
+                        {/* Decor */}
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-300 rounded-full mix-blend-multiply filter blur-2xl opacity-50"></div>
+
+                        <div className="text-center mb-12 relative z-10">
+                            <div className="sticker bg-white inline-block px-6 py-2 border-black mb-6 rotate-2 shadow-[4px_4px_0px_#000]">
+                                <span className="font-bold font-mono text-xl">FREELANCE + CDI = 🔥</span>
+                            </div>
+                            <h2 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+                                Le mode Freelance mais <br/>
+                                <span className="text-green-600">avec les avantages d'un CDI.</span>
+                            </h2>
+                            <p className="font-mono text-xl max-w-3xl mx-auto mb-4">
+                                Une offre de portage salarial enfin à l'avantage des indépendants.
+                            </p>
+                            <div className="inline-block bg-yellow-200 border border-black px-4 py-2 transform -rotate-1 font-bold hand-font text-lg shadow-sm">
+                                Chez e-kigai, on n'oppose pas micro-entreprise et CDI, ils peuvent cohabiter pour profiter du meilleur des deux mondes !
+                            </div>
+                        </div>
+
+                        {/* TABLEAU COMPARATIF */}
+                        <div className="overflow-x-auto mb-16 relative z-10 px-2">
+                            <div className="bg-white border-2 border-black p-4 shadow-[6px_6px_0px_#000] rotate-1 max-w-4xl mx-auto">
+                                <h3 className="font-bold text-2xl text-center mb-6 font-sans underline decoration-green-500">LE MATCH DES STATUTS</h3>
+                                <div className="grid grid-cols-3 gap-4 font-mono text-sm md:text-base">
+                                    {/* Headers */}
+                                    <div className="col-span-1"></div>
+                                    <div className="col-span-1 text-center font-bold bg-gray-200 border border-black p-2 flex flex-col justify-center">
+                                        <span>Micro-Entreprise</span>
+                                        <span className="text-xs font-normal opacity-60">(Solo)</span>
+                                    </div>
+                                    <div className="col-span-1 text-center font-bold bg-green-200 border border-black p-2 flex flex-col justify-center shadow-md transform -translate-y-1">
+                                        <span>CDI e-kigai</span>
+                                        <span className="text-xs font-normal opacity-60">(Coop)</span>
+                                    </div>
+
+                                    {/* Row 1 */}
+                                    <div className="flex items-center font-bold border-b border-dashed border-gray-300 py-2">🛡️ Protection Sociale</div>
+                                    <div className="flex items-center justify-center border-b border-dashed border-gray-300 py-2 text-center text-xs md:text-sm">Minimale (SSI)</div>
+                                    <div className="flex items-center justify-center border-b border-dashed border-gray-300 py-2 font-bold text-green-700 bg-green-50">Complète (Salarié)</div>
+
+                                    {/* Row 2 */}
+                                    <div className="flex items-center font-bold border-b border-dashed border-gray-300 py-2">☔️ Chômage</div>
+                                    <div className="flex items-center justify-center border-b border-dashed border-gray-300 py-2 text-red-500">Non</div>
+                                    <div className="flex items-center justify-center border-b border-dashed border-gray-300 py-2 font-bold text-green-700 bg-green-50">Oui (Rechargeable)</div>
+
+                                    {/* Row 3 */}
+                                    <div className="flex items-center font-bold border-b border-dashed border-gray-300 py-2">🏠 Se loger</div>
+                                    <div className="flex items-center justify-center border-b border-dashed border-gray-300 py-2 text-center text-xs md:text-sm">Complexe (3 bilans)</div>
+                                    <div className="flex items-center justify-center border-b border-dashed border-gray-300 py-2 font-bold text-green-700 bg-green-50">Facile (Fiches de paie)</div>
+
+                                    {/* Row 4 */}
+                                    <div className="flex items-center font-bold border-b border-dashed border-gray-300 py-2">💸 Frais Pros</div>
+                                    <div className="flex items-center justify-center border-b border-dashed border-gray-300 py-2 text-center text-xs md:text-sm">Non déductibles</div>
+                                    <div className="flex items-center justify-center border-b border-dashed border-gray-300 py-2 font-bold text-green-700 bg-green-50">Illimités & Déductibles</div>
+
+                                    {/* Row 5 */}
+                                    <div className="flex items-center font-bold py-2">📈 Plafond CA</div>
+                                    <div className="flex items-center justify-center py-2 text-red-500 text-center text-xs md:text-sm">Oui (Plafond auto-entrepreneur)</div>
+                                    <div className="flex items-center justify-center py-2 font-bold text-green-700 bg-green-50">Aucun</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Grid of Benefits (Detailed) */}
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10">
+                            
+                            {/* Card 1: Protection */}
+                            <div className="bg-white p-6 border-2 border-black shadow-[6px_6px_0px_#000] transform rotate-1 hover:rotate-0 transition-transform">
+                                <div className="flex items-center gap-3 mb-4 border-b-2 border-dashed border-gray-200 pb-3">
+                                    <div className="bg-green-100 p-2 rounded-full border border-black"><ScribbleIcon path={Icons.Shield} className="w-6 h-6"/></div>
+                                    <h3 className="font-bold text-xl font-sans">Protégé comme un salarié</h3>
+                                </div>
+                                <ul className="space-y-2 font-mono text-sm">
+                                    <li>✅ Contrat de travail en CDI</li>
+                                    <li>✅ Droits au chômage rechargés</li>
+                                    <li>✅ Mutuelle et prévoyance</li>
+                                    <li>✅ Arrêts maladie & Retraite</li>
+                                    <li>✅ Titres restaurants</li>
+                                    <li>✅ Assurance RC Pro</li>
+                                    <li className="font-bold text-green-600">+ Avance de facture (option)</li>
+                                </ul>
+                                <div className="mt-4 text-right">
+                                    <a href="https://mte.typeform.com/e-kigai" className="underline font-bold text-sm hover:text-green-600">Sauter le pas -></a>
+                                </div>
+                            </div>
+
+                            {/* Card 2: Immo */}
+                            <div className="bg-white p-6 border-2 border-black shadow-[6px_6px_0px_#000] transform -rotate-1 hover:rotate-0 transition-transform">
+                                <div className="flex items-center gap-3 mb-4 border-b-2 border-dashed border-gray-200 pb-3">
+                                    <div class="bg-yellow-100 p-2 rounded-full border border-black"><ScribbleIcon path={Icons.Building} className="w-6 h-6"/></div>
+                                    <h3 class="font-bold text-xl font-sans">Bien se loger</h3>
+                                </div>
+                                <div className="text-sm opacity-60 mb-2 font-mono italic">...plus simplement.</div>
+                                <ul className="space-y-2 font-mono text-sm">
+                                    <li>✅ Contrat de travail en CDI</li>
+                                    <li>✅ Bulletins de salaire</li>
+                                    <li>✅ Partenariat avec des agences <span className="underline decoration-green-500 font-bold">Immo</span></li>
+                                </ul>
+                            </div>
+
+                            {/* Card 3: Famille */}
+                            <div className="bg-white p-6 border-2 border-black shadow-[6px_6px_0px_#000] transform rotate-2 hover:rotate-0 transition-transform">
+                                <div class="flex items-center gap-3 mb-4 border-b-2 border-dashed border-gray-200 pb-3">
+                                    <div class="bg-pink-100 p-2 rounded-full border border-black"><ScribbleIcon path={Icons.Heart} className="w-6 h-6"/></div>
+                                    <h3 class="font-bold text-xl font-sans">La vie de famille</h3>
+                                </div>
+                                <div className="text-sm opacity-60 mb-2 font-mono italic">...compte aussi.</div>
+                                <ul className="space-y-2 font-mono text-sm">
+                                    <li>✅ Congés maternité & paternité</li>
+                                    <li>✅ Mutuelle avec <span className="underline decoration-pink-500 font-bold">nos partenaires</span></li>
+                                </ul>
+                            </div>
+
+                            {/* Card 4: Zéro Admin */}
+                            <div className="bg-white p-6 border-2 border-black shadow-[6px_6px_0px_#000] transform -rotate-2 hover:rotate-0 transition-transform">
+                                <div class="flex items-center gap-3 mb-4 border-b-2 border-dashed border-gray-200 pb-3">
+                                    <div class="bg-blue-100 p-2 rounded-full border border-black"><ScribbleIcon path={Icons.FileText} className="w-6 h-6"/></div>
+                                    <h3 class="font-bold text-xl font-sans">0 compta, 0 paperasse</h3>
+                                </div>
+                                <ul className="space-y-2 font-mono text-sm">
+                                    <li>✅ Lancez votre activité en 24h</li>
+                                    <li>✅ Avec ou sans statut préalable</li>
+                                    <li>✅ Compatible micro-entreprise, SASU, EI, EURL</li>
+                                </ul>
+                            </div>
+
+                            {/* Card 5: Optimisation */}
+                            <div className="bg-white p-6 border-2 border-black shadow-[6px_6px_0px_#000] transform rotate-1 hover:rotate-0 transition-transform lg:col-span-2">
+                                <div class="flex items-center gap-3 mb-4 border-b-2 border-dashed border-gray-200 pb-3">
+                                    <div class="bg-purple-100 p-2 rounded-full border border-black"><ScribbleIcon path={Icons.Piggy} className="w-6 h-6"/></div>
+                                    <h3 class="font-bold text-xl font-sans">Optimisez vos revenus</h3>
+                                </div>
+                                <div class="grid sm:grid-cols-2 gap-4">
+                                    <ul class="space-y-2 font-mono text-sm">
+                                        <li>✅ Frais professionnels déductibles</li>
+                                        <li>✅ Tous les avantages salariés</li>
+                                    </ul>
+                                    <ul class="space-y-2 font-mono text-sm">
+                                        <li>✅ Épargne salariale (PEE)</li>
+                                        <li>✅ Programme de parrainage</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div className="mt-12 text-center">
+                            <a href="#simulation" className="bg-black text-white px-8 py-4 font-bold text-xl inline-flex items-center gap-2 hover:bg-green-600 hover:text-black border-2 border-black transition-colors shadow-[4px_4px_0px_#00bf63]">
+                                Réserver ma démo <ScribbleIcon path={Icons.Arrow} className="w-5 h-5"/>
+                            </a>
+                        </div>
+                    </section>
+                    {/* --- FORMATION & NDA --- */}
+                    <section aria-labelledby="formation-title" className="py-20 px-6 bg-yellow-100 border-y-2 border-black relative">
+                        <div className="max-w-6xl mx-auto grid lg:grid-cols-[1.3fr_1fr] gap-10 items-center">
+                            <div>
+                                <span className="sticker bg-white inline-block px-4 py-1 font-mono text-sm -rotate-2 mb-6">CONSULTANTS · INDÉPENDANTS · EXPERTS MÉTIER</span>
+                                <h2 id="formation-title" className="text-4xl md:text-6xl font-bold tracking-tight mb-6">Vous savez faire.<br/><span className="hand-font">Faites-le transmettre.</span></h2>
+                                <p className="font-mono text-lg max-w-xl">Transformez votre expertise en une offre de formation pour vos clients. Découvrez les étapes pour structurer votre projet et comprendre le cadre du numéro de déclaration d’activité (NDA).</p>
+                            </div>
+                            <div className="bg-white p-6 md:p-8 border-2 border-black shadow-[6px_6px_0px_#000] lg:rotate-2">
+                                <p className="hand-font text-3xl mb-4">Votre prochaine activité : transmettre.</p>
+                                <p className="font-mono mb-6">Programme, objectifs pédagogiques, cadre de l’activité : posez les bases de votre projet avec e-kigai.</p>
+                                <a href="formateurs-nda.html" className="sticker bg-black text-white px-6 py-4 font-bold inline-flex items-center gap-3 hover:bg-green-700 transition-colors focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-green-700">Devenir formateur <ScribbleIcon path={Icons.Arrow} className="w-5 h-5" /></a>
+                            </div>
+                        </div>
+                    </section>
+{/* --- NEW SECTION: TÉMOIGNAGES (STICKY NOTES WALL) --- */}
+                    <section id="temoignages" className="py-24 px-4 relative overflow-hidden bg-white">
+                        {/* Grid Background */}
+                        <div className="absolute inset-0 opacity-10 pointer-events-none" style={{backgroundImage: 'linear-gradient(#00bf63 1px, transparent 1px), linear-gradient(90deg, #00bf63 1px, transparent 1px)', backgroundSize: '20px 20px'}}></div>
+
+                        <div className="max-w-7xl mx-auto relative z-10">
+                            <div className="text-center mb-16">
+                                <h2 className="text-5xl md:text-6xl font-bold mb-4 hand-font transform -rotate-1">La Tribu a parlé 🗣️</h2>
+                                <div className="sticker bg-yellow-300 inline-block px-4 py-1 border-black rotate-2 shadow-[2px_2px_0px_black]">
+                                    <span className="font-bold font-mono">100% VRAIS GENS</span>
+                                </div>
+                            </div>
+
+                            <div className="grid md:grid-cols-3 gap-8">
+                                {/* Houssaine */}
+                                <div className="bg-[#fffbeb] p-6 border-2 border-black shadow-[8px_8px_0px_#000] transform rotate-1 hover:scale-105 transition-transform relative">
+                                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-12 h-4 bg-red-400/80 rotate-1"></div>
+                                    <div className="flex items-center gap-1 text-yellow-500 mb-2">
+                                        {[1,2,3,4,5].map(i => <ScribbleIcon key={i} path={Icons.Star} className="w-4 h-4 fill-current"/>)}
+                                    </div>
+                                    <p className="font-mono text-sm mb-4">"Avant je passais mes weekends sur l'URSSAF. Depuis que je suis chez e-kigai, je code et c'est tout. Le pied absolu pour un dev mobile."</p>
+                                    <div className="flex items-center gap-3 border-t border-black/10 pt-3">
+                                        <div className="w-10 h-10 rounded-full bg-white border border-black overflow-hidden">
+                                            <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Hedi&backgroundColor=e5e7eb" className="object-cover w-full h-full"/>
+                                        </div>
+                                        <div>
+                                            <div className="font-bold hand-font text-lg leading-none">Houssaine</div>
+                                            <div className="text-xs font-mono opacity-60">Freelance Dev Mobile</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Hedi */}
+                                <div className="bg-white p-2 pb-6 border border-gray-200 shadow-xl transform -rotate-2 hover:scale-105 transition-transform hover:z-10">
+                                    <div className="bg-gray-100 h-48 w-full mb-3 overflow-hidden border-b-2 border-black">
+                                        <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Houssaine&scale=120&backgroundColor=b6e3f4" className="object-cover w-full h-full"/>
+                                    </div>
+                                    <div className="px-2">
+                                        <div className="font-bold hand-font text-xl text-center mb-1">Hedi</div>
+                                        <div className="text-xs font-mono text-center opacity-60 mb-3">Dev Android Expert</div>
+                                        <p className="font-mono text-xs text-center border-t border-dashed border-gray-300 pt-2">"La sécurité du CDI m'a permis d'acheter mon appart sans galère, tout en gardant ma liberté de tech lead."</p>
+                                    </div>
+                                </div>
+
+                                {/* Julien */}
+                                <div className="bg-[#f0fdf4] p-6 border-2 border-black shadow-[8px_8px_0px_#00bf63] transform rotate-2 hover:scale-105 transition-transform relative">
+                                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-4 bg-black/10 rotate-[-2deg]"></div>
+                                    <div className="flex items-center gap-1 text-green-600 mb-2">
+                                        {[1,2,3,4,5].map(i => <ScribbleIcon key={i} path={Icons.Star} className="w-4 h-4 fill-current"/>)}
+                                    </div>
+                                    <p className="font-mono text-sm mb-4">"L'optimisation est dingue. Entre les frais réels et l'abondement PEE et les dons aux associations que je soutiens, je gagne nettement plus qu'en portage classique."</p>
+                                    <div className="flex items-center gap-3 border-t border-black/10 pt-3">
+                                        <div className="w-10 h-10 rounded-full bg-white border border-black overflow-hidden">
+                                            <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Julien&backgroundColor=c0aede" className="object-cover w-full h-full"/>
+                                        </div>
+                                        <div>
+                                            <div className="font-bold hand-font text-lg leading-none">Julien</div>
+                                            <div className="text-xs font-mono opacity-60">Dev .NET Senior</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="grid md:grid-cols-2 gap-8 mt-8 md:w-2/3 mx-auto">
+                                {/* Benoit */}
+                                <div className="bg-[#f3f4f6] p-6 border-2 border-black shadow-[6px_6px_0px_#3b3b3b] transform -rotate-1 hover:scale-105 transition-transform relative">
+                                    <div className="absolute -right-2 -top-2 w-8 h-8 bg-black rounded-full border-2 border-white"></div>
+                                    <p className="font-mono text-sm mb-4 italic">"J'avais peur d'être isolé. Finalement j'ai trouvé une vraie communauté d'experts. On s'échange des missions, c'est top."</p>
+                                    <div className="flex items-center gap-3 justify-end">
+                                        <div className="text-right">
+                                            <div className="font-bold hand-font text-lg leading-none">Benoit</div>
+                                            <div className="text-xs font-mono opacity-60">Business Analyst</div>
+                                        </div>
+                                        <div className="w-10 h-10 rounded-full bg-white border border-black overflow-hidden">
+                                            <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Benoit&backgroundColor=ffdfbf" className="object-cover w-full h-full"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Aurélie */}
+                                <div className="bg-[#fdf2f8] p-6 border-2 border-black shadow-[6px_6px_0px_#db2777] transform rotate-1 hover:scale-105 transition-transform relative">
+                                    <div className="absolute -left-2 -top-2 w-8 h-8 bg-pink-500 rounded-full border-2 border-white"></div>
+                                    <p className="font-mono text-sm mb-4 italic">"Le statut salarié indépendant rassure mes gros clients. Et moi je profite des chèques cadeaux et vacances et de tous les avantages comme quand j'étais dans un grand groupe. Win-win."</p>
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-full bg-white border border-black overflow-hidden">
+                                            <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Aurelie&backgroundColor=ffd5dc" className="object-cover w-full h-full"/>
+                                        </div>
+                                        <div>
+                                            <div className="font-bold hand-font text-lg leading-none">Aurélie</div>
+                                            <div className="text-xs font-mono opacity-60">Business Developper</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    {/* --- SECTION: LE VERSUS (HAND DRAWN STYLE) --- */}
+                    <section id="ledeal" className="py-24 px-4 bg-white relative">
+                        <div className="max-w-6xl mx-auto">
+                            <h2 className="text-5xl md:text-7xl font-bold text-center mb-20 relative inline-block left-1/2 -translate-x-1/2">
+                                <span className="relative z-10">E-KIGAI vs JUMP & CIE</span>
+                                <div className="absolute bottom-2 left-0 w-full h-6 bg-green-300 -z-0 transform -rotate-1 skew-x-12"></div>
+                            </h2>
+
+                            <div className="grid md:grid-cols-2 gap-12 relative items-center">
+                                {/* SVG Connector Line */}
+                                <svg className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 z-10 hidden md:block text-black" viewBox="0 0 100 100">
+                                    <path d="M10,50 Q50,10 90,50" fill="none" stroke="currentColor" strokeWidth="4" />
+                                    <text x="50" y="50" textAnchor="middle" dominantBaseline="middle" className="font-bold text-2xl">VS</text>
+                                </svg>
+
+                                {/* Old World (Jump style) */}
+                                <div className="border-4 border-black p-8 relative grayscale opacity-90 hover:opacity-100 transition-opacity bg-gray-50 transform -rotate-1" style={{ borderRadius: '2px' }}>
+                                    <h3 className="font-mono text-xl border-b-2 border-black pb-2 mb-4 font-bold">PORTAGE CLASSIQUE (Jump, etc.)</h3>
+                                    <div className="absolute -top-3 -left-3 bg-gray-200 text-black border border-black px-2 py-1 font-mono text-xs rotate-[-5deg]">Modèle SAS Commerciale</div>
+                                    
+                                    <ul className="space-y-3 font-mono text-sm mt-6">
+                                        <li className="flex items-center justify-between border-b border-gray-300 pb-2">
+                                            <span>Salaire Net</span>
+                                            <span className="font-bold">✅ Inclus</span>
+                                        </li>
+                                        <li className="flex items-center justify-between border-b border-gray-300 pb-2">
+                                            <span>Frais Pros</span>
+                                            <span className="font-bold">✅ Inclus</span>
+                                        </li>
+                                        <li className="flex items-center justify-between text-gray-400 pb-2">
+                                            <span className="line-through decoration-red-500 decoration-2">Part Travail (Dividendes)</span>
+                                            <span className="font-bold text-red-500">❌ (Pour les actionnaires)</span>
+                                        </li>
+                                        <li className="flex items-center justify-between text-gray-400 pb-2">
+                                            <span className="line-through decoration-red-500 decoration-2">Intéressement Boosté</span>
+                                            <span className="font-bold text-red-500">❌ (Rare/Faible)</span>
+                                        </li>
+                                        <li className="flex items-center justify-between text-gray-400 pb-2">
+                                            <span className="line-through decoration-red-500 decoration-2">Dons Directs (Impact)</span>
+                                            <span className="font-bold text-red-500">❌ Non inclus</span>
+                                        </li>
+                                    </ul>
+                                    <div className="mt-6 text-center font-bold text-gray-500 font-mono text-sm border border-dashed border-gray-400 p-2">
+                                        RÉSULTAT : GAIN PLAFONNÉ 📉
+                                    </div>
+                                </div>
+
+                                {/* E-kigai World */}
+                                <div className="border-4 border-black p-8 relative bg-cream shadow-[12px_12px_0px_#00bf63] transform rotate-1 scale-105 z-10" style={{ borderRadius: '255px 15px 225px 15px / 15px 225px 15px 255px' }}>
+                                    <h3 className="font-bold text-2xl border-b-4 border-green-500 pb-2 mb-4 font-sans uppercase tracking-wider">LA COOP E-KIGAI</h3>
+                                    
+                                    <div className="absolute -top-6 -right-4 sticker bg-yellow-300 px-4 py-2 font-bold hand-font text-xl border-black rotate-6 animate-pulse shadow-lg">
+                                        Gain Supérieur ! 💰
+                                    </div>
+
+                                    <ul className="space-y-4 text-lg">
+                                        <li className="flex items-center gap-3">
+                                            <div className="bg-black text-white rounded-full p-1"><ScribbleIcon path={Icons.Bolt} className="w-4 h-4"/></div>
+                                            <span className="font-bold">Salaire Net Optimisé</span>
+                                        </li>
+                                        <li className="flex items-center gap-3">
+                                            <div className="bg-black text-white rounded-full p-1"><ScribbleIcon path={Icons.Arrow} className="w-4 h-4"/></div>
+                                            <span className="font-bold">Frais Pros Illimités</span>
+                                        </li>
+                                        <li className="flex items-center gap-3 p-1 -mx-1" style={{backgroundImage: 'linear-gradient(120deg, rgba(0,191,99,0.2) 0%, rgba(0,191,99,0.2) 100%)'}}>
+                                            <div className="bg-green-600 text-white rounded-full p-1"><ScribbleIcon path={Icons.Star} className="w-4 h-4"/></div>
+                                            <span className="font-bold text-green-900">+ Part Travail (Dividendes)</span>
+                                        </li>
+                                        <li className="flex items-center gap-3 p-1 -mx-1" style={{backgroundImage: 'linear-gradient(120deg, rgba(0,191,99,0.2) 0%, rgba(0,191,99,0.2) 100%)'}}>
+                                            <div className="bg-green-600 text-white rounded-full p-1"><ScribbleIcon path={Icons.Smile} className="w-4 h-4"/></div>
+                                            <span className="font-bold text-green-900">+ Intéressement (0% charges)</span>
+                                        </li>
+                                        <li className="flex items-center gap-3 p-1 -mx-1" style={{backgroundImage: 'linear-gradient(120deg, rgba(0,191,99,0.2) 0%, rgba(0,191,99,0.2) 100%)'}}>
+                                            <div className="bg-green-600 text-white rounded-full p-1"><ScribbleIcon path={Icons.Heart} className="w-4 h-4"/></div>
+                                            <span className="font-bold text-green-900">+ Dons Associations (Partenaires)</span>
+                                        </li>
+                                    </ul>
+                                    <div className="mt-8 text-center hand-font text-2xl font-bold text-green-700 rotate-[-2deg]">
+                                        "Tout part dans TA poche (ou l'asso) !"
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* --- SECTION: MUTUALISATION (HAND DRAWN GRAPH) --- */}
+                    <section id="mutualisation" className="py-24 px-4 bg-yellow-100 relative overflow-hidden transform rotate-1 my-12 mx-auto max-w-7xl border-4 border-black shadow-[15px_15px_0px_rgba(0,0,0,1)]" style={{borderRadius: '40px'}}>
+                        <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none" style={{backgroundImage: 'radial-gradient(circle, #3b3b3b 1px, transparent 1px)', backgroundSize: '20px 20px'}}></div>
+                        
+                        <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
+                            <div>
+                                <div className="sticker bg-white inline-block px-4 py-1 border-black mb-4 rotate-[-2deg]">
+                                    <span className="hand-font font-bold text-xl">L'Algorithme Coopératif 🤝</span>
+                                </div>
+                                <h2 className="text-5xl font-bold mb-6 leading-tight">
+                                    PLUS ON EST,<br/>
+                                    <span className="text-green-600">MOINS TU PAIES.</span>
+                                </h2>
+                                <p className="font-mono text-lg mb-6 border-l-4 border-black pl-4">
+                                    Dans une boîte de portage classique, ta commission finance leurs profits. <br/>
+                                    <strong>Chez e-kigai, elle finance le réel.</strong>
+                                </p>
+                                <p className="font-mono text-sm opacity-80 mb-8">
+                                    Tous les frais de fonctionnement (comptable, outils, loyer) sont divisés par le nombre de coopérateurs. 
+                                    Si la commu grandit, ta part diminue. C'est mécanique.
+                                </p>
+                                
+                                <div className="bg-white border-2 border-black p-4 rotate-1 shadow-[4px_4px_0px_#000]">
+                                    <div className="flex justify-between items-center border-b border-black pb-2 mb-2 font-bold font-mono">
+                                        <span>10 Coopérateurs</span>
+                                        <span>100 Coopérateurs</span>
+                                    </div>
+                                    <div className="flex justify-between items-center text-sm font-mono">
+                                        <span className="text-red-500">Frais élevés</span>
+                                        <span className="text-green-500 font-bold text-lg">Frais minimes 📉</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="relative h-64 md:h-96 bg-white border-4 border-black p-6" style={{borderRadius: '20px 5px 25px 10px'}}>
+                                {/* SVG Graph */}
+                                <h3 className="hand-font text-center text-2xl font-bold mb-4">Courbe des frais</h3>
+                                <svg viewBox="0 0 400 300" className="w-full h-full overflow-visible">
+                                    {/* Axes */}
+                                    <line x1="50" y1="250" x2="350" y2="250" stroke="black" strokeWidth="3" />
+                                    <line x1="50" y1="250" x2="50" y2="50" stroke="black" strokeWidth="3" />
+                                    
+                                    {/* Curve */}
+                                    <path d="M50,50 Q150,230 350,240" fill="none" stroke="#00bf63" strokeWidth="5" strokeLinecap="round" />
+                                    
+                                    {/* Annotations */}
+                                    <text x="350" y="270" textAnchor="end" className="font-mono text-xs">Nombre de membres</text>
+                                    <text x="40" y="40" textAnchor="end" className="font-mono text-xs" style={{writingMode: 'vertical-rl'}}>Coût par personne</text>
+                                    
+                                    {/* Hand drawn scribble */}
+                                    <path d="M200,150 L250,120" stroke="black" strokeWidth="2" strokeDasharray="5,5" />
+                                    <text x="260" y="120" className="hand-font text-lg font-bold">C'est nous !</text>
+                                    
+                                    {/* Smiley sticker */}
+                                    <circle cx="320" cy="220" r="15" fill="yellow" stroke="black" strokeWidth="2" />
+                                    <path d="M315,215 a2,2 0 0 1 2,2" fill="black"/>
+                                    <path d="M325,215 a2,2 0 0 1 2,2" fill="black"/>
+                                    <path d="M315,225 q5,5 10,0" fill="none" stroke="black" strokeWidth="2"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* --- SECTION: FISCALITE (BRUTALIST CARDS) --- */}
+                    <section className="py-24 px-4 bg-[#3b3b3b] text-[#ffffef] relative overflow-hidden">
+                        {/* Background Noise Texture Overlay */}
+                        <div className="absolute inset-0 opacity-20 pointer-events-none" style={{filter: 'contrast(150%) brightness(100%)'}}></div>
+                        
+                        <div className="max-w-7xl mx-auto relative z-10">
+                            <div className="flex flex-col md:flex-row gap-8 mb-16 items-start">
+                                <h2 className="text-6xl font-bold leading-none">
+                                    HACKER <br/>
+                                    <span className="text-green-500">LE SYSTÈME</span> <br/>
+                                    (LÉGALEMENT)
+                                </h2>
+                                <p className="font-mono text-sm md:text-base max-w-sm mt-4 md:mt-0 border-l border-green-500 pl-4">
+                                    Le statut SCOP offre des avantages fiscaux massifs. L'argent ne part pas en taxes inutiles ou chez des investisseurs. Il revient dans votre poche.
+                                </p>
+                            </div>
+
+                            <div className="grid md:grid-cols-3 gap-6">
+                                {[
+                                    {title: "0€ CFE/CVAE", desc: "Exonération totale. Ça fait déjà 500€ à 2000€ d'économie par an."},
+                                    {title: "IS = 0€", desc: "Sur la part distribuée aux salariés. L'état encourage le partage, on en profite."},
+                                    {title: "Abondement", desc: "La coopérative peut tripler votre épargne sans charges sociales. C'est magique."}
+                                ].map((card, i) => (
+                                    <div key={i} className="group relative">
+                                        <div className="absolute inset-0 bg-green-500 transform translate-x-2 translate-y-2 transition-transform group-hover:translate-x-4 group-hover:translate-y-4 border border-[#ffffef]"></div>
+                                        <div className="relative bg-[#3b3b3b] border border-[#ffffef] p-8 h-full flex flex-col justify-between">
+                                            <div className="text-4xl font-bold mb-4 font-mono">0{i+1}.</div>
+                                            <div>
+                                                <h3 className="text-2xl font-bold mb-2 underline decoration-green-500">{card.title}</h3>
+                                                <p className="font-mono text-sm opacity-80">{card.desc}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* --- NEW SECTION: AVANTAGES SALARIÉS (PACK VIP) --- */}
+                    <section id="avantages-salaries" className="py-24 px-4 bg-[#f0fdf4] relative overflow-hidden">
+                        <div className="max-w-7xl mx-auto relative z-10">
+                            <div className="text-center mb-16">
+                                <div className="sticker bg-pink-300 inline-block px-4 py-2 border-black mb-6 rotate-3 shadow-[4px_4px_0px_#000]">
+                                    <span className="font-bold font-mono text-xl">VIE DE CHÂTEAU 🏰</span>
+                                </div>
+                                <h2 className="text-5xl md:text-7xl font-bold mb-6">
+                                    LE PACK SALARIÉ ++
+                                </h2>
+                                <p className="font-mono text-xl max-w-3xl mx-auto">
+                                    Pas besoin d'être au CAC40 pour avoir les avantages du CAC40.
+                                    <span className="block mt-2 text-sm opacity-60">En partenariat avec les meilleurs :</span>
+                                </p>
+                                
+                                {/* Partners Stickers */}
+                                <div className="flex justify-center gap-6 mt-6">
+                                    <div className="sticker px-4 py-2 bg-white rotate-[-3deg] font-bold text-pink-500 border-pink-500">
+                                        May
+                                    </div>
+                                    <div className="sticker px-4 py-2 bg-white rotate-[2deg] font-bold text-blue-500 border-blue-500">
+                                        Klaro
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Grid of Coupons */}
+                            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                                {[
+                                    {icon: "Utensils", label: "Titre Resto", color: "bg-orange-100"},
+                                    {icon: "Bike", label: "Mobilité Durable", color: "bg-green-100"},
+                                    {icon: "Wifi", label: "Prime Télétravail", color: "bg-blue-100"},
+                                    {icon: "Trophy", label: "Sport & Loisirs", color: "bg-yellow-100"},
+                                    {icon: "HandHeart", label: "Service Personne", color: "bg-pink-100"},
+                                    {icon: "Gift", label: "Titre Cadeau", color: "bg-red-100"},
+                                    {icon: "Sun", label: "Chèques Vacances", color: "bg-cyan-100"},
+                                    {icon: "Music", label: "Titre Culture", color: "bg-purple-100"},
+                                    {icon: "Ticket", label: "CSE Externalisé", color: "bg-indigo-100"},
+                                    {icon: "PiggyBank", label: "Épargne Salariale", color: "bg-emerald-100"}
+                                ].map((item, i) => (
+                                    <div key={i} className={`p-4 border-2 border-dashed border-black ${item.color} flex flex-col items-center justify-center text-center h-40 hover:scale-105 transition-transform cursor-pointer shadow-[4px_4px_0px_rgba(0,0,0,0.1)]`}>
+                                        <div className="mb-3">
+                                            {/* Using ScribbleIcon with mapping, fallback to circle if not found immediately */}
+                                            <ScribbleIcon path={Icons[item.icon] || Icons.Star} className="w-10 h-10" />
+                                        </div>
+                                        <span className="font-bold font-mono text-sm leading-tight">{item.label}</span>
+                                        <div className="mt-2 w-full border-t border-dashed border-black/30"></div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* --- SECTION: MISSION & IMPACT --- */}
+                    <section id="impact" className="py-24 px-4 relative overflow-hidden bg-white">
+                        {/* Torn paper top */}
+                        <div className="absolute top-0 left-0 w-full h-12 bg-white torn-paper-bottom transform rotate-180 -translate-y-6 z-10"></div>
+
+                        <div className="max-w-6xl mx-auto relative z-20">
+                            <div className="flex flex-col lg:flex-row items-center gap-16">
+                                {/* Left: Text & Manifeste */}
+                                <div className="lg:w-1/2">
+                                    <div className="sticker bg-green-400 inline-block px-4 py-1 border-black mb-6 rotate-2 shadow-[4px_4px_0px_#000]">
+                                        <span className="font-bold font-mono">ART. L.210-10 CODE DE COMMERCE</span>
+                                    </div>
+                                    <h2 className="text-6xl font-bold mb-6 leading-[0.9]">
+                                        LE SENS <br/>
+                                        <span className="hand-font text-5xl text-green-600 block mt-2">avant le business plan.</span>
+                                    </h2>
+                                    <p className="font-mono text-lg mb-8">
+                                        e-kigai n'est pas juste une boîte de portage. C'est une <strong>Entreprise à Mission</strong>.
+                                        Ça veut dire que notre utilité sociale et environnementale est gravée dans le marbre de nos statuts.
+                                        C'est pas du marketing, c'est la loi.
+                                    </p>
+
+                                    <div className="bg-white border-2 border-black p-6 rotate-[-1deg] shadow-[8px_8px_0px_#000] relative">
+                                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-red-500 text-white px-2 py-1 font-bold text-xs rotate-2">OBJECTIFS STATUTAIRES</div>
+                                        <ul className="space-y-4 font-mono text-lg">
+                                            <li className="flex items-start gap-3">
+                                                <div className="text-red-500"><ScribbleIcon path={Icons.Heart} className="w-6 h-6 flex-shrink-0" /></div>
+                                                <span><strong>Humanitaire :</strong> Soutenir les populations en difficulté (local & international).</span>
+                                            </li>
+                                            <li className="flex items-start gap-3">
+                                                <div className="text-green-600"><ScribbleIcon path={Icons.Leaf} className="w-6 h-6 flex-shrink-0" /></div>
+                                                <span><strong>Régénératif :</strong> Financer des projets qui réparent la planète (pas juste "moins polluer").</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                {/* Right: Visual Collage */}
+                                <div className="lg:w-1/2 relative h-[400px] w-full mt-12 lg:mt-0">
+                                    {/* Polaroid 1 */}
+                                    <div className="bg-white p-3 pb-8 border border-gray-200 shadow-xl transform rotate-3 w-64 absolute top-0 right-4 md:right-10 z-10 transition-transform hover:scale-105 hover:z-20">
+                                        <div className="bg-gray-200 h-48 w-full mb-2 overflow-hidden border border-gray-300">
+                                            <img src="https://plus.unsplash.com/premium_photo-1663047061935-8ef0e54efba7?auto=format&fit=crop&w=400&q=80" className="object-cover w-full h-full grayscale hover:grayscale-0 transition-all duration-500"/>
+                                        </div>
+                                        <div className="hand-font text-center text-xl font-bold">Projets Verts 🌳</div>
+                                        <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-16 h-6 bg-green-200/60 rotate-2"></div>
+                                    </div>
+                                    {/* Polaroid 2 */}
+                                    <div className="bg-white p-3 pb-8 border border-gray-200 shadow-xl transform -rotate-6 w-64 absolute top-20 left-4 md:left-10 z-0 transition-transform hover:scale-105 hover:z-20">
+                                        <div className="bg-gray-200 h-48 w-full mb-2 overflow-hidden border border-gray-300">
+                                             <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=400&q=80" className="object-cover w-full h-full grayscale hover:grayscale-0 transition-all duration-500"/>
+                                        </div>
+                                        <div className="hand-font text-center text-xl font-bold">Solidarité 🤝</div>
+                                        <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-16 h-6 bg-red-200/60 rotate-[-2]"></div>
+                                    </div>
+                                    {/* Sticker */}
+                                    <div className="absolute -bottom-4 right-10 sticker bg-yellow-300 px-6 py-4 font-bold text-xl rotate-12 z-20 shadow-[5px_5px_0px_rgba(0,0,0,0.2)]">
+                                        On lance le 2,5% for the Human ! 🌍
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* --- SECTION: TIMELINE (TREASURE MAP) --- */}
+                    <section id="process" className="py-32 px-4 overflow-hidden">
+                        <div className="max-w-5xl mx-auto relative">
+                            <h2 className="text-center text-5xl font-bold mb-20 hand-font rotate-2">La Carte au Trésor 🗺️</h2>
+                            
+                            {/* Dotted Line Path (SVG) */}
+                            <svg className="absolute top-0 left-0 w-full h-full pointer-events-none z-0 hidden md:block" style={{top: '50px'}}>
+                                <path d="M150,50 C300,50 300,250 500,250 C700,250 700,50 850,50" 
+                                      fill="none" stroke="#00bf63" strokeWidth="3" strokeDasharray="10 10" className="path-anim"/>
+                            </svg>
+
+                            <div className="grid md:grid-cols-3 gap-12 relative z-10">
+                                <div className="flex flex-col items-center text-center group">
+                                    <div className="w-24 h-24 bg-white border-4 border-black rounded-full flex items-center justify-center text-4xl mb-6 shadow-[5px_5px_0px_#000] group-hover:bg-yellow-200 transition-colors cursor-help">
+                                        📞
+                                    </div>
+                                    <h3 className="font-bold text-2xl rotate-[-2deg]">1. Le Call</h3>
+                                    <p className="hand-font text-lg mt-2">On discute. Visio ou café. <br/>Sans pression.</p>
+                                </div>
+
+                                <div className="flex flex-col items-center text-center group md:mt-32">
+                                    <div className="w-24 h-24 bg-white border-4 border-black rounded-full flex items-center justify-center text-4xl mb-6 shadow-[5px_5px_0px_#000] group-hover:bg-green-200 transition-colors cursor-help">
+                                        🧮
+                                    </div>
+                                    <h3 className="font-bold text-2xl rotate-[2deg]">2. La Simu</h3>
+                                    <p className="hand-font text-lg mt-2">On ouvre le capot.<br/>Combien tu gagnes vraiment ?</p>
+                                </div>
+
+                                <div className="flex flex-col items-center text-center group">
+                                    <div className="w-24 h-24 bg-white border-4 border-black rounded-full flex items-center justify-center text-4xl mb-6 shadow-[5px_5px_0px_#000] group-hover:bg-blue-200 transition-colors cursor-help">
+                                        🚀
+                                    </div>
+                                    <h3 className="font-bold text-2xl rotate-[-1deg]">3. Go !</h3>
+                                    <p className="hand-font text-lg mt-2">Signature (CDI).<br/>Onboarding.<br/>Champomy 🍾.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* --- FOOTER: TORN PAPER BOTTOM --- */}
+                    <footer className="bg-black text-[#ffffef] pt-20 pb-10 relative mt-20">
+                        <div className="absolute top-0 left-0 w-full h-10 bg-black torn-paper-top -translate-y-1/2"></div>
+                        
+                        <div className="max-w-7xl mx-auto px-4 text-center">
+                            <div className="inline-block border-2 border-white p-8 rotate-1 mb-10 hover:rotate-0 transition-transform duration-500">
+                                <h2 className="text-4xl md:text-6xl font-bold mb-4">PRÊT À BASCULER ?</h2>
+                                    <p className="font-mono mb-8 max-w-xl mx-auto">Rejoins le mouvement. L'indépendance ne devrait pas être un sport solitaire.</p>
+                            <a href="https://mte.typeform.com/e-kigai" target="_blank" rel="noopener noreferrer" className="inline-block bg-green-500 text-black px-8 py-3 font-bold text-xl border-2 border-transparent hover:border-white hover:bg-black hover:text-white transition-all" > DÉMARRER MAINTENANT </a> 
+                            </div>
+
+                            <div className="grid md:grid-cols-4 gap-8 text-left font-mono text-sm opacity-60 border-t border-gray-800 pt-10">
+                                <div>
+                                    <div className="font-bold text-white mb-2">e-kigai.net</div>
+                                    <p>Coopérative d'Activité et d'Emploi à mission.</p>
+                                </div>
+                                <div>
+                                    <div className="font-bold text-white mb-2">Liens</div>
+                                    <ul className="space-y-1">
+                                        <li><a href="manifeste.html" className="hover:text-green-400">Manifeste</a></li>
+                                        <li><a href="simul.html" className="hover:text-green-400">Simulation</a></li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <div className="font-bold text-white mb-2">Légal</div>
+                                    <ul className="space-y-1">
+                                        <li><a href="mentions_legales.html" className="hover:text-green-400">Mentions légales</a></li>
+                                        <li><a href="confid.html" className="hover:text-green-400">Politique de conf.</a></li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <div className="font-bold text-white mb-2">Social</div>
+                                    <div className="flex gap-4 text-2xl">
+                                        <span>in</span>
+                                        <span>tw</span>
+                                        <span>ig</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="mt-12 text-xs font-mono opacity-30">
+                                © 2026 e-kigai. Design: Made with 💚 by e-kigai.
+                            </div>
+                        </div>
+                    </footer>
+
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

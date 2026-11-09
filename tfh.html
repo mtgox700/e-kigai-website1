@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TIME FOR HUMAN | L'humain au centre</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Space Grotesk', 'sans-serif'],
+                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+                    },
+                    colors: {
+                        brand: '#ccff00', // Vert acide/néon brutaliste
+                    },
+                    boxShadow: {
+                        'brutal': '8px 8px 0px 0px rgba(0,0,0,1)',
+                        'brutal-white': '8px 8px 0px 0px rgba(255,255,255,1)',
+                        'brutal-brand': '8px 8px 0px 0px #ccff00',
+                        'brutal-sm': '4px 4px 0px 0px rgba(0,0,0,1)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Space Grotesk', sans-serif; background-color: #000; color: #fff; }
+        
+        /* Marquee Animation */
+        .marquee-container {
+            overflow: hidden;
+            white-space: nowrap;
+            display: flex;
+        }
+        .marquee-content {
+            display: flex;
+            animation: marquee 15s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        
+        /* Custom Selection */
+        ::selection { background: #ccff00; color: #000; }
+        
+        /* Brutalist utility for links */
+        .brutal-link {
+            position: relative;
+            display: inline-block;
+        }
+        .brutal-link::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            bottom: -2px;
+            left: 0;
+            background-color: currentColor;
+            transform: scaleX(0);
+            transform-origin: bottom right;
+            transition: transform 0.25s ease-out;
+        }
+        .brutal-link:hover::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-brand selection:text-black">
+
+    <!-- Bandeau défilant (Marquee) -->
+    <div class="bg-brand text-black font-black uppercase tracking-widest py-2 border-b-4 border-black marquee-container text-sm md:text-base">
+        <div class="marquee-content gap-8">
+            <span>TIME FOR HUMAN</span>
+            <span>•</span>
+            <span>L'HUMAIN AU CENTRE</span>
+            <span>•</span>
+            <span>DYNAMIQUES INVISIBLES</span>
+            <span>•</span>
+            <span>CONSCIENCE</span>
+            <span>•</span>
+            <span>PERFORMANCE DURABLE</span>
+            <span>•</span>
+            <span>TIME FOR HUMAN</span>
+            <span>•</span>
+            <span>L'HUMAIN AU CENTRE</span>
+            <span>•</span>
+            <span>DYNAMIQUES INVISIBLES</span>
+            <span>•</span>
+            <span>CONSCIENCE</span>
+            <span>•</span>
+            <span>PERFORMANCE DURABLE</span>
+        </div>
+    </div>
+
+        <!-- Navigation commune -->
+    <nav class="sticky top-0 w-full z-50 bg-black border-b-4 border-brand transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex-shrink-0 flex items-center gap-3">
+                    <div class="w-8 h-8 bg-brand flex items-center justify-center border-2 border-brand">
+                        <i data-lucide="infinity" class="w-5 h-5 text-black stroke-[3]"></i>
+                    </div>
+                    <span class="font-black text-2xl tracking-tighter text-white uppercase">TIME FOR HUMAN</span>
+                </div>
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="tfh.html" class="text-white hover:text-brand font-bold uppercase tracking-wide brutal-link PAGE_ACCUEIL">Accueil</a>
+                    <a href="tfh-formation.html" class="text-white hover:text-brand font-bold uppercase tracking-wide brutal-link PAGE_FORMATION">Formation IA</a>
+                    <a href="tfh-conf.html" class="text-white hover:text-brand font-bold uppercase tracking-wide brutal-link PAGE_CONF">Conférences</a>
+                    <a href="tfh-mastermind.html" class="text-white hover:text-brand font-bold uppercase tracking-wide brutal-link PAGE_MASTERMIND">Mastermind</a>
+                    <a href="#contact" class="bg-brand text-black px-6 py-2 font-black uppercase tracking-wide border-2 border-brand hover:bg-black hover:text-brand transition-colors shadow-brutal-white">Contact</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-20 pb-24 lg:pt-32 lg:pb-32 overflow-hidden bg-black text-white border-b-8 border-white">
+        <!-- Grille de fond brutaliste -->
+        <div class="absolute inset-0 opacity-20 pointer-events-none" style="background-image: linear-gradient(#ccff00 1px, transparent 1px), linear-gradient(90deg, #ccff00 1px, transparent 1px); background-size: 50px 50px;"></div>
+
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="inline-block bg-brand text-black font-black uppercase px-4 py-1 mb-6 text-sm tracking-widest border-2 border-brand shadow-brutal-white">
+                Vision
+            </div>
+            
+            <h1 class="text-5xl md:text-7xl lg:text-[6rem] font-black tracking-tighter mb-8 leading-[0.9] uppercase">
+                TIME FOR HUMAN : <br/>
+                <span class="bg-brand text-black px-2 inline-block mt-2 transform -skew-x-3">Remettre l’humain</span><br/>
+                <span class="text-white">au centre des organisations augmentées par l’IA.</span>
+            </h1>
+            
+            <div class="w-full h-2 bg-white mb-8 max-w-md"></div>
+
+            <p class="mt-4 text-xl md:text-3xl font-medium leading-tight mb-12 max-w-4xl">
+                TIME FOR HUMAN accompagne écoles et organisations à développer des humains conscients, capables de naviguer la révolution de l’IA, de comprendre les dynamiques invisibles d’une équipe et de transformer les émotions en levier de performance durable.
+                <br><br>
+                <span class="text-brand font-bold">Nous intervenons via conférences, ateliers et parcours sur‑mesure, pour faire évoluer les postures, les relations et les niveaux de conscience au cœur des systèmes humains.</span>
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-6 mt-12">
+                <a href="#contact" class="px-8 py-5 bg-brand text-black font-black uppercase tracking-wide border-4 border-brand shadow-brutal-white hover:translate-y-1 hover:translate-x-1 hover:shadow-none transition-all flex items-center justify-center gap-3">
+                    <i data-lucide="graduation-cap" class="w-6 h-6 stroke-[3]"></i>
+                    Projet pour votre école
+                </a>
+                <a href="#contact" class="px-8 py-5 bg-white text-black font-black uppercase tracking-wide border-4 border-white shadow-brutal hover:translate-y-1 hover:translate-x-1 hover:shadow-none transition-all flex items-center justify-center gap-3">
+                    <i data-lucide="building-2" class="w-6 h-6 stroke-[3]"></i>
+                    Intervention en entreprise
+                </a>
+                <a href="#contact" class="px-8 py-5 bg-black text-brand font-bold uppercase tracking-wide border-4 border-brand hover:bg-brand hover:text-black transition-all flex items-center justify-center">
+                    Dirigeant / Entrepreneur
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pourquoi maintenant ? -->
+    <section id="contexte" class="py-24 bg-white text-black border-b-8 border-black">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-16">
+                <h2 class="text-6xl md:text-8xl font-black uppercase tracking-tighter mb-4">Pourquoi <br><span class="text-white" style="-webkit-text-stroke: 2px black;">Maintenant ?</span></h2>
+                <div class="w-32 h-4 bg-brand"></div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                <div class="space-y-8 text-xl md:text-2xl font-medium leading-snug">
+                    <p>
+                        L’IA transforme en profondeur les métiers, les organisations et la manière de travailler ensemble. Les jeunes générations entrent sur un marché où la compétence technique seule ne suffit plus : <span class="bg-black text-white px-2">ce qui fait la différence, c’est la compréhension de soi, des autres et des systèmes humains dans lesquels on évolue.</span>
+                    </p>
+                    <div class="p-8 border-4 border-black shadow-brutal bg-brand text-black font-bold">
+                        Dans ce contexte, continuer à former et manager uniquement sur les outils et les process, sans adresser les émotions, les non‑dits et les niveaux de conscience, crée un risque : celui de produire des “humains inconscients augmentés” par la technologie, plutôt que des humains conscients capables de l’utiliser avec discernement.
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-8">
+                    <div class="border-4 border-black p-8 bg-white shadow-brutal">
+                        <div class="flex items-center gap-4 mb-4 border-b-4 border-black pb-4">
+                            <i data-lucide="school" class="w-10 h-10 stroke-[3]"></i>
+                            <h4 class="text-3xl font-black uppercase">Pour les écoles</h4>
+                        </div>
+                        <p class="text-lg font-medium">Il devient stratégique de préparer les étudiants au réel fonctionnement des organisations humaines, à la gestion des émotions, des relations et des postures, pas seulement aux logiciels ou aux modèles de management.</p>
+                    </div>
+
+                    <div class="border-4 border-black p-8 bg-black text-white shadow-brutal-brand">
+                        <div class="flex items-center gap-4 mb-4 border-b-4 border-white pb-4">
+                            <i data-lucide="briefcase" class="w-10 h-10 stroke-[3] text-brand"></i>
+                            <h4 class="text-3xl font-black uppercase text-brand">Pour les entreprises</h4>
+                        </div>
+                        <p class="text-lg font-medium">Inertie, silos, tensions latentes, burn‑out et perte de sens révèlent des dynamiques invisibles qu’il est temps de nommer et de transformer, dans un cadre sécurisé et professionnel.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pour qui ? -->
+    <section id="public" class="py-24 bg-brand text-black border-b-8 border-black">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-end mb-16 border-b-8 border-black pb-8">
+                <h2 class="text-6xl md:text-8xl font-black uppercase tracking-tighter">Pour<br>Qui ?</h2>
+                <i data-lucide="users" class="w-24 h-24 stroke-[2] hidden md:block"></i>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Ecoles -->
+                <div class="bg-white border-4 border-black shadow-brutal p-8 flex flex-col hover:-translate-y-2 transition-transform">
+                    <div class="bg-black text-brand w-16 h-16 flex items-center justify-center mb-6 border-2 border-black">
+                        <i data-lucide="graduation-cap" class="w-8 h-8 stroke-[3]"></i>
+                    </div>
+                    <h4 class="text-2xl font-black uppercase mb-6 border-b-2 border-black pb-2">Écoles d’ingénieurs & commerce</h4>
+                    <ul class="space-y-4 text-base font-medium flex-grow">
+                        <li class="flex items-start gap-3">
+                            <span class="text-xl leading-none mt-1">→</span>
+                            <span>Vous voulez préparer vos étudiants à un monde du travail bouleversé par l’IA, où l’intelligence relationnelle et la conscience de soi sont centrales.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-xl leading-none mt-1">→</span>
+                            <span>Vous cherchez des interventions qui parlent à des profils cartésiens, tout en ouvrant sur les dimensions humaines et systémiques des organisations.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-xl leading-none mt-1">→</span>
+                            <span>Vous souhaitez proposer des conférences/modules qui traitent de sens, de posture et d'émotions, sans discours ésotérique.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-xl leading-none mt-1">→</span>
+                            <span>Vous avez besoin de partenaires capables de dialoguer avec des équipes pédagogiques exigeantes et de s’inscrire dans un projet d’école.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Entreprises -->
+                <div class="bg-black text-white border-4 border-black shadow-brutal-white p-8 flex flex-col hover:-translate-y-2 transition-transform">
+                    <div class="bg-brand text-black w-16 h-16 flex items-center justify-center mb-6">
+                        <i data-lucide="building" class="w-8 h-8 stroke-[3]"></i>
+                    </div>
+                    <h4 class="text-2xl font-black uppercase mb-6 border-b-2 border-white pb-2 text-brand">Entreprises & Groupes</h4>
+                    <ul class="space-y-4 text-base font-medium flex-grow text-gray-300">
+                        <li class="flex items-start gap-3">
+                            <span class="text-brand text-xl leading-none mt-1">→</span>
+                            <span>Vous constatez des tensions, non‑dits, fatigue émotionnelle ou désengagement dans vos équipes, malgré des outils et process bien en place.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-brand text-xl leading-none mt-1">→</span>
+                            <span>Vos managers manquent de repères pour aborder les émotions, les conflits et les dynamiques de pouvoir dans un cadre serein et constructif.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-brand text-xl leading-none mt-1">→</span>
+                            <span>Vous cherchez des formats concrets pour “tomber les masques” au bon niveau, restaurer la confiance et fluidifier les relations au quotidien.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-brand text-xl leading-none mt-1">→</span>
+                            <span>Vous voulez aligner transformation technologique et transformation humaine, pour éviter que l’une ne sabote l’autre.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Dirigeants -->
+                <div class="bg-white border-4 border-black shadow-brutal p-8 flex flex-col hover:-translate-y-2 transition-transform">
+                    <div class="bg-black text-brand w-16 h-16 flex items-center justify-center mb-6 border-2 border-black">
+                        <i data-lucide="user-circle" class="w-8 h-8 stroke-[3]"></i>
+                    </div>
+                    <h4 class="text-2xl font-black uppercase mb-6 border-b-2 border-black pb-2">Dirigeants & Entrepreneurs</h4>
+                    <ul class="space-y-4 text-base font-medium flex-grow">
+                        <li class="flex items-start gap-3">
+                            <span class="text-xl leading-none mt-1">→</span>
+                            <span>Vous avez déjà “réussi” sur le plan business mais vous sentez que certains blocages personnels limitent votre leadership, vos décisions ou vos relations.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-xl leading-none mt-1">→</span>
+                            <span>Vous cherchez un espace exigeant et confidentiel pour travailler en profondeur sur vos émotions, vos schémas et votre posture de dirigeant.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-xl leading-none mt-1">→</span>
+                            <span>Vous souhaitez relier vos enjeux concrets (croissance, équipe) à un travail humain qui a du sens pour vous.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-xl leading-none mt-1">→</span>
+                            <span>Vous voulez être accompagné par quelqu’un qui comprend réellement l’entrepreneuriat, la systémie et les dimensions plus profondes de l’humain.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ce que nous proposons -->
+    <section id="offres" class="py-24 bg-black text-white border-b-8 border-brand">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-5xl md:text-7xl font-black uppercase tracking-tighter mb-16 inline-block bg-brand text-black px-4 py-2 transform -rotate-1 shadow-brutal-white">
+                Ce que nous proposons
+            </h2>
+
+            <div class="space-y-12">
+                <!-- Offre 1 -->
+                <div class="border-4 border-white p-6 md:p-10 relative bg-black hover:bg-zinc-900 transition-colors group">
+                    <div class="absolute -top-8 -right-4 text-8xl md:text-[10rem] font-black text-brand opacity-50 group-hover:opacity-100 transition-opacity pointer-events-none select-none">01</div>
+                    <div class="relative z-10 flex flex-col lg:flex-row gap-8">
+                        <div class="lg:w-1/3">
+                            <h4 class="text-3xl font-black uppercase mb-4 text-brand">Conférence / Masterclass</h4>
+                            <p class="font-bold text-xl italic mb-6">“De l’IA aux humains conscients augmentés : comprendre les organisations humaines de demain”</p>
+                            <div class="bg-white text-black p-4 font-bold border-2 border-white inline-block">
+                                <span class="uppercase text-sm tracking-widest block mb-1">Format</span>
+                                45 à 90 minutes. Adaptable "écoles" ou "entreprises".
+                            </div>
+                        </div>
+                        <div class="lg:w-2/3 space-y-6">
+                            <p class="text-xl font-medium border-l-4 border-brand pl-4">Une conférence interactive qui relie révolution technologique, systémie des organisations et développement de la conscience, dans un langage accessible aux publics les plus cartésiens.</p>
+                            <div class="grid md:grid-cols-2 gap-8 pt-4 border-t-2 border-white/20">
+                                <div>
+                                    <h5 class="text-brand font-black uppercase mb-2 flex items-center gap-2"><i data-lucide="target" class="w-5 h-5"></i> Objectif</h5>
+                                    <p class="font-medium">Ouvrir les perspectives, donner des repères sur les niveaux de conscience dans les organisations, montrer pourquoi émotions et dynamiques relationnelles sont devenues des compétences stratégiques.</p>
+                                </div>
+                                <div>
+                                    <h5 class="text-brand font-black uppercase mb-2 flex items-center gap-2"><i data-lucide="zap" class="w-5 h-5"></i> Bénéfices</h5>
+                                    <ul class="list-none space-y-2 font-medium">
+                                        <li>+ Compréhension claire des enjeux humains/IA.</li>
+                                        <li>+ Prise de conscience des “dynamiques invisibles”.</li>
+                                        <li>+ Inspiration pour repenser sa posture.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Offre 2 -->
+                <div class="border-4 border-white p-6 md:p-10 relative bg-black hover:bg-zinc-900 transition-colors group">
+                    <div class="absolute -top-8 -right-4 text-8xl md:text-[10rem] font-black text-brand opacity-50 group-hover:opacity-100 transition-opacity pointer-events-none select-none">02</div>
+                    <div class="relative z-10 flex flex-col lg:flex-row gap-8">
+                        <div class="lg:w-1/3">
+                            <h4 class="text-3xl font-black uppercase mb-4 text-brand">Ateliers d’équipe en entreprise</h4>
+                            <p class="font-bold text-xl italic mb-6">“Émotions, non‑dits et dynamique d’équipe”</p>
+                            <div class="bg-white text-black p-4 font-bold border-2 border-white inline-block">
+                                <span class="uppercase text-sm tracking-widest block mb-1">Format</span>
+                                Journée ou demi-journée (présentiel). Groupes limités.
+                            </div>
+                        </div>
+                        <div class="lg:w-2/3 space-y-6">
+                            <p class="text-xl font-medium border-l-4 border-brand pl-4">Un atelier expérientiel pour équipes et managers, visant à mettre en lumière et réguler les émotions, les non‑dits et les postures qui impactent la qualité relationnelle et la performance collective.</p>
+                            <div class="grid md:grid-cols-2 gap-8 pt-4 border-t-2 border-white/20">
+                                <div>
+                                    <h5 class="text-brand font-black uppercase mb-2 flex items-center gap-2"><i data-lucide="target" class="w-5 h-5"></i> Objectif</h5>
+                                    <p class="font-medium">Créer un espace sécurisé pour exprimer ce qui ne se dit pas, comprendre les mécanismes systémiques à l’œuvre et remettre du flux dans la relation.</p>
+                                </div>
+                                <div>
+                                    <h5 class="text-brand font-black uppercase mb-2 flex items-center gap-2"><i data-lucide="zap" class="w-5 h-5"></i> Bénéfices</h5>
+                                    <ul class="list-none space-y-2 font-medium">
+                                        <li>+ Meilleure communication et confiance.</li>
+                                        <li>+ Diminution des tensions latentes et clarification.</li>
+                                        <li>+ Managers plus à l’aise avec les émotions en cadre pro.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Offre 3 -->
+                <div class="border-4 border-brand p-6 md:p-10 relative bg-brand text-black hover:bg-[#bbf000] transition-colors group">
+                    <div class="absolute -top-8 -right-4 text-8xl md:text-[10rem] font-black text-black opacity-20 group-hover:opacity-40 transition-opacity pointer-events-none select-none">03</div>
+                    <div class="relative z-10 flex flex-col lg:flex-row gap-8">
+                        <div class="lg:w-1/3">
+                            <h4 class="text-3xl font-black uppercase mb-4 text-black">Parcours dirigeants</h4>
+                            <p class="font-bold text-xl italic mb-6">“Alignement humain & business”</p>
+                            <div class="bg-black text-brand p-4 font-bold border-2 border-black inline-block">
+                                <span class="uppercase text-sm tracking-widest block mb-1">Format</span>
+                                1 journée intensive + Suivi individuel sur plusieurs séances.
+                            </div>
+                        </div>
+                        <div class="lg:w-2/3 space-y-6">
+                            <p class="text-xl font-medium border-l-4 border-black pl-4">Un parcours sur‑mesure combinant journée immersive et accompagnement individuel pour relier blocages humains et enjeux stratégiques, sans jargon ni complaisance.</p>
+                            <div class="grid md:grid-cols-2 gap-8 pt-4 border-t-2 border-black/20">
+                                <div>
+                                    <h5 class="text-black font-black uppercase mb-2 flex items-center gap-2"><i data-lucide="target" class="w-5 h-5"></i> Objectif</h5>
+                                    <p class="font-medium">Offrir un espace profond pour travailler sur blessures, schémas récurrents, peurs ou loyautés invisibles, en lien direct avec ses décisions.</p>
+                                </div>
+                                <div>
+                                    <h5 class="text-black font-black uppercase mb-2 flex items-center gap-2"><i data-lucide="zap" class="w-5 h-5"></i> Bénéfices</h5>
+                                    <ul class="list-none space-y-2 font-medium">
+                                        <li>+ Décisions plus alignées et sereines.</li>
+                                        <li>+ Relation différente à l'équipe, clients, argent.</li>
+                                        <li>+ Capacité accrue à tenir sa place sans s'épuiser.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Approche & Méthode -->
+    <section class="py-24 bg-white text-black border-b-8 border-black overflow-hidden relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-16">
+                <div>
+                    <h2 class="text-6xl md:text-8xl font-black uppercase tracking-tighter mb-8 leading-none">Approche<br>& Méthode</h2>
+                    <div class="text-xl font-medium space-y-6 bg-black text-white p-8 border-4 border-black shadow-brutal-brand">
+                        <p>
+                            TIME FOR HUMAN repose sur une <span class="text-brand font-bold uppercase">approche systémique</span> : chaque personne fait partie de plusieurs systèmes (famille, entreprise, pays, culture) et porte des dynamiques, loyautés et traumas qui influencent sa façon d’être et d’agir.
+                        </p>
+                        <p>
+                            Nous travaillons sur les émotions comme forme d’énergie qui structure les comportements, les relations et, in fine, la performance des organisations.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="space-y-8">
+                    <div class="border-4 border-black p-6 shadow-brutal bg-white">
+                        <h4 class="font-black text-2xl uppercase border-b-4 border-black pb-2 mb-4">Concrètement :</h4>
+                        <ul class="space-y-4 font-medium text-lg">
+                            <li class="flex gap-4 items-start"><div class="w-4 h-4 bg-brand border-2 border-black mt-1.5 flex-shrink-0"></div><p>Lecture fine des postures, émotions et dynamiques de groupe.</p></li>
+                            <li class="flex gap-4 items-start"><div class="w-4 h-4 bg-brand border-2 border-black mt-1.5 flex-shrink-0"></div><p>Questionnement ciblé pour faire émerger le tu ou l'inconscient.</p></li>
+                            <li class="flex gap-4 items-start"><div class="w-4 h-4 bg-brand border-2 border-black mt-1.5 flex-shrink-0"></div><p>Mises en situation rendant visibles les dynamiques invisibles.</p></li>
+                            <li class="flex gap-4 items-start"><div class="w-4 h-4 bg-brand border-2 border-black mt-1.5 flex-shrink-0"></div><p>Cadre très clair : confidentialité, non-jugement, aucun forcing, respect du rythme.</p></li>
+                        </ul>
+                        <p class="mt-6 text-sm font-bold bg-black text-white p-3 uppercase tracking-wider">
+                            > Niveau de profondeur toujours adapté au contexte public.
+                        </p>
+                    </div>
+
+                    <div class="border-4 border-brand bg-black text-white p-6 shadow-brutal">
+                        <h4 class="font-black text-2xl uppercase border-b-4 border-brand pb-2 mb-4 text-brand">Une double culture rare</h4>
+                        <div class="space-y-4 font-medium text-lg">
+                            <div class="flex items-start gap-4">
+                                <i data-lucide="cpu" class="w-8 h-8 text-brand flex-shrink-0 mt-1"></i>
+                                <p>Formation et expérience d’ingénieur, avec une forte capacité de vulgarisation scientifique.</p>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <i data-lucide="heart" class="w-8 h-8 text-brand flex-shrink-0 mt-1"></i>
+                                <p>Années de pratique de la libération émotionnelle, de la systémie et de l’accompagnement de +300 pers.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Expérience & Crédibilité (Témoignages) -->
+    <section class="py-24 bg-brand text-black border-b-8 border-black">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row gap-8 justify-between items-end mb-16">
+                <h2 class="text-6xl md:text-8xl font-black uppercase tracking-tighter leading-none">Terrain <br>& Retours</h2>
+                <div class="max-w-md text-lg font-bold border-l-4 border-black pl-4">
+                    Plus de 300 personnes accompagnées en profondeur (20 à 75 ans). 15 à 20 conférences animées auprès de publics exigeants.
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+                <!-- Quote 1 -->
+                <div class="bg-black text-white p-8 border-4 border-black shadow-brutal-white flex flex-col">
+                    <div class="text-brand text-7xl font-serif leading-none h-10">"</div>
+                    <p class="font-medium text-lg flex-grow mb-8">
+                        Ancien militaire reconverti en indépendant, je tournais en rond depuis des années sur la relation avec ma famille. En quelques séances, j’ai débloqué quelque chose de décisif, qui a aussi transformé ma façon de travailler et d’entreprendre.
+                    </p>
+                    <div class="border-t-2 border-white/30 pt-4 font-mono text-sm uppercase text-brand">
+                        > Anonymisé // Indépendant
+                    </div>
+                </div>
+
+                <!-- Quote 2 -->
+                <div class="bg-white text-black p-8 border-4 border-black shadow-brutal flex flex-col">
+                    <div class="text-black text-7xl font-serif leading-none h-10">"</div>
+                    <p class="font-medium text-lg flex-grow mb-8">
+                        Pour notre groupe d’entrepreneurs, l’atelier a mis des mots sur ce que chacun ressentait sans oser le dire. On est sortis plus alignés, avec une compréhension nouvelle de nos peurs et de nos forces.
+                    </p>
+                    <div class="border-t-2 border-black/30 pt-4 font-mono text-sm uppercase font-bold">
+                        > Anonymisé // Grp. Entrepreneurs
+                    </div>
+                </div>
+
+                <!-- Quote 3 -->
+                <div class="bg-black text-white p-8 border-4 border-black shadow-brutal-white flex flex-col">
+                    <div class="text-brand text-7xl font-serif leading-none h-10">"</div>
+                    <p class="font-medium text-lg flex-grow mb-8">
+                        En tant que dirigeant, je pensais venir pour un sujet business. Je suis reparti avec une autre vision de mon rôle, de mes responsabilités et de la manière dont mes propres blessures impactaient mon équipe.
+                    </p>
+                    <div class="border-t-2 border-white/30 pt-4 font-mono text-sm uppercase text-brand">
+                        > Anonymisé // Dirigeant
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Qui est derrière -->
+    <section class="py-24 bg-black text-white border-b-8 border-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-5">
+                    <h2 class="text-6xl md:text-8xl font-black uppercase tracking-tighter mb-8 leading-none">Qui est<br>derrière<br><span class="text-brand">TFH ?</span></h2>
+                    <div class="w-full aspect-square bg-zinc-900 border-4 border-brand flex items-center justify-center relative overflow-hidden group shadow-brutal-brand">
+                        <!-- Placeholder visuel brutaliste pour la photo du fondateur -->
+                        <div class="absolute inset-0 bg-brand/10"></div>
+                        <i data-lucide="scan-face" class="w-32 h-32 text-brand stroke-[1]"></i>
+                        <div class="absolute bottom-4 left-4 font-mono text-brand text-sm">> PROFIL_FONDATEUR.EXE</div>
+                    </div>
+                </div>
+                
+                <div class="lg:col-span-7 space-y-8">
+                    <div class="text-xl font-medium leading-relaxed bg-zinc-900 p-8 border-4 border-white shadow-brutal-brand">
+                        <p class="mb-4">
+                            TIME FOR HUMAN est porté par un ancien ingénieur, passé par l’entrepreneuriat, qui a choisi de consacrer son activité à la compréhension des systèmes humains, des émotions et des niveaux de conscience.
+                        </p>
+                        <p>
+                            Après avoir accompagné plus de 300 personnes en individuel et en groupe, il a développé une expertise fine de la libération émotionnelle et de la systémie appliquées aux trajectoires de vie, aux organisations et aux entrepreneurs.
+                        </p>
+                    </div>
+
+                    <div class="grid sm:grid-cols-2 gap-6 font-mono text-sm">
+                        <div class="border-2 border-brand p-4 hover:bg-brand hover:text-black transition-colors">
+                            <span class="font-bold text-brand block mb-2">> COMPÉTENCE_01</span>
+                            Parler le langage des ingénieurs, décideurs, étudiants et dirigeants.
+                        </div>
+                        <div class="border-2 border-brand p-4 hover:bg-brand hover:text-black transition-colors">
+                            <span class="font-bold text-brand block mb-2">> COMPÉTENCE_02</span>
+                            Vulgariser des sujets complexes (physique quantique, métaphysique) sans jargon.
+                        </div>
+                        <div class="border-2 border-brand p-4 sm:col-span-2 hover:bg-brand hover:text-black transition-colors">
+                            <span class="font-bold text-brand block mb-2">> COMPÉTENCE_03</span>
+                            Proposer un accompagnement exigeant, profondément humain et adapté au monde corpo.
+                        </div>
+                    </div>
+
+                    <div class="bg-white text-black p-6 border-4 border-white">
+                        <h4 class="font-black uppercase text-xl mb-2">Vision Future</h4>
+                        <p class="font-medium italic">TIME FOR HUMAN a aussi vocation à devenir, progressivement, un collectif d’intervenants alignés partageant la même exigence de sérieux, d’éthique et de profondeur, pour toucher davantage d’écoles, d’entreprises et de territoires.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comment travailler ensemble (Processus & Contact) -->
+    <section id="contact" class="py-24 bg-white text-black">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-6xl md:text-8xl font-black uppercase tracking-tighter mb-4 text-center">Processus</h2>
+            <p class="text-center font-bold text-xl mb-16 uppercase tracking-widest border-b-4 border-black pb-4 max-w-2xl mx-auto">Collaborations simples, claires et adaptées.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-24">
+                <!-- Step 1 -->
+                <div class="border-4 border-black bg-brand p-6 shadow-brutal relative pt-12">
+                    <div class="absolute -top-6 -left-4 w-12 h-12 bg-black text-brand font-black text-2xl flex items-center justify-center border-4 border-brand">1</div>
+                    <h4 class="font-black uppercase text-xl mb-3">Appel de cadrage</h4>
+                    <p class="font-medium text-sm">Vous nous présentez votre contexte, vos enjeux humains, cibles et contraintes. Nous évaluons ensemble la pertinence d’un format.</p>
+                </div>
+                <!-- Step 2 -->
+                <div class="border-4 border-black bg-white p-6 shadow-brutal relative pt-12">
+                    <div class="absolute -top-6 -left-4 w-12 h-12 bg-black text-white font-black text-2xl flex items-center justify-center border-4 border-black">2</div>
+                    <h4 class="font-black uppercase text-xl mb-3">Proposition</h4>
+                    <p class="font-medium text-sm">Format adapté sur-mesure (durée, contenu, logistique) + devis clair. Objectifs définis en amont.</p>
+                </div>
+                <!-- Step 3 -->
+                <div class="border-4 border-black bg-white p-6 shadow-brutal relative pt-12">
+                    <div class="absolute -top-6 -left-4 w-12 h-12 bg-black text-white font-black text-2xl flex items-center justify-center border-4 border-black">3</div>
+                    <h4 class="font-black uppercase text-xl mb-3">Intervention</h4>
+                    <p class="font-medium text-sm">Nous intervenons dans le cadre défini, puis débriefons. Itération possible pour un déploiement élargi.</p>
+                </div>
+                <!-- Step 4 -->
+                <div class="border-4 border-black bg-black text-white p-6 shadow-brutal-brand relative pt-12">
+                    <div class="absolute -top-6 -left-4 w-12 h-12 bg-brand text-black font-black text-2xl flex items-center justify-center border-4 border-black">4</div>
+                    <h4 class="font-black uppercase text-xl mb-3 text-brand">Action</h4>
+                    <p class="font-medium text-sm mb-4">Remplir un formulaire (structure, besoin, délai) ou nous écrire directement par mail.</p>
+                </div>
+            </div>
+
+            <!-- Block d'appel à l'action massif -->
+            <div class="bg-black text-brand border-8 border-brand p-8 md:p-16 text-center shadow-brutal">
+                <h3 class="text-4xl md:text-6xl font-black uppercase mb-8">Prêt à transformer <br>les dynamiques ?</h3>
+                <a href="mailto:cyril@timeforhuman.com" class="inline-block bg-brand text-black font-black text-2xl md:text-4xl uppercase px-8 py-6 border-4 border-brand hover:bg-black hover:text-brand transition-colors">
+                    cyril@timeforhuman.com
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white py-12 border-t-8 border-brand">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-8 border-b-4 border-white/20 pb-8 mb-8">
+                <div>
+                    <div class="flex items-center gap-3 mb-2">
+                        <i data-lucide="infinity" class="w-8 h-8 text-brand stroke-[3]"></i>
+                        <span class="font-black text-3xl tracking-tighter uppercase">TIME FOR HUMAN</span>
+                    </div>
+                    <p class="font-mono text-brand text-sm uppercase">> Accompagnement écoles, entreprises, dirigeants.</p>
+                </div>
+                
+                <a href="#" class="flex items-center gap-3 bg-white text-black px-6 py-3 font-bold uppercase border-2 border-white hover:bg-black hover:text-white transition-colors">
+                    <i data-lucide="linkedin" class="w-5 h-5"></i>
+                    Suivre sur LinkedIn
+                </a>
+            </div>
+            
+            <div class="flex flex-col md:flex-row justify-between items-center font-mono text-xs text-gray-400 gap-4 uppercase">
+                <p>Basé en France. Interventions France & Europe (Présentiel / Distanciel).</p>
+                <p>&copy; 2024 TIME FOR HUMAN. TOUS DROITS RÉSERVÉS.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialisation des icônes
+        lucide.createIcons();
+    </script>
+</body>
+</html>

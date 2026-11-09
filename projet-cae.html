@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>e-kigai | Notre Mission pour le Territoire</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.29.7/babel.min.js"></script>
+
+    <!-- Google Fonts: Space Grotesk (Brutal) & Gochi Hand (Manuscrit) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --cream: #ffffef;
+            --dark: #3b3b3b;
+            --green: #00bf63;
+            --paper-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+        }
+
+        body {
+            background-color: var(--cream);
+            color: var(--dark);
+            font-family: 'Space Grotesk', sans-serif;
+            background-image: var(--paper-grain);
+            overflow-x: hidden;
+            cursor: crosshair;
+        }
+
+        h1, h2, h3, .brutal-font {
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: -0.04em;
+        }
+
+        .hand-font {
+            font-family: 'Gochi Hand', cursive;
+        }
+
+        .torn-paper-top {
+            clip-path: polygon(0% 10px, 5% 0px, 10% 12px, 15% 2px, 20% 10px, 25% 0px, 30% 12px, 35% 2px, 40% 10px, 45% 0px, 50% 12px, 55% 2px, 60% 10px, 65% 0px, 70% 12px, 75% 2px, 80% 10px, 85% 0px, 90% 12px, 95% 2px, 100% 10px, 100% 100%, 0% 100%);
+        }
+
+        .torn-paper-bottom {
+            clip-path: polygon(0% 0%, 100% 0%, 100% calc(100% - 10px), 95% 100%, 90% calc(100% - 12px), 85% 100%, 80% calc(100% - 10px), 75% 100%, 70% calc(100% - 12px), 65% 100%, 60% calc(100% - 10px), 55% 100%, 50% calc(100% - 12px), 45% 100%, 40% calc(100% - 10px), 35% 100%, 30% calc(100% - 12px), 25% 100%, 20% calc(100% - 10px), 15% 100%, 10% calc(100% - 12px), 5% 100%, 0% calc(100% - 10px));
+        }
+
+        .sticker {
+            background: white;
+            border: 2px solid var(--dark);
+            box-shadow: 4px 4px 0px var(--dark);
+            transition: all 0.2s ease;
+        }
+        .sticker:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px var(--green);
+        }
+
+        .organic-blob {
+            border-radius: 64% 36% 29% 71% / 58% 38% 62% 42%;
+            animation: morph 8s ease-in-out infinite;
+        }
+        @keyframes morph {
+            0% { border-radius: 64% 36% 29% 71% / 58% 38% 62% 42%; }
+            50% { border-radius: 36% 64% 71% 29% / 42% 62% 38% 58%; }
+            100% { border-radius: 64% 36% 29% 71% / 58% 38% 62% 42%; }
+        }
+
+        .marker-highlight {
+            background: linear-gradient(120deg, rgba(0,191,99,0) 0%, rgba(0,191,99,0.4) 100%);
+            background-repeat: no-repeat;
+            background-size: 100% 40%;
+            background-position: 0 88%;
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(2deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        .btn-wobble:hover {
+            animation: wobble 0.5s ease-in-out;
+        }
+        @keyframes wobble {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-3deg); }
+            75% { transform: rotate(3deg); }
+        }
+
+        .dashed-arrow {
+            stroke-dasharray: 8 4;
+            animation: dash 20s linear infinite;
+        }
+        @keyframes dash {
+            to { stroke-dashoffset: -100; }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const ScribbleIcon = ({ path, className }) => (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className} style={{overflow: 'visible'}}>
+                {path}
+            </svg>
+        );
+
+        const Icons = {
+            Heart: <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />,
+            Users: <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />,
+            Target: <g><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></g>,
+            Briefcase: <path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2ZM8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />,
+            Shield: <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />,
+            Rocket: <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09zM12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11l-3-3z" />,
+            Sparkles: <path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3zM19 16l1 3 3 1-3 1-1 3-1-3-3-1 3-1 1-3z" />,
+            Arrow: <path d="M17 8l4 4m0 0l-4 4m4-4H3" />,
+            CheckCircle: <g><circle cx="12" cy="12" r="10"></circle><path d="M9 12l2 2 4-4"></path></g>,
+            MapPin: <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />,
+            TrendingUp: <path d="M23 6l-9.5 9.5-5-5L1 18M17 6h6v6" />,
+        };
+
+        const App = () => {
+            const [isMenuOpen, setIsMenuOpen] = useState(false);
+            const [scrollY, setScrollY] = useState(0);
+
+            useEffect(() => {
+                const handleScroll = () => setScrollY(window.scrollY);
+                window.addEventListener('scroll', handleScroll);
+                return () => window.removeEventListener('scroll', handleScroll);
+            }, []);
+
+            return (
+                <div className="min-h-screen relative overflow-hidden">
+                    
+                    {/* --- DECORATIVE ELEMENTS --- */}
+                    <div className="fixed top-20 left-10 w-32 h-32 bg-green-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 pointer-events-none animate-pulse"></div>
+                    <div className="fixed bottom-20 right-10 w-48 h-48 bg-yellow-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 pointer-events-none animate-pulse" style={{animationDelay: '1s'}}></div>
+
+                    {/* --- NAV: STICKER STYLE --- */}
+                    <nav className="fixed w-full z-50 top-4 px-4 pointer-events-none">
+                        <div className="max-w-7xl mx-auto flex justify-between items-center">
+                            <a href="index.html" className="sticker bg-white px-3 py-1 rotate-[-2deg] pointer-events-auto cursor-pointer transform hover:rotate-0 transition-transform">
+                                <img src="logo-ekigai.png" alt="e-kigai logo" className="h-10 w-auto object-contain" />
+                            </a>
+
+                            <div className="hidden md:flex gap-4 pointer-events-auto items-center">
+                                <a href="#mission" className="relative group">
+                                    <div className="bg-white/80 backdrop-blur-sm px-4 py-1 border border-black transform transition-transform group-hover:-translate-y-1 rotate-[1deg]">
+                                        <span className="font-medium font-mono text-sm">Notre Mission</span>
+                                    </div>
+                                    <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-4 bg-white/40 rotate-2"></div>
+                                </a>
+                                <a href="#valeur" className="relative group">
+                                    <div className="bg-white/80 backdrop-blur-sm px-4 py-1 border border-black transform transition-transform group-hover:-translate-y-1 rotate-[-1deg]">
+                                        <span className="font-medium font-mono text-sm">Notre Valeur</span>
+                                    </div>
+                                    <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-4 bg-white/40 rotate-2"></div>
+                                </a>
+                                <a href="#publics" className="relative group">
+                                    <div className="bg-white/80 backdrop-blur-sm px-4 py-1 border border-black transform transition-transform group-hover:-translate-y-1 rotate-[1deg]">
+                                        <span className="font-medium font-mono text-sm">Qui accompagnons-nous ?</span>
+                                    </div>
+                                    <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-4 bg-white/40 rotate-2"></div>
+                                </a>
+                                <a href="#parcours" className="relative group">
+                                    <div className="bg-white/80 backdrop-blur-sm px-4 py-1 border border-black transform transition-transform group-hover:-translate-y-1 rotate-[-1deg]">
+                                        <span className="font-medium font-mono text-sm">Le Parcours</span>
+                                    </div>
+                                    <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-4 bg-white/40 rotate-2"></div>
+                                </a>
+                                
+                                <a href="https://mte.typeform.com/e-kigai" className="relative group ml-4 hover:scale-105 transition-transform duration-300">
+                                    <div className="bg-green-400 backdrop-blur-sm px-4 py-1 border border-black transform rotate-[2deg] shadow-[2px_2px_0px_rgba(0,0,0,1)]">
+                                        <span className="font-bold font-mono text-sm">Rejoindre e-kigai</span>
+                                    </div>
+                                    <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-4 bg-white/40 rotate-2"></div>
+                                </a>
+                            </div>
+
+                            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden sticker p-2 pointer-events-auto bg-green-400 border-black">
+                                <div className="space-y-1">
+                                    <div className="w-6 h-0.5 bg-black"></div>
+                                    <div className="w-6 h-0.5 bg-black"></div>
+                                    <div className="w-6 h-0.5 bg-black"></div>
+                                </div>
+                            </button>
+                        </div>
+
+                        {isMenuOpen && (
+                            <div className="absolute top-full left-0 w-full mt-2 px-4 pointer-events-auto md:hidden">
+                                <div className="bg-white border-2 border-black p-4 shadow-[8px_8px_0px_rgba(0,0,0,1)] flex flex-col gap-4 transform rotate-1">
+                                    <a href="#mission" className="font-bold font-mono hover:text-green-600 border-b border-gray-100 pb-2">Notre Mission</a>
+                                    <a href="#valeur" className="font-bold font-mono hover:text-green-600 border-b border-gray-100 pb-2">Notre Valeur</a>
+                                    <a href="#publics" className="font-bold font-mono hover:text-green-600 border-b border-gray-100 pb-2">Qui accompagnons-nous ?</a>
+                                    <a href="#parcours" className="font-bold font-mono hover:text-green-600 border-b border-gray-100 pb-2">Le Parcours</a>
+                                    <a href="https://mte.typeform.com/e-kigai" className="bg-green-400 border border-black p-3 text-center font-bold font-mono shadow-[2px_2px_0px_black] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all">
+                                        Rejoindre e-kigai ⚡️
+                                    </a>
+                                </div>
+                            </div>
+                        )}
+                    </nav>
+
+                    <main>
+                        {/* --- HERO --- */}
+                        <section className="min-h-screen flex items-center justify-center pt-24 pb-12 relative">
+                            <div className="absolute inset-0 z-0 opacity-10 pointer-events-none" 
+                                 style={{backgroundImage: 'linear-gradient(#3b3b3b 1px, transparent 1px), linear-gradient(90deg, #3b3b3b 1px, transparent 1px)', backgroundSize: '40px 40px'}}>
+                            </div>
+                            
+                            <div className="max-w-7xl mx-auto px-4 grid lg:grid-cols-12 gap-12 items-center relative z-10 w-full">
+                                <div className="lg:col-span-7 space-y-8 relative">
+                                    <div className="inline-block transform -rotate-3 sticker bg-yellow-200 px-4 py-1 rounded-full border-black">
+                                        <span className="hand-font font-bold text-lg">CAE | Nouvelle-Aquitaine</span>
+                                    </div>
+                                    
+                                    <h1 className="text-6xl md:text-8xl font-bold leading-[0.9] text-black mix-blend-darken">
+                                        ENTREPRENDRE<br/>
+                                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-green-400 italic font-serif">ENSEMBLE</span><br/>
+                                        SUR LE TERRITOIRE
+                                    </h1>
+                                    
+                                    <p className="text-xl md:text-2xl font-mono opacity-80 max-w-2xl bg-white/60 p-4 border-l-4 border-green-500 backdrop-blur-sm transform rotate-1">
+                                        e-kigai accompagne les porteurs de projets vers <span className="font-bold">l'entrepreneuriat salarié coopératif</span>, accessible à tous et ancré localement.
+                                    </p>
+                                    
+                                    <div className="flex flex-col sm:flex-row gap-6 pt-6">
+                                        <a href="#mission" className="sticker bg-black text-white px-8 py-4 text-xl font-bold rounded-none hover:bg-green-600 hover:text-black hover:border-black transition-colors btn-wobble flex items-center gap-3">
+                                            DÉCOUVRIR NOTRE MISSION <ScribbleIcon path={Icons.Arrow} className="w-6 h-6" />
+                                        </a>
+                                        <a href="https://mte.typeform.com/e-kigai" className="hand-font text-xl underline decoration-wavy decoration-green-500 hover:text-green-600 self-center">
+                                            Je veux rejoindre →
+                                        </a>
+                                    </div>
+                                </div>
+                                
+                                <div className="lg:col-span-5 relative h-[500px] hidden lg:block">
+                                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-0 organic-blob w-72 h-72 bg-purple-200 mix-blend-multiply opacity-50 blur-xl"></div>
+                                    
+                                    <div className="absolute top-10 right-10 w-64 h-80 bg-white border-2 border-black p-2 transform rotate-3 shadow-[8px_8px_0px_rgba(0,0,0,1)] floating">
+                                        <div className="w-full h-4/5 bg-gray-200 overflow-hidden relative border border-black mb-2">
+                                            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-green-100 to-blue-100 font-mono text-4xl">🤝</div>
+                                        </div>
+                                        <div className="hand-font text-center font-bold text-xl">Collectif & Territoire</div>
+                                        <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-24 h-8 bg-yellow-200/80 rotate-[-2deg]"></div>
+                                    </div>
+                                    
+                                    <div className="absolute bottom-20 left-0 w-48 bg-green-400 border-2 border-black p-4 transform -rotate-6 shadow-[4px_4px_0px_#000] z-20 floating" style={{animationDelay: '-2s'}}>
+                                        <div className="font-mono text-xs mb-2">MODÈLE</div>
+                                        <div className="font-bold text-3xl leading-none">SCOP</div>
+                                        <div className="text-xs mt-1 border-t border-black pt-1">Entrepreneur-Salarié</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* --- SECTION: Notre Mission (4 piliers) --- */}
+                        <section id="mission" className="py-24 px-4 bg-white relative">
+                            <div className="max-w-7xl mx-auto">
+                                <div className="text-center mb-16">
+                                    <div className="inline-block sticker bg-green-400 px-6 py-2 rotate-[-2deg] mb-6">
+                                        <span className="hand-font font-bold text-2xl">🎯 Nos 4 Piliers</span>
+                                    </div>
+                                    <h2 className="text-5xl md:text-7xl font-bold uppercase brutal-font">
+                                        <span className="marker-highlight">Notre Mission Territoriale</span>
+                                    </h2>
+                                    <p className="text-xl font-mono mt-6 max-w-3xl mx-auto opacity-80">
+                                        e-kigai s'engage au quotidien pour rendre l'entrepreneuriat accessible, inclusif et ancré dans la dynamique locale de Nouvelle-Aquitaine.
+                                    </p>
+                                </div>
+                                
+                                <div className="grid md:grid-cols-2 gap-8">
+                                    {/* Pilier 1 */}
+                                    <div className="sticker bg-blue-50 p-8 transform -rotate-1 hover:rotate-0 transition-transform relative">
+                                        <div className="absolute -top-4 -left-4 w-16 h-16 bg-blue-400 rounded-full border-4 border-black flex items-center justify-center text-3xl">
+                                            <ScribbleIcon path={Icons.Target} className="w-8 h-8" />
+                                        </div>
+                                        <h3 className="text-3xl font-bold mt-8 mb-4 brutal-font uppercase">Égalité d'Accès</h3>
+                                        <p className="font-mono text-lg leading-relaxed">
+                                            Nous garantissons un <strong>accès équitable</strong> à l'accompagnement entrepreneurial, sans discrimination ni barrière financière. Chaque porteur de projet, quel que soit son parcours, mérite sa chance.
+                                        </p>
+                                        <div className="mt-4 flex flex-wrap gap-2">
+                                            <span className="bg-white border border-black px-3 py-1 text-sm font-mono">Permanences délocalisées</span>
+                                            <span className="bg-white border border-black px-3 py-1 text-sm font-mono">Gratuité totale</span>
+                                            <span className="bg-white border border-black px-3 py-1 text-sm font-mono">Sans sélection</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Pilier 2 */}
+                                    <div className="sticker bg-yellow-50 p-8 transform rotate-1 hover:rotate-0 transition-transform relative">
+                                        <div className="absolute -top-4 -left-4 w-16 h-16 bg-yellow-400 rounded-full border-4 border-black flex items-center justify-center text-3xl">
+                                            <ScribbleIcon path={Icons.Heart} className="w-8 h-8" />
+                                        </div>
+                                        <h3 className="text-3xl font-bold mt-8 mb-4 brutal-font uppercase">Publics Éloignés</h3>
+                                        <p className="font-mono text-lg leading-relaxed">
+                                            Nous accompagnons <strong>prioritairement</strong> les personnes éloignées de l'emploi ou des dispositifs classiques : demandeurs d'emploi longue durée, bénéficiaires RSA, jeunes, seniors, QPV...
+                                        </p>
+                                        <div className="mt-4 flex flex-wrap gap-2">
+                                            <span className="bg-white border border-black px-3 py-1 text-sm font-mono">Suivi renforcé</span>
+                                            <span className="bg-white border border-black px-3 py-1 text-sm font-mono">Parrainage</span>
+                                            <span className="bg-white border border-black px-3 py-1 text-sm font-mono">Levée de freins</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Pilier 3 */}
+                                    <div className="sticker bg-green-50 p-8 transform -rotate-1 hover:rotate-0 transition-transform relative">
+                                        <div className="absolute -top-4 -left-4 w-16 h-16 bg-green-400 rounded-full border-4 border-black flex items-center justify-center text-3xl">
+                                            <ScribbleIcon path={Icons.Shield} className="w-8 h-8" />
+                                        </div>
+                                        <h3 className="text-3xl font-bold mt-8 mb-4 brutal-font uppercase">Statut Coopératif</h3>
+                                        <p className="font-mono text-lg leading-relaxed">
+                                            Le <strong>modèle SCOP</strong> offre un cadre unique : entrepreneuriat autonome + protection sociale du salariat + gouvernance démocratique. Une alternative aux statuts classiques.
+                                        </p>
+                                        <div className="mt-4 flex flex-wrap gap-2">
+                                            <span className="bg-white border border-black px-3 py-1 text-sm font-mono">CESA (CDI)</span>
+                                            <span className="bg-white border border-black px-3 py-1 text-sm font-mono">Sécurité sociale</span>
+                                            <span className="bg-white border border-black px-3 py-1 text-sm font-mono">Participation</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Pilier 4 */}
+                                    <div className="sticker bg-purple-50 p-8 transform rotate-1 hover:rotate-0 transition-transform relative">
+                                        <div className="absolute -top-4 -left-4 w-16 h-16 bg-purple-400 rounded-full border-4 border-black flex items-center justify-center text-3xl">
+                                            <ScribbleIcon path={Icons.MapPin} className="w-8 h-8" />
+                                        </div>
+                                        <h3 className="text-3xl font-bold mt-8 mb-4 brutal-font uppercase">Animation Territoriale</h3>
+                                        <p className="font-mono text-lg leading-relaxed">
+                                            Nous <strong>sensibilisons</strong> les acteurs locaux, animons le territoire et contribuons au <strong>développement économique</strong> de Nouvelle-Aquitaine par l'emploi local et durable.
+                                        </p>
+                                        <div className="mt-4 flex flex-wrap gap-2">
+                                            <span className="bg-white border border-black px-3 py-1 text-sm font-mono">Événements publics</span>
+                                            <span className="bg-white border border-black px-3 py-1 text-sm font-mono">Partenariats</span>
+                                            <span className="bg-white border border-black px-3 py-1 text-sm font-mono">Communication</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* --- SECTION: Valeur Ajoutée --- */}
+                        <section id="valeur" className="py-24 px-4 bg-[#3b3b3b] text-[#ffffef] relative overflow-hidden transform rotate-1 my-12 mx-auto max-w-7xl border-4 border-black shadow-[15px_15px_0px_rgba(0,0,0,1)] rounded-[40px]">
+                            <div className="max-w-6xl mx-auto relative z-10">
+                                <h2 className="text-5xl md:text-7xl font-bold mb-12 uppercase brutal-font text-center text-white">
+                                    <span className="marker-highlight bg-gradient-to-r from-green-400/40 to-yellow-400/40">Notre Valeur pour le Territoire</span>
+                                </h2>
+                                
+                                <div className="grid md:grid-cols-3 gap-8 mb-12">
+                                    <div className="bg-white/10 backdrop-blur-sm border-2 border-white/20 p-6 transform hover:scale-105 transition-transform">
+                                        <div className="text-5xl mb-4">💼</div>
+                                        <h3 className="text-2xl font-bold mb-3 text-green-400">Emploi Local Durable</h3>
+                                        <p className="font-mono text-sm leading-relaxed">
+                                            Chaque entrepreneur-salarié crée un <strong>emploi stable</strong> en CDI sur le territoire, avec protection sociale complète et droits au chômage.
+                                        </p>
+                                    </div>
+
+                                    <div className="bg-white/10 backdrop-blur-sm border-2 border-white/20 p-6 transform hover:scale-105 transition-transform">
+                                        <div className="text-5xl mb-4">🌱</div>
+                                        <h3 className="text-2xl font-bold mb-3 text-yellow-400">Inclusion Économique</h3>
+                                        <p className="font-mono text-sm leading-relaxed">
+                                            Nous donnons une <strong>seconde chance</strong> aux personnes éloignées du marché du travail via l'entrepreneuriat accompagné et sécurisé.
+                                        </p>
+                                    </div>
+
+                                    <div className="bg-white/10 backdrop-blur-sm border-2 border-white/20 p-6 transform hover:scale-105 transition-transform">
+                                        <div className="text-5xl mb-4">🤝</div>
+                                        <h3 className="text-2xl font-bold mb-3 text-blue-400">Dynamique Collective</h3>
+                                        <p className="font-mono text-sm leading-relaxed">
+                                            Notre modèle coopératif favorise <strong>l'entraide</strong>, le partage de compétences et la création de valeur partagée entre entrepreneurs.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="bg-white text-black p-8 border-4 border-black transform -rotate-1 relative">
+                                    <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-green-400 px-6 py-2 border-2 border-black rotate-2">
+                                        <span className="hand-font font-bold text-xl">🎯 Impact Concret</span>
+                                    </div>
+                                    <div className="grid md:grid-cols-4 gap-6 mt-6 text-center">
+                                        <div>
+                                            <div className="text-5xl font-bold text-green-600 mb-2">50+</div>
+                                            <div className="font-mono text-sm">Entrepreneurs actifs</div>
+                                        </div>
+                                        <div>
+                                            <div className="text-5xl font-bold text-green-600 mb-2">40%</div>
+                                            <div className="font-mono text-sm">Publics éloignés</div>
+                                        </div>
+                                        <div>
+                                            <div className="text-5xl font-bold text-green-600 mb-2">100%</div>
+                                            <div className="font-mono text-sm">Protection sociale</div>
+                                        </div>
+                                        <div>
+                                            <div className="text-5xl font-bold text-green-600 mb-2">12+</div>
+                                            <div className="font-mono text-sm">Événements/an</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* --- SECTION: Publics Accompagnés --- */}
+                        <section id="publics" className="py-24 px-4 bg-white relative">
+                            <div className="max-w-7xl mx-auto">
+                                <div className="text-center mb-16">
+                                    <h2 className="text-5xl md:text-7xl font-bold uppercase brutal-font mb-6">
+                                        <span className="marker-highlight">Qui Accompagnons-Nous ?</span>
+                                    </h2>
+                                    <p className="text-xl font-mono max-w-3xl mx-auto">
+                                        e-kigai ouvre ses portes à <strong>tous les porteurs de projets</strong>, avec une attention particulière pour les publics éloignés des dispositifs classiques.
+                                    </p>
+                                </div>
+
+                                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                    {/* Public 1 */}
+                                    <div className="sticker bg-blue-50 p-6 relative overflow-hidden">
+                                        <div className="absolute top-0 right-0 text-8xl opacity-10">👥</div>
+                                        <h3 className="text-xl font-bold mb-3 brutal-font relative z-10">Demandeurs d'Emploi</h3>
+                                        <p className="font-mono text-sm mb-4 relative z-10">
+                                            Longue durée ou en reconversion, vous avez un projet entrepreneurial et cherchez un cadre sécurisé pour le tester.
+                                        </p>
+                                        <div className="text-xs bg-white border border-black px-2 py-1 inline-block font-mono relative z-10">Accompagnement renforcé</div>
+                                    </div>
+
+                                    {/* Public 2 */}
+                                    <div className="sticker bg-yellow-50 p-6 relative overflow-hidden">
+                                        <div className="absolute top-0 right-0 text-8xl opacity-10">🌟</div>
+                                        <h3 className="text-xl font-bold mb-3 brutal-font relative z-10">Bénéficiaires RSA/ASS</h3>
+                                        <p className="font-mono text-sm mb-4 relative z-10">
+                                            Porteurs de projets avec minima sociaux : nous levons les freins et vous accompagnons vers l'autonomie économique.
+                                        </p>
+                                        <div className="text-xs bg-white border border-black px-2 py-1 inline-block font-mono relative z-10">Soutien psychosocial</div>
+                                    </div>
+
+                                    {/* Public 3 */}
+                                    <div className="sticker bg-green-50 p-6 relative overflow-hidden">
+                                        <div className="absolute top-0 right-0 text-8xl opacity-10">🚀</div>
+                                        <h3 className="text-xl font-bold mb-3 brutal-font relative z-10">Jeunes Sans Qualification</h3>
+                                        <p className="font-mono text-sm mb-4 relative z-10">
+                                            Vous avez moins de 26 ans et voulez développer une compétence entrepreneuriale ? On vous forme et on vous guide.
+                                        </p>
+                                        <div className="text-xs bg-white border border-black px-2 py-1 inline-block font-mono relative z-10">Formation intégrée</div>
+                                    </div>
+
+                                    {/* Public 4 */}
+                                    <div className="sticker bg-purple-50 p-6 relative overflow-hidden">
+                                        <div className="absolute top-0 right-0 text-8xl opacity-10">⏳</div>
+                                        <h3 className="text-xl font-bold mb-3 brutal-font relative z-10">Seniors en Reconversion</h3>
+                                        <p className="font-mono text-sm mb-4 relative z-10">
+                                            Valorisez votre expérience dans un nouveau projet entrepreneurial tout en conservant vos droits sociaux.
+                                        </p>
+                                        <div className="text-xs bg-white border border-black px-2 py-1 inline-block font-mono relative z-10">Droits préservés</div>
+                                    </div>
+
+                                    {/* Public 5 */}
+                                    <div className="sticker bg-pink-50 p-6 relative overflow-hidden">
+                                        <div className="absolute top-0 right-0 text-8xl opacity-10">♿</div>
+                                        <h3 className="text-xl font-bold mb-3 brutal-font relative z-10">Personnes en Situation de Handicap</h3>
+                                        <p className="font-mono text-sm mb-4 relative z-10">
+                                            Nous adaptons l'accompagnement à vos besoins spécifiques pour rendre votre projet entrepreneurial accessible.
+                                        </p>
+                                        <div className="text-xs bg-white border border-black px-2 py-1 inline-block font-mono relative z-10">Adaptation totale</div>
+                                    </div>
+
+                                    {/* Public 6 */}
+                                    <div className="sticker bg-orange-50 p-6 relative overflow-hidden">
+                                        <div className="absolute top-0 right-0 text-8xl opacity-10">🏘️</div>
+                                        <h3 className="text-xl font-bold mb-3 brutal-font relative z-10">Résidents QPV</h3>
+                                        <p className="font-mono text-sm mb-4 relative z-10">
+                                            Quartiers Prioritaires de la Ville : permanences délocalisées et accompagnement de proximité pour votre projet.
+                                        </p>
+                                        <div className="text-xs bg-white border border-black px-2 py-1 inline-block font-mono relative z-10">Proximité territoriale</div>
+                                    </div>
+
+                                    {/* Public 7 */}
+                                    <div className="sticker bg-teal-50 p-6 relative overflow-hidden col-span-full md:col-span-1">
+                                        <div className="absolute top-0 right-0 text-8xl opacity-10">💻</div>
+                                        <h3 className="text-xl font-bold mb-3 brutal-font relative z-10">Porteurs de Projets Innovants</h3>
+                                        <p className="font-mono text-sm mb-4 relative z-10">
+                                            Numérique, transition écologique, ESS, activités innovantes : testez votre projet dans un cadre sécurisé avant de vous lancer.
+                                        </p>
+                                        <div className="text-xs bg-white border border-black px-2 py-1 inline-block font-mono relative z-10">Phase de test</div>
+                                    </div>
+
+                                    {/* Public 8 */}
+                                    <div className="sticker bg-indigo-50 p-6 relative overflow-hidden col-span-full md:col-span-2">
+                                        <div className="absolute top-0 right-0 text-8xl opacity-10">🔄</div>
+                                        <h3 className="text-xl font-bold mb-3 brutal-font relative z-10">Micro-Entrepreneurs Souhaitant Sécuriser leur Statut</h3>
+                                        <p className="font-mono text-sm mb-4 relative z-10">
+                                            Vous êtes déjà micro-entrepreneur mais cherchez plus de protection sociale et de stabilité ? Le statut CESA est fait pour vous : CDI + entrepreneuriat autonome.
+                                        </p>
+                                        <div className="text-xs bg-white border border-black px-2 py-1 inline-block font-mono relative z-10 mr-2">Protection sociale</div>
+                                        <div className="text-xs bg-white border border-black px-2 py-1 inline-block font-mono relative z-10">Assurance chômage</div>
+                                    </div>
+                                </div>
+
+                                <div className="mt-16 text-center">
+                                    <div className="inline-block bg-yellow-100 border-4 border-black p-8 transform -rotate-1 max-w-3xl">
+                                        <h3 className="text-2xl font-bold mb-4 hand-font">🌟 Et Vous ?</h3>
+                                        <p className="font-mono text-lg mb-6">
+                                            Quel que soit votre parcours, si vous avez un projet entrepreneurial, <strong>nous vous accompagnons gratuitement</strong> dans votre démarche.
+                                        </p>
+                                        <a href="https://mte.typeform.com/e-kigai" className="inline-block bg-black text-white px-8 py-3 font-bold text-lg border-2 border-black hover:bg-green-400 hover:text-black transition-all">
+                                            PRENDRE CONTACT
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* --- SECTION: Parcours d'Accompagnement --- */}
+                        <section id="parcours" className="py-24 px-4 bg-[#f0fdf4] relative overflow-hidden">
+                            <div className="max-w-6xl mx-auto">
+                                <div className="text-center mb-16">
+                                    <h2 className="text-5xl md:text-7xl font-bold uppercase brutal-font mb-6">
+                                        <span className="marker-highlight">Votre Parcours chez e-kigai</span>
+                                    </h2>
+                                    <p className="text-xl font-mono max-w-3xl mx-auto">
+                                        Un accompagnement progressif, de l'idée au CDI d'entrepreneur-salarié associé.
+                                    </p>
+                                </div>
+
+                                {/* Timeline */}
+                                <div className="relative">
+                                    {/* Vertical line */}
+                                    <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-1 bg-black transform -translate-x-1/2"></div>
+
+                                    {/* Étape 1 */}
+                                    <div className="mb-16 relative">
+                                        <div className="md:grid md:grid-cols-2 md:gap-12 items-center">
+                                            <div className="sticker bg-white p-8 transform md:-rotate-2 mb-8 md:mb-0 md:text-right">
+                                                <div className="inline-block bg-green-400 border-2 border-black px-4 py-2 mb-4 font-bold hand-font text-2xl">Étape 1</div>
+                                                <h3 className="text-3xl font-bold mb-4 brutal-font">Accueil & Diagnostic</h3>
+                                                <p className="font-mono leading-relaxed">
+                                                    Permanences d'information, entretien individuel, diagnostic de votre projet et de sa faisabilité. <strong>Gratuit et sans engagement.</strong>
+                                                </p>
+                                                <div className="mt-4">
+                                                    <span className="text-sm font-mono bg-gray-100 px-2 py-1 border border-black">Durée : 1-2 semaines</span>
+                                                </div>
+                                            </div>
+                                            <div className="hidden md:block"></div>
+                                        </div>
+                                        <div className="hidden md:block absolute left-1/2 top-1/2 w-8 h-8 bg-green-400 border-4 border-black rounded-full transform -translate-x-1/2 -translate-y-1/2 z-10"></div>
+                                    </div>
+
+                                    {/* Étape 2 */}
+                                    <div className="mb-16 relative">
+                                        <div className="md:grid md:grid-cols-2 md:gap-12 items-center">
+                                            <div className="hidden md:block"></div>
+                                            <div className="sticker bg-yellow-50 p-8 transform md:rotate-2">
+                                                <div className="inline-block bg-yellow-400 border-2 border-black px-4 py-2 mb-4 font-bold hand-font text-2xl">Étape 2</div>
+                                                <h3 className="text-3xl font-bold mb-4 brutal-font">Phase de Test (CAPE)</h3>
+                                                <p className="font-mono leading-relaxed">
+                                                    Signature d'un CAPE : testez votre activité en toute sécurité pendant 6 à 24 mois. Accompagnement mensuel, formations, ateliers collectifs.
+                                                </p>
+                                                <ul className="font-mono text-sm mt-4 space-y-2">
+                                                    <li>✓ Suivi personnalisé</li>
+                                                    <li>✓ Parrainage (publics éloignés)</li>
+                                                    <li>✓ Formation gestion & commercial</li>
+                                                </ul>
+                                                <div className="mt-4">
+                                                    <span className="text-sm font-mono bg-gray-100 px-2 py-1 border border-black">Durée : 6-24 mois</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="hidden md:block absolute left-1/2 top-1/2 w-8 h-8 bg-yellow-400 border-4 border-black rounded-full transform -translate-x-1/2 -translate-y-1/2 z-10"></div>
+                                    </div>
+
+                                    {/* Étape 3 */}
+                                    <div className="mb-16 relative">
+                                        <div className="md:grid md:grid-cols-2 md:gap-12 items-center">
+                                            <div className="sticker bg-blue-50 p-8 transform md:-rotate-2 mb-8 md:mb-0 md:text-right">
+                                                <div className="inline-block bg-blue-400 border-2 border-black px-4 py-2 mb-4 font-bold hand-font text-2xl">Étape 3</div>
+                                                <h3 className="text-3xl font-bold mb-4 brutal-font">Passage en CESA (CDI)</h3>
+                                                <p className="font-mono leading-relaxed">
+                                                    Votre activité est viable ? Vous devenez <strong>entrepreneur-salarié associé</strong> en CDI avec droits sociaux complets : sécurité sociale, retraite, chômage.
+                                                </p>
+                                                <ul className="font-mono text-sm mt-4 space-y-2">
+                                                    <li>✓ Statut salarié stable</li>
+                                                    <li>✓ Autonomie entrepreneuriale</li>
+                                                    <li>✓ Protection sociale complète</li>
+                                                </ul>
+                                                <div className="mt-4">
+                                                    <span className="text-sm font-mono bg-gray-100 px-2 py-1 border border-black">Dès viabilité démontrée</span>
+                                                </div>
+                                            </div>
+                                            <div className="hidden md:block"></div>
+                                        </div>
+                                        <div className="hidden md:block absolute left-1/2 top-1/2 w-8 h-8 bg-blue-400 border-4 border-black rounded-full transform -translate-x-1/2 -translate-y-1/2 z-10"></div>
+                                    </div>
+
+                                    {/* Étape 4 */}
+                                    <div className="relative">
+                                        <div className="md:grid md:grid-cols-2 md:gap-12 items-center">
+                                            <div className="hidden md:block"></div>
+                                            <div className="sticker bg-green-100 p-8 transform md:rotate-2">
+                                                <div className="inline-block bg-green-500 border-2 border-black px-4 py-2 mb-4 font-bold hand-font text-2xl text-white">Étape 4</div>
+                                                <h3 className="text-3xl font-bold mb-4 brutal-font">Développement & Coopération</h3>
+                                                <p className="font-mono leading-relaxed">
+                                                    Vous continuez à développer votre activité avec l'appui de la coopérative : gestion mutualisée, intelligence collective, gouvernance participative.
+                                                </p>
+                                                <ul className="font-mono text-sm mt-4 space-y-2">
+                                                    <li>✓ Comptabilité & facturation</li>
+                                                    <li>✓ Accompagnement trimestriel</li>
+                                                    <li>✓ Codéveloppement entre pairs</li>
+                                                    <li>✓ Formation continue</li>
+                                                </ul>
+                                                <div className="mt-4">
+                                                    <span className="text-sm font-mono bg-gray-100 px-2 py-1 border border-black">En continu</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="hidden md:block absolute left-1/2 top-1/2 w-8 h-8 bg-green-500 border-4 border-black rounded-full transform -translate-x-1/2 -translate-y-1/2 z-10 flex items-center justify-center text-white text-xl">
+                                            ⭐
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* CTA */}
+                                <div className="mt-20 text-center">
+                                    <div className="inline-block bg-black text-white border-4 border-black p-8 transform rotate-1 hover:rotate-0 transition-transform">
+                                        <h3 className="text-3xl font-bold mb-4 hand-font">🚀 Prêt·e à Démarrer ?</h3>
+                                        <p className="font-mono mb-6 max-w-xl">
+                                            Que vous ayez une idée floue ou un projet bien défini, contactez-nous pour un premier échange gratuit et sans engagement.
+                                        </p>
+                                        <a href="https://mte.typeform.com/e-kigai" className="inline-block bg-green-500 text-black px-8 py-4 font-bold text-xl border-2 border-black hover:bg-white transition-all">
+                                            PRENDRE RENDEZ-VOUS
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* --- SECTION: Services Mutualisés --- */}
+                        <section className="py-24 px-4 bg-white relative">
+                            <div className="max-w-7xl mx-auto">
+                                <div className="text-center mb-16">
+                                    <h2 className="text-5xl md:text-7xl font-bold uppercase brutal-font mb-6">
+                                        <span className="marker-highlight">Ce que e-kigai Fait pour Vous</span>
+                                    </h2>
+                                    <p className="text-xl font-mono max-w-3xl mx-auto">
+                                        Concentrez-vous sur votre métier. On s'occupe du reste.
+                                    </p>
+                                </div>
+
+                                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                    <div className="sticker bg-blue-50 p-6 hover:scale-105 transition-transform">
+                                        <div className="text-4xl mb-4">📋</div>
+                                        <h3 className="text-xl font-bold mb-3 brutal-font">Hébergement Juridique</h3>
+                                        <p className="font-mono text-sm">Utilisez notre SIRET, bénéficiez de notre structure juridique sans créer votre propre société.</p>
+                                    </div>
+
+                                    <div className="sticker bg-yellow-50 p-6 hover:scale-105 transition-transform">
+                                        <div className="text-4xl mb-4">💰</div>
+                                        <h3 className="text-xl font-bold mb-3 brutal-font">Gestion Comptable</h3>
+                                        <p className="font-mono text-sm">Facturation, encaissements, comptabilité analytique par activité : tout est géré pour vous.</p>
+                                    </div>
+
+                                    <div className="sticker bg-green-50 p-6 hover:scale-105 transition-transform">
+                                        <div className="text-4xl mb-4">📄</div>
+                                        <h3 className="text-xl font-bold mb-3 brutal-font">Bulletins de Salaire</h3>
+                                        <p className="font-mono text-sm">Nous établissons vos fiches de paie et gérons toutes les déclarations sociales et fiscales.</p>
+                                    </div>
+
+                                    <div className="sticker bg-purple-50 p-6 hover:scale-105 transition-transform">
+                                        <div className="text-4xl mb-4">🛡️</div>
+                                        <h3 className="text-xl font-bold mb-3 brutal-font">Assurances</h3>
+                                        <p className="font-mono text-sm">Responsabilité civile professionnelle mutualisée pour tous les entrepreneurs de la coopérative.</p>
+                                    </div>
+
+                                    <div className="sticker bg-pink-50 p-6 hover:scale-105 transition-transform">
+                                        <div className="text-4xl mb-4">⚖️</div>
+                                        <h3 className="text-xl font-bold mb-3 brutal-font">Assistance Juridique</h3>
+                                        <p className="font-mono text-sm">Conseils contractuels, relecture de devis et contrats, accompagnement sur les aspects légaux.</p>
+                                    </div>
+
+                                    <div className="sticker bg-orange-50 p-6 hover:scale-105 transition-transform">
+                                        <div className="text-4xl mb-4">🎓</div>
+                                        <h3 className="text-xl font-bold mb-3 brutal-font">Formation Continue</h3>
+                                        <p className="font-mono text-sm">Ateliers thématiques, formations métiers, développement des compétences entrepreneuriales.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </main>
+
+                    {/* --- FOOTER --- */}
+                    <footer className="bg-black text-[#ffffef] pt-20 pb-10 relative mt-20">
+                        <div className="absolute top-0 left-0 w-full h-10 bg-black torn-paper-top -translate-y-1/2"></div>
+
+                        <div className="max-w-7xl mx-auto px-4 text-center">
+                            <div className="inline-block border-2 border-white p-8 rotate-1 mb-10 hover:rotate-0 transition-transform duration-500">
+                                <h2 className="text-4xl md:text-6xl font-bold mb-4">ENVIE DE NOUS REJOINDRE ?</h2>
+                                <p className="font-mono mb-8 max-w-xl mx-auto">
+                                    Que vous ayez un projet naissant ou confirmé, l'équipe e-kigai est là pour vous accompagner sur le territoire de Nouvelle-Aquitaine.
+                                </p>
+                                <a href="https://mte.typeform.com/e-kigai" className="inline-block bg-green-500 text-black px-8 py-3 font-bold text-xl border-2 border-transparent hover:border-white hover:bg-black hover:text-white transition-all">
+                                    DÉMARRER MAINTENANT
+                                </a>
+                            </div>
+
+                            <div className="grid md:grid-cols-4 gap-8 text-left font-mono text-sm opacity-60 border-t border-gray-800 pt-10">
+                                <div>
+                                    <div className="font-bold text-white mb-2">e-kigai.fr</div>
+                                    <p>Coopérative d'Activité et d'Emploi à mission.</p>
+                                </div>
+                                <div>
+                                    <div className="font-bold text-white mb-2">Liens</div>
+                                    <ul className="space-y-1">
+                                        <li><a href="manifeste.html" className="hover:text-green-400">Manifeste</a></li>
+                                        <li><a href="simul.html" className="hover:text-green-400">Simulation</a></li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <div className="font-bold text-white mb-2">Légal</div>
+                                    <ul className="space-y-1">
+                                        <li><a href="mentions_legales.html" className="hover:text-green-400">Mentions légales</a></li>
+                                        <li><a href="confid.html" className="hover:text-green-400">Politique de conf.</a></li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <div className="font-bold text-white mb-2">Social</div>
+                                    <div className="flex gap-4 text-2xl">
+                                        <span>in</span>
+                                        <span>tw</span>
+                                        <span>ig</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="mt-12 text-xs font-mono opacity-30">
+                                © 2026 e-kigai. Design: Made with 💚 by e-kigai.
+                            </div>
+                        </div>
+                    </footer>
+
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

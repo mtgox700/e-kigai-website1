@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>e-kigai | Central des ressources</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM (pour la structure interactive) -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.29.7/babel.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --cream: #ffffef;
+            --dark: #3b3b3b;
+            --green: #00bf63;
+            --paper-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+        }
+
+        body {
+            background-color: var(--cream);
+            color: var(--dark);
+            font-family: 'Space Grotesk', sans-serif;
+            background-image: var(--paper-grain);
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: -0.03em;
+        }
+
+        .hand-font {
+            font-family: 'Gochi Hand', cursive;
+        }
+
+        .sticker {
+            background: white;
+            border: 2px solid var(--dark);
+            box-shadow: 4px 4px 0px var(--dark);
+            transition: all 0.2s ease;
+        }
+        .sticker:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px var(--green);
+        }
+
+        .torn-paper-top {
+            clip-path: polygon(0% 10px, 5% 0px, 10% 12px, 15% 2px, 20% 10px, 25% 0px, 30% 12px, 35% 2px, 40% 10px, 45% 0px, 50% 12px, 55% 2px, 60% 10px, 65% 0px, 70% 12px, 75% 2px, 80% 10px, 85% 0px, 90% 12px, 95% 2px, 100% 10px, 100% 100%, 0% 100%);
+        }
+
+        .btn-wobble:hover {
+            animation: wobble 0.5s ease-in-out;
+        }
+        @keyframes wobble {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-3deg); }
+            75% { transform: rotate(3deg); }
+        }
+
+        .link-card {
+            transition: all 0.2s ease;
+        }
+        .link-card:hover {
+            transform: translateY(-4px) rotate(0.5deg);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        // Icône SVG simple
+        const Icon = ({ name, className }) => {
+            const paths = {
+                link: "M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71",
+                file: "M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z M13 2v7h7",
+                compass: "M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z M12 6v6l4 2",
+                star: "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z",
+                users: "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75M9 7a4 4 0 1 0 8 0 4 4 0 0 0-8 0z",
+                book: "M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z",
+                heart: "M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z",
+                gift: "M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z",
+                zap: "M13 2L3 14h9l-1 8 10-12h-9l1-8z",
+                shield: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
+                eye: "M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"
+            };
+            const path = paths[name] || paths.link;
+            return (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                    <path d={path} />
+                </svg>
+            );
+        };
+
+        // Données des liens avec explications
+        const links = [
+            { file: "index.html", title: "🏠 Accueil e‑kigai", desc: "Page d’accueil du site, découvre l’univers de la coopérative." },
+            { file: "manifeste.html", title: "📜 Manifeste", desc: "Nos engagements, notre vision, pourquoi on existe." },
+            { file: "projet-cae.html", title: "🏢 La CAE", desc: "Tout comprendre sur le statut de Coopérative d’Activité et d’Emploi." },
+            { file: "simul.html", title: "💰 Simulation", desc: "Calcule ton revenu net en fonction de ton TJM / CA." },
+            { file: "accompagnement.html", title: "🎯 Accompagnement stratégique", desc: "Programme pour passer de freelance à CEO structuré." },
+            { file: "agentique.html", title: "🤖 Automatisation & IA agentique", desc: "Déléguez vos tâches à des agents intelligents." },
+            { file: "ceo.html", title: "👔 Programme CEO", desc: "Devenir le patron de son business sans s’épuiser." },
+            { file: "ia.html", title: "🧠 Intelligence Artificielle", desc: "Formation et intégration d’outils d’IA pour les pros." },
+            { file: "formation01.html", title: "🎓 Formation (générale)", desc: "Catalogue de nos formations aux métiers du numérique." },
+            { file: "formateurs.html", title: "👩‍🏫 Formateurs", desc: "Devenir formateur au sein de la coopérative." },
+            { file: "tfh.html", title: "🎭 Théâtre pour l’Humain", desc: "L’improvisation théâtrale au service du management." },
+            { file: "tfh-conf.html", title: "🎤 TFH – Conférence", desc: "Conférences interactives autour du théâtre et de l’entreprise." },
+            { file: "tfh-formation.html", title: "🎪 TFH – Formation", desc: "Stages d’impro pour les équipes, soft skills." },
+            { file: "tfh-mastermind.html", title: "🧠 TFH – Mastermind", desc: "Groupe de pairs + théâtre pour leaders." },
+            { file: "impro.html", title: "🎭 Improvisation", desc: "Détail des ateliers d’improvisation professionnelle." },
+            { file: "samouraï.html", title: "⚔️ Samouraï", desc: "Programme d’accompagnement spécifique pour indépendants." },
+            { file: "keyizen.html", title: "🔑 Keyizen", desc: "Partenariat avec Keyizen – outil de gestion." },
+            { file: "neoterra.html", title: "🌍 Neoterra", desc: "Projet à impact environnemental et social." },
+            { file: "base_yrvs.html", title: "📊 Base YRVS", desc: "Base de données et analyse pour les freelances." },
+            { file: "projet.html", title: "📁 Projets", desc: "Présentation des projets collectifs de la coop." },
+            { file: "lp-epmi.html", title: "🎓 Landing EPMI", desc: "Page dédiée aux étudiants de l’école EPMI." },
+            { file: "urssaf.html", title: "📄 URSSAF", desc: "Infos et simulateurs pour les cotisations." },
+            { file: "confid.html", title: "🔒 Politique de confidentialité", desc: "Comment nous protégeons vos données." },
+            { file: "mentions_legales.html", title: "⚖️ Mentions légales", desc: "Infos légales obligatoires." }
+        ];
+
+        // Images séparées (logos) – on les traite à part
+        const images = [
+            { file: "logo-ekigai.png", desc: "Logo e‑kigai (format image)" },
+            { file: "logo-keyizen.png", desc: "Logo Keyizen (partenaire)" },
+            { file: "mterbeche.jpg", desc: "Photo – MT Erbeche" }
+        ];
+
+        const App = () => {
+            const [search, setSearch] = useState("");
+
+            const filteredLinks = links.filter(link =>
+                link.title.toLowerCase().includes(search.toLowerCase()) ||
+                link.desc.toLowerCase().includes(search.toLowerCase())
+            );
+
+            return (
+                <div className="min-h-screen py-12 px-4 relative">
+                    {/* Décoration floue */}
+                    <div className="fixed top-20 left-10 w-32 h-32 bg-green-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 pointer-events-none animate-pulse"></div>
+                    <div className="fixed bottom-20 right-10 w-48 h-48 bg-yellow-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 pointer-events-none animate-pulse"></div>
+
+                    <div className="max-w-5xl mx-auto relative z-10">
+                        {/* En-tête style sticker */}
+                        <div className="text-center mb-12">
+                            <div className="inline-block sticker bg-white px-6 py-3 rotate-[-2deg] mb-4">
+                                <h1 className="text-4xl md:text-6xl font-black tracking-tighter">🗂️ Central des ressources</h1>
+                            </div>
+                            <p className="font-mono text-lg max-w-2xl mx-auto mt-4 bg-white/60 p-3 border-l-4 border-green-500">
+                                Tous les liens utiles d’e‑kigai en un seul endroit. Clique, explore, et trouve ce dont tu as besoin.
+                            </p>
+                        </div>
+
+                        {/* Barre de recherche */}
+                        <div className="mb-10 max-w-md mx-auto">
+                            <div className="sticker bg-white p-1 flex items-center">
+                                <Icon name="eye" className="w-5 h-5 ml-3 text-gray-500" />
+                                <input
+                                    type="text"
+                                    placeholder="🔍 Chercher une page..."
+                                    className="w-full p-3 bg-transparent outline-none font-mono text-sm"
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Grille des liens */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {filteredLinks.map((link, idx) => (
+                                <a
+                                    key={idx}
+                                    href={link.file}
+                                    className="link-card block bg-white border-2 border-black p-5 sticker hover:bg-gray-50 transition-all no-underline text-black"
+                                >
+                                    <div className="flex items-start gap-3">
+                                        <div className="flex-shrink-0 mt-1">
+                                            <Icon name="link" className="w-6 h-6 text-green-600" />
+                                        </div>
+                                        <div>
+                                            <h3 className="font-bold text-xl hand-font">{link.title}</h3>
+                                            <p className="font-mono text-sm text-gray-600 mt-1">{link.desc}</p>
+                                            <div className="mt-2 text-xs font-mono text-green-700 underline decoration-dotted">
+                                                {link.file}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            ))}
+                        </div>
+
+                        {filteredLinks.length === 0 && (
+                            <div className="text-center py-12">
+                                <p className="font-mono text-xl">😕 Aucun résultat… essaie autre chose.</p>
+                            </div>
+                        )}
+
+                        {/* Section images (logos, photos) */}
+                        <div className="mt-20 border-t-2 border-dashed border-black pt-10">
+                            <div className="text-center mb-6">
+                                <div className="inline-block sticker bg-yellow-200 px-4 py-2 rotate-1">
+                                    <span className="font-bold hand-font text-xl">📸 Ressources graphiques</span>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                                {images.map((img, idx) => (
+                                    <div key={idx} className="bg-white border-2 border-black p-4 sticker flex flex-col items-center text-center">
+                                        <Icon name="file" className="w-10 h-10 text-gray-600 mb-2" />
+                                        <span className="font-mono text-sm break-all">{img.file}</span>
+                                        <p className="text-xs font-mono mt-2 text-gray-500">{img.desc}</p>
+                                        <a href={img.file} target="_blank" rel="noopener noreferrer" className="mt-3 inline-block bg-black text-white px-3 py-1 text-xs font-bold hover:bg-green-600 transition-colors">
+                                            Ouvrir l’image →
+                                        </a>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Pied de page style marque */}
+                        <div className="mt-16 text-center font-mono text-sm border-t border-black pt-8">
+                            <p className="opacity-60">
+                                🧭 Tous ces contenus sont accessibles directement depuis ce central.<br/>
+                                Besoin d’aide ? <a href="index.html" className="underline decoration-green-500 font-bold">Retour à l’accueil</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

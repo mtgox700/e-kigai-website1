@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>e-kigai | Programme CEO Freelance – Offres & Prix</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.29.7/babel.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --cream: #ffffef;
+            --dark: #3b3b3b;
+            --green: #00bf63;
+            --paper-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+        }
+
+        body {
+            background-color: var(--cream);
+            color: var(--dark);
+            font-family: 'Space Grotesk', sans-serif;
+            background-image: var(--paper-grain);
+            overflow-x: hidden;
+            cursor: crosshair;
+        }
+
+        h1, h2, h3, .brutal-font {
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: -0.04em;
+        }
+
+        .hand-font {
+            font-family: 'Gochi Hand', cursive;
+        }
+
+        .torn-paper-top {
+            clip-path: polygon(0% 10px, 5% 0px, 10% 12px, 15% 2px, 20% 10px, 25% 0px, 30% 12px, 35% 2px, 40% 10px, 45% 0px, 50% 12px, 55% 2px, 60% 10px, 65% 0px, 70% 12px, 75% 2px, 80% 10px, 85% 0px, 90% 12px, 95% 2px, 100% 10px, 100% 100%, 0% 100%);
+        }
+        
+        .torn-paper-bottom {
+            clip-path: polygon(0% 0%, 100% 0%, 100% calc(100% - 10px), 95% 100%, 90% calc(100% - 12px), 85% 100%, 80% calc(100% - 10px), 75% 100%, 70% calc(100% - 12px), 65% 100%, 60% calc(100% - 10px), 55% 100%, 50% calc(100% - 12px), 45% 100%, 40% calc(100% - 10px), 35% 100%, 30% calc(100% - 12px), 25% 100%, 20% calc(100% - 10px), 15% 100%, 10% calc(100% - 12px), 5% 100%, 0% calc(100% - 10px));
+        }
+
+        .sticker {
+            background: white;
+            border: 2px solid var(--dark);
+            box-shadow: 4px 4px 0px var(--dark);
+            transition: all 0.2s ease;
+        }
+        .sticker:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px var(--green);
+        }
+
+        .organic-blob {
+            border-radius: 64% 36% 29% 71% / 58% 38% 62% 42%;
+            animation: morph 8s ease-in-out infinite;
+        }
+        @keyframes morph {
+            0% { border-radius: 64% 36% 29% 71% / 58% 38% 62% 42%; }
+            50% { border-radius: 36% 64% 71% 29% / 42% 62% 38% 58%; }
+            100% { border-radius: 64% 36% 29% 71% / 58% 38% 62% 42%; }
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(2deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        .btn-wobble:hover {
+            animation: wobble 0.5s ease-in-out;
+        }
+        @keyframes wobble {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-3deg); }
+            75% { transform: rotate(3deg); }
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .marquee-container {
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 20s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        const ScribbleIcon = ({ path, className }) => (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                {path}
+            </svg>
+        );
+
+        const Icons = {
+            Star: <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />,
+            Bolt: <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />,
+            Arrow: <path d="M17 8l4 4m0 0l-4 4m4-4H3" />,
+            Target: <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zM12 6v6l4 2" />,
+            Check: <path d="M20 6L9 17l-5-5" />,
+            Rocket: <path d="M5 14L3 8l5-2 3 5 5-3 4 4-3 5-5 3-5-3zM7 15l4 4M11 8l-4 4" />,
+            Users: <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75M9 7a4 4 0 1 0 8 0 4 4 0 0 0-8 0z" />,
+            Brain: <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v1A2.5 2.5 0 0 1 9.5 8h-2A2.5 2.5 0 0 1 5 5.5v-1A2.5 2.5 0 0 1 7.5 2h2zm5 0A2.5 2.5 0 0 1 17 4.5v1A2.5 2.5 0 0 1 14.5 8h-2A2.5 2.5 0 0 1 10 5.5v-1A2.5 2.5 0 0 1 12.5 2h2zM12 11.5c2.5 0 5 1 5 4v2c0 2-2 3-5 3s-5-1-5-3v-2c0-3 2.5-4 5-4z" />,
+            Clock: <path d="M12 6v6l4 2M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />,
+            Trophy: <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M12 15v7M10 9h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2z" />
+        };
+
+        const App = () => {
+            const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+            return (
+                <div className="min-h-screen relative overflow-hidden">
+                    {/* Background blobs */}
+                    <div className="fixed top-20 left-10 w-32 h-32 bg-green-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 pointer-events-none animate-pulse"></div>
+                    <div className="fixed bottom-20 right-10 w-48 h-48 bg-yellow-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 pointer-events-none animate-pulse" style={{animationDelay: '1s'}}></div>
+
+                    {/* Navigation (identique au site principal) */}
+                    <nav className="fixed w-full z-50 top-4 px-4 pointer-events-none">
+                        <div className="max-w-7xl mx-auto flex justify-between items-center">
+                            <div className="sticker bg-white px-3 py-1 rotate-[-2deg] pointer-events-auto cursor-pointer transform hover:rotate-0 transition-transform">
+                                <img src="logo-ekigai.png" alt="e-kigai logo" className="h-10 w-auto object-contain" />
+                            </div>
+                            <div className="hidden md:flex gap-4 pointer-events-auto items-center">
+                                <a href="index.html" className="relative group">
+                                    <div className="bg-white/80 backdrop-blur-sm px-4 py-1 border border-black transform transition-transform group-hover:-translate-y-1 rotate-[1deg]">
+                                        <span className="font-medium font-mono text-sm">Accueil</span>
+                                    </div>
+                                </a>
+                                <a href="manifeste.html" className="relative group">
+                                    <div className="bg-white/80 backdrop-blur-sm px-4 py-1 border border-black transform transition-transform group-hover:-translate-y-1 rotate-[-1deg]">
+                                        <span className="font-medium font-mono text-sm">Manifeste</span>
+                                    </div>
+                                </a>
+                                <a href="#method" className="relative group">
+                                    <div className="bg-white/80 backdrop-blur-sm px-4 py-1 border border-black transform transition-transform group-hover:-translate-y-1 rotate-[1deg]">
+                                        <span className="font-medium font-mono text-sm">Méthode</span>
+                                    </div>
+                                </a>
+                                <a href="#offres" className="relative group">
+                                    <div className="bg-white/80 backdrop-blur-sm px-4 py-1 border border-black transform transition-transform group-hover:-translate-y-1 rotate-[-1deg]">
+                                        <span className="font-medium font-mono text-sm">Offres & Prix</span>
+                                    </div>
+                                </a>
+                                <a href="simul.html" className="relative group ml-4 hover:scale-105 transition-transform duration-300">
+                                    <div className="bg-green-400 backdrop-blur-sm px-4 py-1 border border-black transform rotate-[2deg] shadow-[2px_2px_0px_rgba(0,0,0,1)]">
+                                        <span className="font-bold font-mono text-sm">Ma Simulation</span>
+                                    </div>
+                                </a>
+                            </div>
+                            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden sticker p-2 pointer-events-auto bg-green-400 border-black">
+                                <div className="space-y-1"><div className="w-6 h-0.5 bg-black"></div><div className="w-6 h-0.5 bg-black"></div><div className="w-6 h-0.5 bg-black"></div></div>
+                            </button>
+                        </div>
+                        {isMenuOpen && (
+                            <div className="absolute top-full left-0 w-full mt-2 px-4 pointer-events-auto md:hidden">
+                                <div className="bg-white border-2 border-black p-4 shadow-[8px_8px_0px_rgba(0,0,0,1)] flex flex-col gap-4 transform rotate-1">
+                                    <a href="index.html" className="font-bold font-mono hover:text-green-600 border-b border-gray-100 pb-2">Accueil</a>
+                                    <a href="manifeste.html" className="font-bold font-mono hover:text-green-600 border-b border-gray-100 pb-2">Manifeste</a>
+                                    <a href="#method" className="font-bold font-mono hover:text-green-600 border-b border-gray-100 pb-2">Méthode</a>
+                                    <a href="#offres" className="font-bold font-mono hover:text-green-600 border-b border-gray-100 pb-2">Offres & Prix</a>
+                                    <a href="simul.html" className="bg-green-400 border border-black p-3 text-center font-bold font-mono shadow-[2px_2px_0px_black]">Ma Simulation ⚡️</a>
+                                </div>
+                            </div>
+                        )}
+                    </nav>
+
+                    {/* HERO */}
+                    <section className="min-h-screen flex items-center justify-center pt-24 pb-12 relative">
+                        <div className="absolute inset-0 z-0 opacity-10 pointer-events-none" style={{backgroundImage: 'linear-gradient(#3b3b3b 1px, transparent 1px), linear-gradient(90deg, #3b3b3b 1px, transparent 1px)', backgroundSize: '40px 40px'}}></div>
+                        <div className="max-w-7xl mx-auto px-4 grid lg:grid-cols-12 gap-12 items-center relative z-10 w-full">
+                            <div className="lg:col-span-7 space-y-8">
+                                <div className="inline-block transform -rotate-3 sticker bg-yellow-200 px-4 py-1 rounded-full border-black">
+                                    <span className="hand-font font-bold text-lg">🔥 NOUVEAU SERVICE – ACCOMPAGNEMENT PREMIUM</span>
+                                </div>
+                                <h1 className="text-6xl md:text-8xl font-bold leading-[0.9] text-black mix-blend-darken">
+                                    Passez de <br/>
+                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-green-400 italic">freelance débordé</span> <br/>
+                                    à <span className="underline decoration-green-500">CEO structuré</span>
+                                </h1>
+                                <p className="text-xl md:text-2xl font-mono opacity-80 max-w-lg bg-white/60 p-4 border-l-4 border-green-500 backdrop-blur-sm transform rotate-1">
+                                    Arrêtez de courir après les missions. <br/>
+                                    Bâtissez une entreprise qui tourne (presque) sans vous.
+                                </p>
+                                <div className="flex flex-col sm:flex-row gap-6 pt-6">
+                                    <a href="https://mte.typeform.com/e-kigai" className="sticker bg-black text-white px-8 py-4 text-xl font-bold rounded-none hover:bg-green-600 hover:text-black hover:border-black transition-colors btn-wobble flex items-center gap-3">
+                                        JE VEUX STRUCTURER <ScribbleIcon path={Icons.Arrow} className="w-6 h-6" />
+                                    </a>
+                                    <a href="#offres" className="hand-font text-xl underline decoration-wavy decoration-green-500 hover:text-green-600 self-center">
+                                        Voir les offres et prix →
+                                    </a>
+                                </div>
+                            </div>
+                            <div className="lg:col-span-5 relative h-[500px] hidden lg:block">
+                                <div className="absolute top-10 right-10 w-64 h-80 bg-white border-2 border-black p-2 transform rotate-3 shadow-[8px_8px_0px_rgba(0,0,0,1)] floating">
+                                    <div className="w-full h-4/5 bg-gray-200 overflow-hidden relative border border-black mb-2">
+                                        <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=800&q=80" className="object-cover w-full h-full grayscale hover:grayscale-0 transition-all duration-500" />
+                                    </div>
+                                    <div className="hand-font text-center font-bold text-xl">CEO Mindset 🧠</div>
+                                </div>
+                                <div className="absolute bottom-20 left-0 w-48 bg-green-400 border-2 border-black p-4 transform -rotate-6 shadow-[4px_4px_0px_#000] z-20 floating" style={{animationDelay: '-2s'}}>
+                                    <div className="font-mono text-xs mb-2">RÉSULTAT</div>
+                                    <div className="font-bold text-3xl leading-none">+30%</div>
+                                    <div className="text-xs mt-1 border-t border-black pt-1">de revenus en 6 mois</div>
+                                </div>
+                                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-0 organic-blob w-72 h-72 bg-purple-200 mix-blend-multiply opacity-50 blur-xl"></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* MARQUEE */}
+                    <div className="bg-black text-white py-4 border-y-4 border-green-500 transform -rotate-1 scale-105 torn-paper-top torn-paper-bottom z-20 relative">
+                        <div className="marquee-container">
+                            <div className="marquee-content font-mono text-2xl font-bold uppercase">
+                                • Arrête de vendre ton temps • Passe à l'offre • Système d'acquisition automatisé • Vision stratégique • 
+                            </div>
+                            <div className="marquee-content font-mono text-2xl font-bold uppercase" aria-hidden="true">
+                                • Arrête de vendre ton temps • Passe à l'offre • Système d'acquisition automatisé • Vision stratégique • 
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* SECTION : CE QUI CHANGE */}
+                    <section className="py-24 px-4 relative bg-white">
+                        <div className="max-w-7xl mx-auto">
+                            <div className="text-center mb-16">
+                                <div className="sticker bg-green-400 inline-block px-6 py-2 border-black mb-6 rotate-2 shadow-[4px_4px_0px_#000]">
+                                    <span className="font-bold font-mono text-xl">🔥 CE QUI CHANGE CONCRÈTEMENT POUR VOUS</span>
+                                </div>
+                                <h2 className="text-5xl md:text-7xl font-bold mb-6">Imaginez…</h2>
+                                <p className="font-mono text-xl max-w-3xl mx-auto">Une réalité où vous ne courez plus après le quotidien, mais où vous pilotez.</p>
+                            </div>
+                            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                {[
+                                    { icon: Icons.Target, title: "Une offre claire", desc: "Qui se vend naturellement, sans devoir tout expliquer 3 fois." },
+                                    { icon: Icons.Bolt, title: "Acquisition continue", desc: "Un système qui génère des leads en continu, même quand vous dormez." },
+                                    { icon: Icons.Clock, title: "Process automatisés", desc: "Des outils qui vous libèrent du temps et réduisent la charge mentale." },
+                                    { icon: Icons.Brain, title: "Vision stratégique", desc: "Une feuille de route claire sur 3 à 12 mois, plus de réactif pur." },
+                                    { icon: Icons.Rocket, title: "Business scalable", desc: "Un modèle qui ne dépend plus uniquement de vous." },
+                                    { icon: Icons.Users, title: "Équipe soudée", desc: "Vous déléguez, vous encadrez, vous développez." }
+                                ].map((item, i) => (
+                                    <div key={i} className="sticker bg-white p-6 flex flex-col items-start gap-3 group hover:translate-y-[-4px] transition-transform">
+                                        <div className="bg-green-100 p-2 rounded-full border border-black">
+                                            <ScribbleIcon path={item.icon} className="w-8 h-8 text-green-700" />
+                                        </div>
+                                        <h3 className="text-2xl font-bold hand-font">{item.title}</h3>
+                                        <p className="font-mono text-sm opacity-80">{item.desc}</p>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="mt-16 text-center">
+                                <div className="inline-block bg-black text-white px-6 py-3 rotate-[-1deg] shadow-[6px_6px_0px_#00bf63] font-bold text-2xl">
+                                    👉 Vous passez de freelance débordé à CEO structuré
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* SECTION : MÉTHODE (4 étapes actualisées) */}
+                    <section id="method" className="py-24 px-4 bg-[#f0f9f0] relative overflow-hidden">
+                        <div className="absolute inset-0 opacity-10 pointer-events-none" style={{backgroundImage: 'radial-gradient(circle, #00bf63 1px, transparent 1px)', backgroundSize: '20px 20px'}}></div>
+                        <div className="max-w-6xl mx-auto relative z-10">
+                            <div className="text-center mb-16">
+                                <div className="sticker bg-yellow-300 inline-block px-6 py-2 border-black mb-6 rotate-[-2deg] shadow-[4px_4px_0px_#000]">
+                                    <span className="font-bold font-mono text-xl">🎯 NOTRE MÉTHODE (PROVEN & STRUCTURÉE)</span>
+                                </div>
+                                <h2 className="text-5xl md:text-7xl font-bold">En 4 phases clés</h2>
+                            </div>
+                            <div className="grid md:grid-cols-4 gap-6">
+                                {[
+                                    { step: "1", title: "Clarifier", desc: "Positionnement, offre, business model. On sort du flou." },
+                                    { step: "2", title: "Construire", desc: "Tunnel de vente, acquisition, systèmes & outils." },
+                                    { step: "3", title: "Optimiser", desc: "Conversion, pricing, parcours client." },
+                                    { step: "4", title: "Automatiser & scaler", desc: "CRM, process internes, croissance maîtrisée." }
+                                ].map((item, i) => (
+                                    <div key={i} className="bg-white p-6 border-2 border-black shadow-[6px_6px_0px_#000] transform hover:-translate-y-1 transition-transform">
+                                        <div className="text-5xl font-bold text-green-600 mb-2">{item.step}</div>
+                                        <h3 className="text-2xl font-bold hand-font mb-2">{item.title}</h3>
+                                        <p className="font-mono text-sm">{item.desc}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* SECTION : OFFRES & PRIX (NOUVEAU) */}
+                    <section id="offres" className="py-24 px-4 bg-white relative">
+                        <div className="max-w-7xl mx-auto">
+                            <div className="text-center mb-16">
+                                <div className="sticker bg-pink-300 inline-block px-6 py-2 border-black mb-6 rotate-1 shadow-[4px_4px_0px_#000]">
+                                    <span className="font-bold font-mono text-xl">💼 NOS OFFRES D’ACCOMPAGNEMENT</span>
+                                </div>
+                                <h2 className="text-5xl md:text-7xl font-bold mb-4">Investissez dans votre croissance</h2>
+                                <p className="font-mono text-xl max-w-2xl mx-auto">Des formules pensées pour chaque étape de votre transformation.</p>
+                            </div>
+
+                            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                                {/* Offre Lancement Structuré */}
+                                <div className="sticker bg-white p-6 flex flex-col h-full transform hover:-translate-y-2 transition-all">
+                                    <div className="mb-4">
+                                        <div className="bg-green-100 inline-block p-2 rounded-full border border-black mb-3">
+                                            <ScribbleIcon path={Icons.Target} className="w-6 h-6 text-green-700" />
+                                        </div>
+                                        <h3 className="text-2xl font-bold">Lancement Structuré</h3>
+                                        <div className="text-3xl font-black mt-2">5 000 €<span className="text-base font-normal"> /mois</span></div>
+                                    </div>
+                                    <ul className="space-y-2 font-mono text-sm flex-grow">
+                                        <li>✔️ Structuration complète du projet</li>
+                                        <li>✔️ Offre claire & monétisable</li>
+                                        <li>✔️ Plan d’action concret</li>
+                                        <li>✔️ Coaching intensif</li>
+                                    </ul>
+                                    <div className="mt-6 pt-4 border-t border-dashed border-black">
+                                        <p className="text-xs italic">Idéal pour démarrer sur des bases solides</p>
+                                        <a href="https://mte.typeform.com/e-kigai" className="mt-3 inline-block w-full text-center bg-black text-white py-2 font-bold hover:bg-green-600 hover:text-black transition-colors">Choisir cette offre →</a>
+                                    </div>
+                                </div>
+
+                                {/* Accélération Business */}
+                                <div className="sticker bg-white p-6 flex flex-col h-full transform hover:-translate-y-2 transition-all relative">
+                                    <div className="absolute -top-3 -right-3 bg-green-500 text-black px-2 py-1 text-xs font-bold rotate-6">POPULAIRE</div>
+                                    <div className="mb-4">
+                                        <div className="bg-yellow-100 inline-block p-2 rounded-full border border-black mb-3">
+                                            <ScribbleIcon path={Icons.Bolt} className="w-6 h-6 text-yellow-700" />
+                                        </div>
+                                        <h3 className="text-2xl font-bold">Accélération Business</h3>
+                                        <div className="text-3xl font-black mt-2">8 000 €<span className="text-base font-normal"> /mois</span></div>
+                                    </div>
+                                    <ul className="space-y-2 font-mono text-sm flex-grow">
+                                        <li>✔️ Acquisition clients optimisée</li>
+                                        <li>✔️ Tunnel de vente performant</li>
+                                        <li>✔️ Automatisation des process</li>
+                                        <li>✔️ Scaling du chiffre d’affaires</li>
+                                    </ul>
+                                    <div className="mt-6 pt-4 border-t border-dashed border-black">
+                                        <p className="text-xs italic">Idéal pour dépasser un plafond de revenus</p>
+                                        <a href="https://mte.typeform.com/e-kigai" className="mt-3 inline-block w-full text-center bg-black text-white py-2 font-bold hover:bg-green-600 hover:text-black transition-colors">Choisir cette offre →</a>
+                                    </div>
+                                </div>
+
+                                {/* Scaling & Structuration */}
+                                <div className="sticker bg-white p-6 flex flex-col h-full transform hover:-translate-y-2 transition-all">
+                                    <div className="mb-4">
+                                        <div className="bg-purple-100 inline-block p-2 rounded-full border border-black mb-3">
+                                            <ScribbleIcon path={Icons.Rocket} className="w-6 h-6 text-purple-700" />
+                                        </div>
+                                        <h3 className="text-2xl font-bold">Scaling & Structuration</h3>
+                                        <div className="text-3xl font-black mt-2">12 000 €<span className="text-base font-normal"> /mois</span></div>
+                                    </div>
+                                    <ul className="space-y-2 font-mono text-sm flex-grow">
+                                        <li>✔️ Structuration avancée</li>
+                                        <li>✔️ Pilotage par la data</li>
+                                        <li>✔️ Optimisation globale du business</li>
+                                        <li>✔️ Croissance maîtrisée</li>
+                                    </ul>
+                                    <div className="mt-6 pt-4 border-t border-dashed border-black">
+                                        <p className="text-xs italic">Idéal pour transformer votre business en machine</p>
+                                        <a href="https://mte.typeform.com/e-kigai" className="mt-3 inline-block w-full text-center bg-black text-white py-2 font-bold hover:bg-green-600 hover:text-black transition-colors">Choisir cette offre →</a>
+                                    </div>
+                                </div>
+
+                                {/* Accompagnement CEO */}
+                                <div className="sticker bg-white p-6 flex flex-col h-full transform hover:-translate-y-2 transition-all border-green-500 border-2">
+                                    <div className="mb-4">
+                                        <div className="bg-black inline-block p-2 rounded-full border border-black mb-3">
+                                            <ScribbleIcon path={Icons.Trophy} className="w-6 h-6 text-white" />
+                                        </div>
+                                        <h3 className="text-2xl font-bold">Accompagnement CEO</h3>
+                                        <div className="text-3xl font-black mt-2">15 000 €<span className="text-base font-normal"> /mois</span></div>
+                                    </div>
+                                    <ul className="space-y-2 font-mono text-sm flex-grow">
+                                        <li>✔️ Bras droit stratégique</li>
+                                        <li>✔️ Accès direct & prioritaire</li>
+                                        <li>✔️ Décisions clés & croissance</li>
+                                        <li>✔️ Accompagnement ultra personnalisé</li>
+                                    </ul>
+                                    <div className="mt-6 pt-4 border-t border-dashed border-black">
+                                        <p className="text-xs italic">Pour entrepreneurs ambitieux avec forte vision</p>
+                                        <a href="https://mte.typeform.com/e-kigai" className="mt-3 inline-block w-full text-center bg-black text-white py-2 font-bold hover:bg-green-600 hover:text-black transition-colors">Choisir cette offre →</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Résultats typiques */}
+                            <div className="mt-20 bg-gray-50 border-4 border-black p-8 transform -rotate-1 max-w-3xl mx-auto">
+                                <h3 className="text-3xl font-bold hand-font text-center mb-6">📈 Résultats typiques</h3>
+                                <div className="grid md:grid-cols-2 gap-4 font-mono text-sm">
+                                    <div>✅ Clarification totale du business</div>
+                                    <div>✅ Augmentation du chiffre d’affaires</div>
+                                    <div>✅ Meilleure organisation</div>
+                                    <div>✅ Gain de temps massif</div>
+                                    <div>✅ Business scalable</div>
+                                    <div>✅ Sérénité retrouvée</div>
+                                </div>
+                            </div>
+
+                            <div className="mt-16 text-center">
+                                <div className="sticker bg-yellow-300 inline-block px-8 py-3 border-black mb-6 rotate-[-1deg]">
+                                    <p className="font-bold font-mono text-lg">⚠️ Places limitées – Sélection des profils</p>
+                                </div>
+                                <a href="https://mte.typeform.com/e-kigai" className="inline-block bg-black text-white px-10 py-5 text-2xl font-bold hover:bg-green-600 hover:text-black transition-colors border-2 border-black shadow-[8px_8px_0px_#00bf63] btn-wobble">
+                                    Postuler maintenant
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* FOOTER */}
+                    <footer className="bg-black text-[#ffffef] pt-20 pb-10 relative mt-20">
+                        <div className="absolute top-0 left-0 w-full h-10 bg-black torn-paper-top -translate-y-1/2"></div>
+                        <div className="max-w-7xl mx-auto px-4 text-center">
+                            <div className="inline-block border-2 border-white p-8 rotate-1 mb-10 hover:rotate-0 transition-transform duration-500">
+                                <h2 className="text-4xl md:text-6xl font-bold mb-4">PRÊT À DEVENIR CEO ?</h2>
+                                <p className="font-mono mb-8 max-w-xl mx-auto">On vous accompagne pas à pas. Réservez votre appel stratégique sans engagement.</p>
+                                <a href="https://mte.typeform.com/e-kigai" target="_blank" rel="noopener noreferrer" className="inline-block bg-green-500 text-black px-8 py-3 font-bold text-xl border-2 border-transparent hover:border-white hover:bg-black hover:text-white transition-all">
+                                    JE PRENDS RENDEZ-VOUS
+                                </a>
+                            </div>
+                            <div className="grid md:grid-cols-4 gap-8 text-left font-mono text-sm opacity-60 border-t border-gray-800 pt-10">
+                                <div><div className="font-bold text-white mb-2">e-kigai.fr</div><p>Coopérative d'Activité et d'Emploi à mission.</p></div>
+                                <div><div className="font-bold text-white mb-2">Liens</div><ul className="space-y-1"><li><a href="index.html" className="hover:text-green-400">Accueil</a></li><li><a href="manifeste.html" className="hover:text-green-400">Manifeste</a></li></ul></div>
+                                <div><div className="font-bold text-white mb-2">Légal</div><ul className="space-y-1"><li><a href="mentions_legales.html" className="hover:text-green-400">Mentions légales</a></li><li><a href="confid.html" className="hover:text-green-400">Politique de conf.</a></li></ul></div>
+                                <div><div className="font-bold text-white mb-2">Social</div><div className="flex gap-4 text-2xl"><span>in</span><span>tw</span><span>ig</span></div></div>
+                            </div>
+                            <div className="mt-12 text-xs font-mono opacity-30">© 2025 e-kigai. Programme CEO Freelance – Offres & Prix.</div>
+                        </div>
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

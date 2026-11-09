@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EPMI Alumni x e-kigai | Le Réseau Ingénieur</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.29.7/babel.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Space+Grotesk:wght@300;500;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --cream: #ffffef;
+            --dark: #3b3b3b;
+            --green: #00bf63;
+            --blue-epmi: #005eb8; /* Bleu rappelant l'école */
+            --paper-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+        }
+
+        body {
+            background-color: var(--cream);
+            color: var(--dark);
+            font-family: 'Space Grotesk', sans-serif;
+            background-image: var(--paper-grain);
+            overflow-x: hidden;
+            cursor: crosshair;
+        }
+
+        .hand-font { font-family: 'Gochi Hand', cursive; }
+        .mono-font { font-family: 'Courier Prime', monospace; }
+
+        /* Blueprint Grid Background */
+        .blueprint-grid {
+            background-image: linear-gradient(var(--blue-epmi) 1px, transparent 1px),
+            linear-gradient(90deg, var(--blue-epmi) 1px, transparent 1px);
+            background-size: 20px 20px;
+            background-position: center center;
+            opacity: 0.1;
+        }
+
+        /* Sticker Style */
+        .sticker {
+            background: white;
+            border: 2px solid var(--dark);
+            box-shadow: 4px 4px 0px var(--dark);
+            transition: all 0.2s ease;
+        }
+        .sticker:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px var(--green);
+        }
+
+        /* Polaroids */
+        .polaroid {
+            background: white;
+            padding: 10px 10px 40px 10px;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.2);
+            transform: rotate(-2deg);
+            transition: transform 0.3s;
+        }
+        .polaroid:hover {
+            transform: rotate(0deg) scale(1.02);
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // SVG Icons
+        const ScribbleIcon = ({ path, className }) => (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className} style={{overflow: 'visible'}}>
+                {path}
+            </svg>
+        );
+
+        const Icons = {
+            ArrowLeft: <path d="M19 12H5M12 19l-7-7 7-7" />,
+            GraduationCap: <path d="M22 10v6M2 10l10-5 10 5-10 5zM6 12v5c3 3 9 3 12 0v-5" />,
+            Cpu: <g><rect x="4" y="4" width="16" height="16" rx="2" /><rect x="9" y="9" width="6" height="6" /><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3" /></g>,
+            Briefcase: <g><rect width="20" height="14" x="2" y="7" rx="2" ry="2" /><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" /></g>,
+            Rocket: <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09zM12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2zM9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />,
+            Handshake: <path d="m19 11-4-7M19 11l-4 7M5 11l4-7M5 11l4 7M12 18v2M12 4v2" />, // Simplified handshake/connection
+            Star: <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+        };
+
+        const EpmiPage = () => {
+            return (
+                <div className="min-h-screen pb-20 relative">
+                    
+                    {/* --- DECORATION --- */}
+                    <div className="fixed inset-0 blueprint-grid pointer-events-none z-0"></div>
+
+                    {/* --- NAV: RETOUR --- */}
+                    <nav className="fixed w-full z-50 top-6 left-6 pointer-events-none">
+                        <a href="index.html" className="sticker bg-white px-4 py-2 inline-flex items-center gap-2 pointer-events-auto hover:bg-black hover:text-white transition-colors group">
+                            <ScribbleIcon path={Icons.ArrowLeft} className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+                            <span className="font-bold font-mono">Retour Site</span>
+                        </a>
+                    </nav>
+
+                    {/* --- HERO SECTION --- */}
+                    <header className="pt-32 pb-16 px-4 text-center relative z-10">
+                        <div className="inline-block relative">
+                            <div className="absolute -top-6 -left-6 sticker bg-blue-100 px-3 py-1 border-blue-800 text-blue-900 font-bold rotate-[-6deg] text-sm">
+                                PARTENARIAT EXCLUSIF
+                            </div>
+                            <h1 className="text-5xl md:text-8xl font-bold tracking-tighter mb-4 text-black uppercase">
+                                ECAM EPMI <span className="text-green-600">x</span> E-KIGAI
+                            </h1>
+                        </div>
+                        <p className="hand-font text-2xl mt-4 text-gray-600 rotate-1">
+                            "L'ingénierie de l'indépendance."
+                        </p>
+                    </header>
+
+                    {/* --- FOUNDER STORY (POLAROID) --- */}
+                    <section className="max-w-4xl mx-auto px-4 mb-24 relative z-10">
+                        <div className="flex flex-col md:flex-row items-center gap-12">
+                            
+                            {/* Photo / Polaroid */}
+                            <div className="polaroid w-64 flex-shrink-0">
+                                <div className="bg-gray-200 h-64 w-full border border-gray-300 overflow-hidden relative">
+                                    <img src="mterbeche.jpg" className="object-cover w-full h-full" alt="Mehdi Terbeche" />
+                                    <div className="absolute bottom-2 right-2 bg-green-500 text-white text-xs px-2 py-1 font-bold">PROMO 2011</div>
+                                </div>
+                                <div className="text-center mt-3 font-mono text-sm">
+                                    <strong>Mehdi TERBECHE</strong><br/>
+                                    Fondateur e-kigai<br/>
+                                    <span className="text-xs opacity-60">Ex-Président Alumni EPMI</span>
+                                </div>
+                                {/* Fake Tape */}
+                                <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-24 h-8 bg-yellow-200/80 rotate-[-2deg]"></div>
+                            </div>
+
+                            {/* Story Text */}
+                            <div className="bg-white border-2 border-black p-8 shadow-[8px_8px_0px_#00bf63] relative">
+                                <h2 className="text-3xl font-bold mb-4 font-sans">Le Message aux Anciens</h2>
+                                <div className="font-mono text-sm leading-relaxed space-y-4">
+                                    <p>
+                                        "Yo les EPMIstes ! Depuis plusieurs mois je bosse avec vous pour créer un écocsystème entrepreneurial. e-kigai a été créé avec une conviction :  Il faut sortir du schéma portage salarial classique et reprendre le power sur le mode freelance. <strong>Vu comme le monde évolu, l'ingénieur de demain ne sera plus forcément un salarié classique.</strong>"
+                                    </p>
+                                    <p>
+                                        En tant qu'ancien président de l'asso des anciens, j'ai vu trop de profils brillants hésiter à se lancer. Peur de l'administratif, peur de la précarité...
+                                    </p>
+                                    <p>
+                                        <span className="bg-yellow-200 px-1">e-kigai est la réponse.</span> C'est la structure que j'aurais voulu avoir en sortant de l'école. Une coopérative solide pour porter vos projets, vos missions freelances ou vos side-business, sans risque.
+                                    </p>
+                                </div>
+                                <div className="mt-6 text-right hand-font text-2xl text-blue-800 rotate-[-2deg]">
+                                    - Mehdi
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* --- LES 3 VOIES DE L'INGÉNIEUR --- */}
+                    <section className="max-w-6xl mx-auto px-4 mb-24 relative z-10">
+                        <h2 className="text-4xl font-bold text-center mb-12 flex items-center justify-center gap-3">
+                            <ScribbleIcon path={Icons.Cpu} className="w-8 h-8"/> 
+                            VOTRE AVENIR, 3 MODES
+                        </h2>
+
+                        <div className="grid md:grid-cols-3 gap-8">
+                            
+                            {/* Mode 1: Side Hustle */}
+                            <div className="bg-white p-6 border-2 border-black hover:-translate-y-2 transition-transform shadow-lg group">
+                                <div className="w-12 h-12 bg-blue-100 rounded-full border border-black flex items-center justify-center mb-4 group-hover:bg-blue-300 transition-colors">
+                                    <span className="font-bold text-xl">1</span>
+                                </div>
+                                <h3 className="text-xl font-bold mb-2">Side Activity</h3>
+                                <p className="font-mono text-sm opacity-80 mb-4">
+                                    Vous êtes en poste mais vous voulez donner des cours, faire du conseil ponctuel ou coder le soir ?
+                                </p>
+                                <div className="bg-blue-50 p-2 text-xs font-bold border border-blue-200 text-blue-800">
+                                    -> Cumul CDI + e-kigai simplifié.
+                                </div>
+                            </div>
+
+                            {/* Mode 2: Freelance */}
+                            <div className="bg-white p-6 border-2 border-black hover:-translate-y-2 transition-transform shadow-lg group transform md:-translate-y-4">
+                                <div className="w-12 h-12 bg-green-100 rounded-full border border-black flex items-center justify-center mb-4 group-hover:bg-green-300 transition-colors">
+                                    <span className="font-bold text-xl">2</span>
+                                </div>
+                                <h3 className="text-xl font-bold mb-2">Full Freelance</h3>
+                                <p className="font-mono text-sm opacity-80 mb-4">
+                                    Devenez consultant indépendant (AMOA, Dev, Chef de projet) avec la sécurité du salariat.
+                                </p>
+                                <div className="bg-green-50 p-2 text-xs font-bold border border-green-200 text-green-800">
+                                    -> TJM optimisé & Chômage.
+                                </div>
+                            </div>
+
+                            {/* Mode 3: Entrepreneur */}
+                            <div className="bg-white p-6 border-2 border-black hover:-translate-y-2 transition-transform shadow-lg group">
+                                <div className="w-12 h-12 bg-yellow-100 rounded-full border border-black flex items-center justify-center mb-4 group-hover:bg-yellow-300 transition-colors">
+                                    <span className="font-bold text-xl">3</span>
+                                </div>
+                                <h3 className="text-xl font-bold mb-2">Start-upper</h3>
+                                <p className="font-mono text-sm opacity-80 mb-4">
+                                    Testez votre marché et facturez vos premiers clients sans créer de structure juridique lourde.
+                                </p>
+                                <div className="bg-yellow-50 p-2 text-xs font-bold border border-yellow-200 text-yellow-800">
+                                    -> Focus Produit, pas Paperasse.
+                                </div>
+                            </div>
+
+                        </div>
+                    </section>
+
+                    {/* --- LE BONUS ALUMNI (DOSSIER SPECIAL) --- */}
+                    <section className="py-20 px-4 bg-[#f0f9ff] border-y-4 border-black relative overflow-hidden">
+                         <div className="absolute top-0 right-0 w-64 h-64 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 pointer-events-none"></div>
+
+                         <div className="max-w-5xl mx-auto relative z-10">
+                            <div className="text-center mb-12">
+                                <div className="sticker bg-black text-white inline-block px-4 py-1 rotate-[-2deg] mb-4">
+                                    <span className="font-mono font-bold">OFFRE SPÉCIALE EPMI</span>
+                                </div>
+                                <h2 className="text-4xl md:text-6xl font-bold">
+                                    POURQUOI PASSER PAR ICI ?
+                                </h2>
+                            </div>
+
+                            <div className="bg-white border-2 border-dashed border-blue-500 p-8 md:p-12 shadow-[12px_12px_0px_rgba(0,0,255,0.1)] relative">
+                                {/* Punaise */}
+                                <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-red-500 border-2 border-black shadow-md"></div>
+
+                                <div className="grid md:grid-cols-2 gap-8">
+                                    <div className="flex gap-4">
+                                        <div className="mt-1"><ScribbleIcon path={Icons.GraduationCap} className="w-8 h-8 text-blue-600"/></div>
+                                        <div>
+                                            <h3 className="font-bold text-xl mb-1">Formations Dédiées</h3>
+                                            <p className="font-mono text-sm opacity-80">
+                                                Accès à des formations continues en partenariat direct avec l'ECAM EPMI pour rester à jour techniquement.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex gap-4">
+                                        <div className="mt-1"><ScribbleIcon path={Icons.Star} className="w-8 h-8 text-yellow-500"/></div>
+                                        <div>
+                                            <h3 className="font-bold text-xl mb-1">Centre d'Expertise</h3>
+                                            <p className="font-mono text-sm opacity-80">
+                                                Possibilité de réaliser des interventions rémunérées (cours, jurys) au sein de l'école via e-kigai.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex gap-4">
+                                        <div className="mt-1"><ScribbleIcon path={Icons.Handshake} className="w-8 h-8 text-green-600"/></div>
+                                        <div>
+                                            <h3 className="font-bold text-xl mb-1">Réseau & Projets</h3>
+                                            <p className="font-mono text-sm opacity-80">
+                                                Priorité sur les missions proposées par le réseau des anciens. Participation aux projets incubés.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex gap-4">
+                                        <div className="mt-1"><ScribbleIcon path={Icons.Rocket} className="w-8 h-8 text-purple-600"/></div>
+                                        <div>
+                                            <h3 className="font-bold text-xl mb-1">Frais Réduits</h3>
+                                            <p className="font-mono text-sm opacity-80">
+                                                Package de bienvenue avec des frais de gestion réduits sans attendre les 6 premiers mois d'activité.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                         </div>
+                    </section>
+
+                    {/* --- CTA FINAL --- */}
+                    <section className="py-24 text-center px-4">
+                        <h2 className="text-4xl font-bold mb-8">Prêt à activer le réseau ?</h2>
+                        <a href="https://mte.typeform.com/to/R4Oy7cAq" className="sticker bg-blue-600 text-white px-8 py-4 font-bold text-xl inline-block hover:bg-white hover:text-blue-600 border-2 border-black transition-colors btn-wobble">
+                            REJOINDRE LES EPMIstes EN MODE FREE
+                        </a>
+                        <p className="mt-4 font-mono text-xs opacity-50">Remplis vite notre formulaire pour qu'on avance ensemble !</p>
+                    </section>
+
+                    <footer className="text-center mt-10 font-mono text-xs opacity-50 pb-10">
+                        © 2026 e-kigai x Alumni EPMI. <a href="index.html" className="underline">Retour au site principal</a>
+                    </footer>
+
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<EpmiPage />);
+    </script>
+</body>
+</html>

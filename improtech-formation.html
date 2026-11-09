@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improvisaction Tech - Le Choc des Cerveaux</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=League+Spartan:wght@300;400;700;900&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'impro-yellow': '#FFD700',
+                        'impro-black': '#000000',
+                        'impro-white': '#FFFFFF',
+                    },
+                    fontFamily: {
+                        'sans': ['League Spartan', 'sans-serif'],
+                        'display': ['Archivo Black', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'brutal': '8px 8px 0px 0px #000000',
+                        'brutal-hover': '4px 4px 0px 0px #000000',
+                        'brutal-sm': '4px 4px 0px 0px #000000',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #FFFFFF; color: #000000; overflow-x: hidden; }
+        .text-outline { -webkit-text-stroke: 1px #000000; color: transparent; }
+        .marquee-container { overflow: hidden; white-space: nowrap; }
+        .marquee-content { display: inline-block; animation: marquee 20s linear infinite; }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .glitch-wrapper { position: relative; }
+        .glitch-wrapper::before, .glitch-wrapper::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .glitch-wrapper::before { left: 2px; text-shadow: -1px 0 #FFD700; clip: rect(44px, 450px, 56px, 0); animation: glitch-anim 5s infinite linear alternate-reverse; }
+        .glitch-wrapper::after { left: -2px; text-shadow: -1px 0 #000000; clip: rect(44px, 450px, 56px, 0); animation: glitch-anim2 5s infinite linear alternate-reverse; }
+        @keyframes glitch-anim { 0% { clip: rect(32px, 9999px, 18px, 0); } 20% { clip: rect(6px, 9999px, 88px, 0); } 40% { clip: rect(62px, 9999px, 12px, 0); } 60% { clip: rect(19px, 9999px, 44px, 0); } 80% { clip: rect(76px, 9999px, 3px, 0); } 100% { clip: rect(24px, 9999px, 91px, 0); } }
+        @keyframes glitch-anim2 { 0% { clip: rect(12px, 9999px, 8px, 0); } 20% { clip: rect(86px, 9999px, 38px, 0); } 40% { clip: rect(32px, 9999px, 42px, 0); } 60% { clip: rect(9px, 9999px, 24px, 0); } 80% { clip: rect(16px, 9999px, 73px, 0); } 100% { clip: rect(44px, 9999px, 11px, 0); } }
+        .rotate-hover:hover { transform: rotate(-2deg) scale(1.02); transition: transform 0.2s ease; }
+        ::-webkit-scrollbar { width: 12px; }
+        ::-webkit-scrollbar-track { background: #FFFFFF; border-left: 2px solid black; }
+        ::-webkit-scrollbar-thumb { background: #FFD700; border: 2px solid black; }
+        .tab-active { background-color: #FFD700 !important; opacity: 1 !important; transform: translateY(-4px); box-shadow: 8px 8px 0px 0px #000; }
+        .tab-inactive { background-color: #fff; opacity: 0.6; }
+        .tab-inactive:hover { opacity: 1; }
+        .programme-card { transition: all 0.2s ease; }
+        .programme-card:hover { transform: translateY(-4px); box-shadow: 12px 12px 0px 0px #000000; }
+        .livrable-tag { display: inline-block; background: #FFD700; border: 2px solid #000; padding: 2px 10px; font-size: 0.75rem; font-weight: 700; margin: 3px 2px; }
+        .public-tag { display: inline-block; background: #000; color: #FFD700; border: 2px solid #000; padding: 2px 10px; font-size: 0.75rem; font-weight: 700; margin: 3px 2px; }
+        .format-badge { font-family: 'Archivo Black', sans-serif; font-size: 0.7rem; background: #fff; border: 2px solid #000; padding: 3px 8px; display: inline-block; margin: 2px; box-shadow: 3px 3px 0 #000; }
+    </style>
+</head>
+<body class="font-sans antialiased selection:bg-impro-yellow selection:text-black">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-white border-b-4 border-black top-0 left-0">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="#" class="font-display font-bold text-2xl tracking-tighter hover:text-impro-yellow transition-colors">
+                IMPROVISACTION<span class="text-impro-yellow text-4xl">.</span>TECH
+            </a>
+            <button onclick="document.getElementById('global-menu').classList.toggle('hidden')" class="text-3xl hover:text-impro-yellow transition-colors cursor-pointer focus:outline-none">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+        <div id="global-menu" class="hidden absolute top-full left-0 w-full bg-impro-yellow border-b-4 border-black p-4 flex flex-col space-y-2 font-bold text-xl md:text-2xl text-center shadow-brutal z-40">
+            <a href="#le-concept" onclick="document.getElementById('global-menu').classList.add('hidden')" class="hover:bg-black hover:text-white py-3 border-2 border-transparent hover:border-black transition-all">LE CONCEPT</a>
+            <a href="#le-duo" onclick="document.getElementById('global-menu').classList.add('hidden')" class="hover:bg-black hover:text-white py-3 border-2 border-transparent hover:border-black transition-all">LE DUO</a>
+            <a href="#les-programmes" onclick="document.getElementById('global-menu').classList.add('hidden')" class="hover:bg-black hover:text-white py-3 border-2 border-transparent hover:border-black transition-all">PROGRAMMES</a>
+            <a href="#formats" onclick="document.getElementById('global-menu').classList.add('hidden')" class="hover:bg-black hover:text-white py-3 border-2 border-transparent hover:border-black transition-all">FORMATS</a>
+            <a href="#differenciaton" onclick="document.getElementById('global-menu').classList.add('hidden')" class="hover:bg-black hover:text-white py-3 border-2 border-transparent hover:border-black transition-all">DIFFÉRENCIATION</a>
+            <a href="#contact" onclick="document.getElementById('global-menu').classList.add('hidden')" class="hover:bg-black hover:text-white py-3 border-2 border-transparent hover:border-black transition-all">CONTACT</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="pt-32 pb-20 bg-impro-yellow border-b-4 border-black relative overflow-hidden">
+        <div class="absolute top-20 right-10 text-9xl opacity-10 pointer-events-none rotate-12"><i class="fa-solid fa-robot"></i></div>
+        <div class="absolute bottom-10 left-10 text-9xl opacity-10 pointer-events-none -rotate-12"><i class="fa-solid fa-masks-theater"></i></div>
+        <div class="container mx-auto px-4 text-center relative z-10">
+            <div class="inline-block bg-white border-2 border-black px-4 py-1 mb-6 transform -rotate-2 shadow-brutal-sm font-bold uppercase tracking-widest text-sm">
+                Attention : Contenu hautement interactif
+            </div>
+            <h1 class="font-display font-extrabold text-5xl md:text-8xl leading-none mb-6 glitch-wrapper" data-text="LE CHOC DES CERVEAUX">
+                LE CHOC DES <br> CERVEAUX
+            </h1>
+            <p class="text-xl md:text-3xl font-medium max-w-3xl mx-auto mb-10 leading-relaxed">
+                Quand le <span class="bg-white px-2 border-2 border-black rotate-1 inline-block shadow-brutal-sm">Stand-up</span> percute la <span class="bg-black text-white px-2 -rotate-1 inline-block">Cyber-Stratégie</span>.
+                <br>Arrêtez de dormir en formation.
+            </p>
+            <div class="flex flex-col md:flex-row justify-center items-center gap-6">
+                <a href="#les-programmes" class="bg-black text-white text-xl font-bold py-4 px-10 border-2 border-black shadow-brutal hover:bg-white hover:text-black hover:shadow-brutal-hover hover:translate-x-1 hover:translate-y-1 transition-all">
+                    DÉCOUVRIR LES 4 PROGRAMMES
+                </a>
+                <a href="#le-duo" class="bg-white text-black text-xl font-bold py-4 px-10 border-2 border-black shadow-brutal hover:bg-impro-yellow hover:shadow-brutal-hover hover:translate-x-1 hover:translate-y-1 transition-all">
+                    QUI SONT CES FOUS ?
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Marquee -->
+    <div class="bg-black text-impro-yellow border-b-4 border-black py-3 font-mono font-bold text-xl uppercase overflow-hidden">
+        <div class="marquee-container">
+            <div class="marquee-content">
+                IA Générative • Cybersécurité • Improvisation Théâtrale • Prompt Engineering • Stand-up • Gouvernance • Social Engineering • Rires • Phishing • War Room • Ransomware • RGPD • ANSSI • Battle de Prompts • Codir • IA Générative • Cybersécurité • Improvisation Théâtrale • Prompt Engineering • Stand-up • Gouvernance • Social Engineering • Rires • Phishing • War Room • Ransomware • RGPD • ANSSI • Battle de Prompts • Codir •&nbsp;
+            </div>
+        </div>
+    </div>
+
+    <!-- Le Duo -->
+    <section id="le-duo" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="font-display font-black text-5xl md:text-6xl text-center mb-16 uppercase">
+                <span class="text-outline">Le Duo</span> Explosif
+            </h2>
+            <div class="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto items-stretch">
+                <div class="bg-white border-4 border-black p-8 shadow-brutal rotate-hover relative group">
+                    <div class="absolute -top-6 -right-6 bg-impro-yellow border-2 border-black rounded-full w-20 h-20 flex items-center justify-center text-3xl shadow-brutal-sm z-10 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-microphone-lines"></i>
+                    </div>
+                    <div class="h-48 bg-gray-100 border-2 border-black mb-6 flex items-center justify-center overflow-hidden">
+                        <i class="fa-solid fa-user-astronaut text-8xl text-gray-300"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-3xl mb-1">JEAN-CHARLES MULLIER</h3>
+                    <p class="font-mono text-sm bg-black text-white inline-block px-2 py-1 mb-4">Le Miroir Comportemental</p>
+                    <p class="text-lg leading-relaxed">Ex-Leader du <strong>Jamel Comedy Club</strong>.<br>Il incarne vos pires cauchemars managériaux pour mieux les désamorcer. Son super-pouvoir ? Transformer une salle de codir glaciale en club de stand-up.</p>
+                    <ul class="mt-6 space-y-2 font-bold">
+                        <li><i class="fa-solid fa-check text-impro-yellow bg-black p-1 mr-2 text-xs"></i> Expert Communication</li>
+                        <li><i class="fa-solid fa-check text-impro-yellow bg-black p-1 mr-2 text-xs"></i> Improvisateur</li>
+                        <li><i class="fa-solid fa-check text-impro-yellow bg-black p-1 mr-2 text-xs"></i> Briseur de glace</li>
+                    </ul>
+                </div>
+                <div class="bg-black text-white border-4 border-black p-8 shadow-brutal rotate-hover relative group md:mt-12">
+                    <div class="absolute -top-6 -left-6 bg-white text-black border-2 border-black rounded-full w-20 h-20 flex items-center justify-center text-3xl shadow-brutal-sm z-10 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+                    <div class="h-48 bg-gray-800 border-2 border-white mb-6 flex items-center justify-center overflow-hidden">
+                        <i class="fa-solid fa-user-secret text-8xl text-gray-600"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-3xl mb-1 text-impro-yellow">MEHDI TERBECHE</h3>
+                    <p class="font-mono text-sm bg-white text-black inline-block px-2 py-1 mb-4">L'Architecte Digital</p>
+                    <p class="text-lg leading-relaxed">Expert en <strong>Stratégie Digitale & IA</strong>.<br>Il traduit le jargon technique en plan d'action. Son super-pouvoir ? Vous faire comprendre le Prompt Engineering avant que vous ayez fini votre café.</p>
+                    <ul class="mt-6 space-y-2 font-bold">
+                        <li><i class="fa-solid fa-check text-black bg-impro-yellow p-1 mr-2 text-xs"></i> Expert Cybersécurité</li>
+                        <li><i class="fa-solid fa-check text-black bg-impro-yellow p-1 mr-2 text-xs"></i> Stratège IA</li>
+                        <li><i class="fa-solid fa-check text-black bg-impro-yellow p-1 mr-2 text-xs"></i> Consultant SI</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Vue d'ensemble des 4 programmes -->
+    <section id="le-concept" class="py-20 bg-black text-white border-t-4 border-b-4 border-black">
+        <div class="container mx-auto px-4">
+            <h2 class="font-display font-black text-5xl md:text-6xl text-center mb-4 uppercase">
+                4 PROGRAMMES. <span class="text-impro-yellow">UNE SEULE RÈGLE.</span>
+            </h2>
+            <p class="text-center text-xl max-w-2xl mx-auto mb-16 text-gray-300">On ne vous informe pas. On vous entraîne.</p>
+            <div class="overflow-x-auto">
+                <table class="w-full border-collapse text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-impro-yellow text-black">
+                            <th class="border-2 border-white p-3 text-left font-display uppercase">Programme</th>
+                            <th class="border-2 border-white p-3 text-left font-display uppercase">Public</th>
+                            <th class="border-2 border-white p-3 text-left font-display uppercase">Promesse</th>
+                            <th class="border-2 border-white p-3 text-left font-display uppercase">Format Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="hover:bg-gray-900 transition-colors">
+                            <td class="border-2 border-gray-700 p-3 font-bold">L'IA au Codir :<br><span class="text-impro-yellow">Visionnaire ou Illusionniste ?</span></td>
+                            <td class="border-2 border-gray-700 p-3 text-gray-300">Codir, directions générales, directions fonctionnelles</td>
+                            <td class="border-2 border-gray-700 p-3 text-gray-300">Sortir du bluff et piloter l'IA comme un sujet de gouvernance, de données, de rôles et de priorisation métier.</td>
+                            <td class="border-2 border-gray-700 p-3"><span class="bg-impro-yellow text-black px-2 py-1 font-bold text-xs">ACTION</span><br><span class="text-gray-300 text-xs">Atelier d'alignement stratégique et cartographie des cas d'usage.</span></td>
+                        </tr>
+                        <tr class="hover:bg-gray-900 transition-colors">
+                            <td class="border-2 border-gray-700 p-3 font-bold">Mon Nouveau Collègue<br><span class="text-impro-yellow">s'appelle Algorithme</span></td>
+                            <td class="border-2 border-gray-700 p-3 text-gray-300">Managers de proximité, équipes support, collaborateurs métier</td>
+                            <td class="border-2 border-gray-700 p-3 text-gray-300">Apprendre à utiliser l'IA générative au quotidien pour gagner du temps sans perdre en qualité ni en vigilance.</td>
+                            <td class="border-2 border-gray-700 p-3"><span class="bg-impro-yellow text-black px-2 py-1 font-bold text-xs">ACTION</span><br><span class="text-gray-300 text-xs">Battle de prompts sur cas réels.</span></td>
+                        </tr>
+                        <tr class="hover:bg-gray-900 transition-colors">
+                            <td class="border-2 border-gray-700 p-3 font-bold">Hack-Moi Si Tu Peux :<br><span class="text-impro-yellow">Gouvernance</span></td>
+                            <td class="border-2 border-gray-700 p-3 text-gray-300">Dirigeants, Codir, cellule de crise, directions support</td>
+                            <td class="border-2 border-gray-700 p-3 text-gray-300">Savoir décider, coordonner et communiquer sous pression lors d'une crise cyber ou d'un ransomware.</td>
+                            <td class="border-2 border-gray-700 p-3"><span class="bg-impro-yellow text-black px-2 py-1 font-bold text-xs">ACTION</span><br><span class="text-gray-300 text-xs">Simulation War Room chronométrée.</span></td>
+                        </tr>
+                        <tr class="hover:bg-gray-900 transition-colors">
+                            <td class="border-2 border-gray-700 p-3 font-bold">Le Maillon Faible,<br><span class="text-impro-yellow">C'est Pas Moi !</span></td>
+                            <td class="border-2 border-gray-700 p-3 text-gray-300">Opérationnels, fonctions support, commerciaux, équipes administratives</td>
+                            <td class="border-2 border-gray-700 p-3 text-gray-300">Développer les bons réflexes face au phishing, au social engineering et aux erreurs du quotidien numérique.</td>
+                            <td class="border-2 border-gray-700 p-3"><span class="bg-impro-yellow text-black px-2 py-1 font-bold text-xs">ACTION</span><br><span class="text-gray-300 text-xs">Atelier Détecteur de Mensonges Digital.</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Les 4 Programmes Détaillés -->
+    <section id="les-programmes" class="py-20 bg-gray-50 border-t-4 border-black">
+        <div class="container mx-auto px-4">
+            <h2 class="font-display font-black text-5xl md:text-7xl text-center mb-4">
+                CHOISISSEZ VOTRE <span class="bg-impro-yellow px-2">POISON</span>
+            </h2>
+            <p class="text-center text-xl max-w-2xl mx-auto mb-6">Quatre programmes. Deux univers. La même exigence de résultat.</p>
+
+            <!-- Tabs Controls -->
+            <div class="flex flex-col md:flex-row justify-center gap-4 mb-12">
+                <button onclick="switchTab('ai')" id="btn-ai" class="tab-active text-xl font-display font-bold py-4 px-8 border-4 border-black transition-all">
+                    <i class="fa-solid fa-microchip mr-2"></i> INTELLIGENCE ARTIFICIELLE
+                </button>
+                <button onclick="switchTab('cyber')" id="btn-cyber" class="tab-inactive text-xl font-display font-bold py-4 px-8 border-4 border-black transition-all hover:-translate-y-1">
+                    <i class="fa-solid fa-shield-halved mr-2"></i> CYBERSÉCURITÉ
+                </button>
+            </div>
+
+            <!-- Content Area -->
+            <div class="max-w-6xl mx-auto">
+
+                <!-- ============ AI SECTION ============ -->
+                <div id="content-ai" class="space-y-8">
+
+                    <!-- Programme 1 -->
+                    <div class="programme-card bg-white border-4 border-black p-8 shadow-brutal relative">
+                        <div class="absolute -top-5 left-8 bg-black text-white px-6 py-1 font-display font-bold uppercase text-sm tracking-widest border-2 border-black">Programme 01 — Niveau Stratégique</div>
+                        <div class="grid md:grid-cols-3 gap-8 mt-4">
+                            <div class="md:col-span-1">
+                                <div class="bg-impro-yellow border-2 border-black p-1 inline-block mb-3">
+                                    <i class="fa-solid fa-chess-king text-4xl p-2"></i>
+                                </div>
+                                <h3 class="font-display font-bold text-3xl mb-3 leading-tight">L'IA au Codir :<br>Visionnaire ou Illusionniste ?</h3>
+                                <div class="mb-4">
+                                    <p class="font-bold text-xs uppercase mb-2">Public cible</p>
+                                    <span class="public-tag">Codir</span>
+                                    <span class="public-tag">Directions générales</span>
+                                    <span class="public-tag">Directions fonctionnelles</span>
+                                </div>
+                                <p class="text-base leading-relaxed text-gray-700">Cette formation s'adresse aux membres du comité de direction qui veulent traiter l'IA comme un sujet de gouvernance et non comme une suite d'effets d'annonce.</p>
+                            </div>
+                            <div class="md:col-span-2 space-y-5">
+                                <div class="bg-impro-yellow bg-opacity-20 p-5 border-l-4 border-black">
+                                    <h4 class="font-bold uppercase text-sm mb-2"><i class="fa-solid fa-theater-masks mr-2"></i>Le Show</h4>
+                                    <p class="text-sm leading-relaxed">Le show met en scène un manager dépassé qui bluffe avec des mots-clés comme <strong>"machine learning"</strong> ou <strong>"agentique"</strong> sans être capable de répondre aux vraies questions du Codir : quelles données, quels risques, quelles responsabilités, quel ROI, quel impact humain.</p>
+                                </div>
+                                <div class="bg-gray-100 p-5 border-l-4 border-gray-400">
+                                    <h4 class="font-bold uppercase text-sm mb-2"><i class="fa-solid fa-glasses mr-2"></i>L'Expertise</h4>
+                                    <ul class="text-sm space-y-1 list-disc list-inside">
+                                        <li>Gouvernance et sécurité des données</li>
+                                        <li>Change management et clarification des rôles</li>
+                                        <li>Cartographie et priorisation des cas d'usage selon la valeur, le risque et la faisabilité</li>
+                                    </ul>
+                                </div>
+                                <div class="font-mono text-sm border-t-2 border-dashed border-black pt-4">
+                                    <span class="bg-black text-white px-2 py-1">ACTION</span>
+                                    <span class="ml-2">Atelier stratégique : arbitrage des cas d'usage, définition de garde-fous, feuille de route à 90 jours.</span>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-xs uppercase mb-2">Livrables possibles</p>
+                                    <span class="livrable-tag">Matrice cas d'usage prioritaires</span>
+                                    <span class="livrable-tag">Schéma gouvernance IA</span>
+                                    <span class="livrable-tag">Trame charte d'usage</span>
+                                    <span class="livrable-tag">Plan d'action 90 jours</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Programme 2 -->
+                    <div class="programme-card bg-white border-4 border-black p-8 shadow-brutal relative">
+                        <div class="absolute -top-5 left-8 bg-impro-yellow text-black px-6 py-1 font-display font-bold uppercase text-sm tracking-widest border-2 border-black">Programme 02 — Niveau Opérationnel</div>
+                        <div class="grid md:grid-cols-3 gap-8 mt-4">
+                            <div class="md:col-span-1">
+                                <div class="bg-black border-2 border-black p-1 inline-block mb-3">
+                                    <i class="fa-solid fa-robot text-4xl p-2 text-impro-yellow"></i>
+                                </div>
+                                <h3 class="font-display font-bold text-3xl mb-3 leading-tight">Mon Nouveau Collègue s'appelle Algorithme</h3>
+                                <div class="mb-4">
+                                    <p class="font-bold text-xs uppercase mb-2">Public cible</p>
+                                    <span class="public-tag">Managers de proximité</span>
+                                    <span class="public-tag">Équipes support</span>
+                                    <span class="public-tag">Collaborateurs métier</span>
+                                </div>
+                                <p class="text-base leading-relaxed text-gray-700">Cette formation vise les équipes opérationnelles qui veulent utiliser l'IA générative de manière utile, rapide et prudente dans leur travail quotidien.</p>
+                            </div>
+                            <div class="md:col-span-2 space-y-5">
+                                <div class="bg-impro-yellow bg-opacity-20 p-5 border-l-4 border-black">
+                                    <h4 class="font-bold uppercase text-sm mb-2"><i class="fa-solid fa-theater-masks mr-2"></i>Le Show</h4>
+                                    <p class="text-sm leading-relaxed">Le show repose sur un one-man-show interactif autour de la formule <strong>"ChatGPT est un stagiaire ivre"</strong>, pour faire émerger les peurs classiques, les fantasmes de remplacement et les malentendus sur ce que font réellement les outils d'IA générative.</p>
+                                </div>
+                                <div class="bg-gray-100 p-5 border-l-4 border-gray-400">
+                                    <h4 class="font-bold uppercase text-sm mb-2"><i class="fa-solid fa-glasses mr-2"></i>L'Expertise</h4>
+                                    <ul class="text-sm space-y-1 list-disc list-inside">
+                                        <li>Prompt engineering pour gagner du temps</li>
+                                        <li>Démystification des outils : Copilot, Midjourney…</li>
+                                        <li>Éthique, biais et hallucinations</li>
+                                    </ul>
+                                </div>
+                                <div class="font-mono text-sm border-t-2 border-dashed border-black pt-4">
+                                    <span class="bg-black text-white px-2 py-1">ACTION</span>
+                                    <span class="ml-2">Battle de prompts sur cas réels : prompt naïf vs structuré vs optimisé sur des tâches utiles au métier.</span>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-xs uppercase mb-2">Livrables possibles</p>
+                                    <span class="livrable-tag">Fiche structures de prompts</span>
+                                    <span class="livrable-tag">Grille de vérification des réponses</span>
+                                    <span class="livrable-tag">Bibliothèque de prompts métier</span>
+                                    <span class="livrable-tag">Mini-catalogue de cas d'usage</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div><!-- end AI -->
+
+                <!-- ============ CYBER SECTION ============ -->
+                <div id="content-cyber" class="hidden space-y-8">
+
+                    <!-- Programme 3 -->
+                    <div class="programme-card bg-black text-white border-4 border-black p-8 shadow-brutal relative">
+                        <div class="absolute -top-5 left-8 bg-white text-black px-6 py-1 font-display font-bold uppercase text-sm tracking-widest border-2 border-black">Programme 03 — Niveau Stratégique</div>
+                        <div class="grid md:grid-cols-3 gap-8 mt-4">
+                            <div class="md:col-span-1">
+                                <div class="bg-impro-yellow border-2 border-black p-1 inline-block mb-3">
+                                    <i class="fa-solid fa-shield-virus text-4xl p-2 text-black"></i>
+                                </div>
+                                <h3 class="font-display font-bold text-3xl mb-3 leading-tight text-impro-yellow">Hack-Moi Si Tu Peux :<br>Gouvernance</h3>
+                                <div class="mb-4">
+                                    <p class="font-bold text-xs uppercase mb-2 text-gray-400">Public cible</p>
+                                    <span class="bg-impro-yellow text-black border-2 border-white inline-block px-2 py-1 text-xs font-bold m-1">Dirigeants</span>
+                                    <span class="bg-impro-yellow text-black border-2 border-white inline-block px-2 py-1 text-xs font-bold m-1">Codir</span>
+                                    <span class="bg-impro-yellow text-black border-2 border-white inline-block px-2 py-1 text-xs font-bold m-1">Cellule de crise</span>
+                                    <span class="bg-impro-yellow text-black border-2 border-white inline-block px-2 py-1 text-xs font-bold m-1">Directions support</span>
+                                </div>
+                                <p class="text-base leading-relaxed text-gray-300">Cette formation s'adresse aux dirigeants et décideurs qui doivent piloter une crise cyber dans un contexte d'incertitude, de pression médiatique et de coordination transverse.</p>
+                            </div>
+                            <div class="md:col-span-2 space-y-5">
+                                <div class="bg-white bg-opacity-10 p-5 border-l-4 border-impro-yellow">
+                                    <h4 class="font-bold uppercase text-sm mb-2"><i class="fa-solid fa-theater-masks mr-2"></i>Le Show</h4>
+                                    <p class="text-sm leading-relaxed text-gray-200">Le show démarre par un scénario de ransomware : le PDG se réveille, les fichiers sont chiffrés, les équipes s'agitent et la crise révèle en quelques minutes les failles de gouvernance, de communication et de préparation.</p>
+                                </div>
+                                <div class="bg-gray-800 p-5 border-l-4 border-gray-600">
+                                    <h4 class="font-bold uppercase text-sm mb-2"><i class="fa-solid fa-glasses mr-2"></i>L'Expertise</h4>
+                                    <ul class="text-sm space-y-1 list-disc list-inside text-gray-300">
+                                        <li>Maturité cyber et failles humaines</li>
+                                        <li>Communication de crise sous pression</li>
+                                        <li>Cadre légal et réflexes RGPD liés à un incident ou une violation de données</li>
+                                    </ul>
+                                </div>
+                                <div class="font-mono text-sm border-t-2 border-dashed border-gray-600 pt-4">
+                                    <span class="bg-impro-yellow text-black px-2 py-1">ACTION</span>
+                                    <span class="ml-2 text-gray-300">Simulation War Room chronométrée, inspirée des bonnes pratiques d'exercice de gestion de crise cyber mises en avant par l'ANSSI.</span>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-xs uppercase mb-2 text-gray-400">Livrables possibles</p>
+                                    <span class="livrable-tag">Cartographie des rôles de crise</span>
+                                    <span class="livrable-tag">Checklist des premières heures</span>
+                                    <span class="livrable-tag">Trames de messages</span>
+                                    <span class="livrable-tag">Grille de maturité gouvernance cyber</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Programme 4 -->
+                    <div class="programme-card bg-black text-white border-4 border-black p-8 shadow-brutal relative">
+                        <div class="absolute -top-5 left-8 bg-impro-yellow text-black px-6 py-1 font-display font-bold uppercase text-sm tracking-widest border-2 border-black">Programme 04 — Niveau Opérationnel</div>
+                        <div class="grid md:grid-cols-3 gap-8 mt-4">
+                            <div class="md:col-span-1">
+                                <div class="bg-white border-2 border-black p-1 inline-block mb-3">
+                                    <i class="fa-solid fa-user-ninja text-4xl p-2 text-black"></i>
+                                </div>
+                                <h3 class="font-display font-bold text-3xl mb-3 leading-tight text-impro-yellow">Le Maillon Faible, C'est Pas Moi !</h3>
+                                <div class="mb-4">
+                                    <p class="font-bold text-xs uppercase mb-2 text-gray-400">Public cible</p>
+                                    <span class="bg-impro-yellow text-black border-2 border-white inline-block px-2 py-1 text-xs font-bold m-1">Opérationnels</span>
+                                    <span class="bg-impro-yellow text-black border-2 border-white inline-block px-2 py-1 text-xs font-bold m-1">Fonctions support</span>
+                                    <span class="bg-impro-yellow text-black border-2 border-white inline-block px-2 py-1 text-xs font-bold m-1">Commerciaux</span>
+                                    <span class="bg-impro-yellow text-black border-2 border-white inline-block px-2 py-1 text-xs font-bold m-1">Équipes administratives</span>
+                                </div>
+                                <p class="text-base leading-relaxed text-gray-300">Cette formation cible les opérationnels exposés aux risques les plus fréquents : phishing, faux support informatique, usurpation d'identité, mots de passe faibles, WiFi mal sécurisé.</p>
+                            </div>
+                            <div class="md:col-span-2 space-y-5">
+                                <div class="bg-white bg-opacity-10 p-5 border-l-4 border-impro-yellow">
+                                    <h4 class="font-bold uppercase text-sm mb-2"><i class="fa-solid fa-theater-masks mr-2"></i>Le Show</h4>
+                                    <p class="text-sm leading-relaxed text-gray-200">Le show propose une démonstration live de social engineering pour montrer comment un mot de passe ou une information sensible peuvent être obtenus avec de l'assurance, du contexte et une fausse urgence.</p>
+                                </div>
+                                <div class="bg-gray-800 p-5 border-l-4 border-gray-600">
+                                    <h4 class="font-bold uppercase text-sm mb-2"><i class="fa-solid fa-glasses mr-2"></i>L'Expertise</h4>
+                                    <ul class="text-sm space-y-1 list-disc list-inside text-gray-300">
+                                        <li>Anatomie du phishing</li>
+                                        <li>Hygiène numérique : mots de passe, accès, WiFi</li>
+                                        <li>Procédures d'escalade en cas de doute ou d'incident</li>
+                                    </ul>
+                                </div>
+                                <div class="font-mono text-sm border-t-2 border-dashed border-gray-600 pt-4">
+                                    <span class="bg-impro-yellow text-black px-2 py-1">ACTION</span>
+                                    <span class="ml-2 text-gray-300">Atelier Détecteur de Mensonges Digital : trier, qualifier et escalader des situations réalistes pour ancrer les bons réflexes.</span>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-xs uppercase mb-2 text-gray-400">Livrables possibles</p>
+                                    <span class="livrable-tag">Fiche anti-phishing</span>
+                                    <span class="livrable-tag">Checklist mots de passe & messagerie</span>
+                                    <span class="livrable-tag">Rappel procédures d'alerte</span>
+                                    <span class="livrable-tag">Kit exemples vrais/faux</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div><!-- end Cyber -->
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Methodology -->
+    <section class="py-20 bg-impro-yellow border-t-4 border-b-4 border-black overflow-hidden">
+        <div class="container mx-auto px-4">
+            <h2 class="font-display font-black text-4xl md:text-6xl mb-12 text-center">LA MÉTHODE <br> EN 5 ÉTAPES</h2>
+            <div class="flex flex-wrap justify-center gap-4">
+                <div class="w-full md:w-1/6 bg-white border-2 border-black p-4 shadow-brutal-sm hover:rotate-3 transition-transform cursor-default">
+                    <span class="text-4xl font-black block mb-2">01</span>
+                    <h4 class="font-bold uppercase">Briser la glace</h4>
+                    <p class="text-sm">Le Show pour capter l'attention.</p>
+                </div>
+                <div class="w-full md:w-1/6 bg-white border-2 border-black p-4 shadow-brutal-sm hover:-rotate-3 transition-transform cursor-default md:mt-8">
+                    <span class="text-4xl font-black block mb-2">02</span>
+                    <h4 class="font-bold uppercase">Miroir</h4>
+                    <p class="text-sm">L'impro révèle le réel.</p>
+                </div>
+                <div class="w-full md:w-1/6 bg-white border-2 border-black p-4 shadow-brutal-sm hover:rotate-3 transition-transform cursor-default">
+                    <span class="text-4xl font-black block mb-2">03</span>
+                    <h4 class="font-bold uppercase">Éclairage</h4>
+                    <p class="text-sm">Expertise pointue & outils.</p>
+                </div>
+                <div class="w-full md:w-1/6 bg-white border-2 border-black p-4 shadow-brutal-sm hover:-rotate-3 transition-transform cursor-default md:mt-8">
+                    <span class="text-4xl font-black block mb-2">04</span>
+                    <h4 class="font-bold uppercase">Action</h4>
+                    <p class="text-sm">Ateliers concrets.</p>
+                </div>
+                <div class="w-full md:w-1/6 bg-white border-2 border-black p-4 shadow-brutal-sm hover:rotate-3 transition-transform cursor-default">
+                    <span class="text-4xl font-black block mb-2">05</span>
+                    <h4 class="font-bold uppercase">Ancrage</h4>
+                    <p class="text-sm">Débriefing croisé.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Formats -->
+    <section id="formats" class="py-20 bg-white border-b-4 border-black">
+        <div class="container mx-auto px-4">
+            <h2 class="font-display font-black text-4xl md:text-6xl text-center mb-4 uppercase">
+                LES <span class="bg-black text-impro-yellow px-3">FORMATS</span>
+            </h2>
+            <p class="text-center text-xl max-w-2xl mx-auto mb-14">Un seul programme peut prendre plusieurs formes selon vos contraintes et vos ambitions.</p>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 max-w-5xl mx-auto mb-12">
+                <div class="border-4 border-black p-6 text-center shadow-brutal bg-white hover:-translate-y-2 transition-transform cursor-default">
+                    <i class="fa-solid fa-bolt text-3xl mb-3 text-impro-yellow bg-black p-3 inline-block"></i>
+                    <h4 class="font-display font-bold uppercase text-base">Conférence<br>Immersive</h4>
+                    <p class="text-xs mt-2 text-gray-600">Format découverte, fort impact, large audience</p>
+                </div>
+                <div class="border-4 border-black p-6 text-center shadow-brutal bg-impro-yellow hover:-translate-y-2 transition-transform cursor-default md:mt-6">
+                    <i class="fa-solid fa-hammer text-3xl mb-3 text-white bg-black p-3 inline-block"></i>
+                    <h4 class="font-display font-bold uppercase text-base">Atelier<br>Intensif</h4>
+                    <p class="text-xs mt-2 text-gray-700">Petit groupe, production de livrables réels</p>
+                </div>
+                <div class="border-4 border-black p-6 text-center shadow-brutal bg-white hover:-translate-y-2 transition-transform cursor-default">
+                    <i class="fa-solid fa-clock text-3xl mb-3 text-impro-yellow bg-black p-3 inline-block"></i>
+                    <h4 class="font-display font-bold uppercase text-base">Demi-<br>Journée</h4>
+                    <p class="text-xs mt-2 text-gray-600">3h30–4h · format naturel de déploiement intra</p>
+                </div>
+                <div class="border-4 border-black p-6 text-center shadow-brutal bg-black text-white hover:-translate-y-2 transition-transform cursor-default md:mt-6">
+                    <i class="fa-solid fa-calendar-day text-3xl mb-3 text-black bg-impro-yellow p-3 inline-block"></i>
+                    <h4 class="font-display font-bold uppercase text-base">Journées<br>Complètes</h4>
+                    <p class="text-xs mt-2 text-gray-400">1 à 5 jours · Show + expertise + ateliers approfondis + debriefing</p>
+                </div>
+                <div class="border-4 border-black p-6 text-center shadow-brutal bg-white hover:-translate-y-2 transition-transform cursor-default">
+                    <i class="fa-solid fa-sliders text-3xl mb-3 text-impro-yellow bg-black p-3 inline-block"></i>
+                    <h4 class="font-display font-bold uppercase text-base">Parcours<br>Sur Mesure</h4>
+                    <p class="text-xs mt-2 text-gray-600">Combinaison de programmes, contexte spécifique</p>
+                </div>
+            </div>
+            <div class="max-w-3xl mx-auto bg-impro-yellow border-4 border-black p-6 shadow-brutal text-center">
+                <i class="fa-solid fa-star mr-2"></i>
+                <strong>Format recommandé pour un déploiement intra-entreprise :</strong> la demi-journée de 3h30 à 4h, qui laisse le temps de vivre le show, d'apporter les repères essentiels et de produire un vrai temps d'action.
+            </div>
+        </div>
+    </section>
+
+    <!-- Différenciation -->
+    <section id="differenciaton" class="py-20 bg-gray-50 border-b-4 border-black">
+        <div class="container mx-auto px-4 max-w-6xl">
+            <h2 class="font-display font-black text-4xl md:text-6xl text-center mb-4 uppercase">
+                CE QUI NOUS <span class="bg-impro-yellow px-3">DIFFÉRENCIE</span>
+            </h2>
+            <p class="text-center text-xl max-w-2xl mx-auto mb-14">La valeur de cette gamme tient à l'hybridation entre spectacle, pédagogie active et expertise métier.</p>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white border-4 border-black p-8 shadow-brutal">
+                    <div class="flex items-start gap-4 mb-4">
+                        <div class="bg-impro-yellow border-2 border-black p-3 flex-shrink-0">
+                            <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-display font-bold text-2xl mb-2">Une formation classique</h3>
+                            <ul class="text-sm space-y-2 text-gray-600 list-disc list-inside">
+                                <li>Slides PowerPoint et cours magistral</li>
+                                <li>Attention perdue après 20 minutes</li>
+                                <li>Contenu oublié en 48h</li>
+                                <li>Pas de livrable actionnable</li>
+                                <li>Zéro changement de comportement observable</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-black text-white border-4 border-black p-8 shadow-brutal">
+                    <div class="flex items-start gap-4 mb-4">
+                        <div class="bg-impro-yellow border-2 border-black p-3 flex-shrink-0">
+                            <i class="fa-solid fa-rocket text-2xl text-black"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-display font-bold text-2xl mb-2 text-impro-yellow">IMPROVISACTION.TECH</h3>
+                            <ul class="text-sm space-y-2 text-gray-300 list-disc list-inside">
+                                <li>On ne s'informe pas — on déclenche une prise de conscience</li>
+                                <li>On entraîne des comportements et des décisions réelles</li>
+                                <li>Livrables concrets produits pendant la session</li>
+                                <li>Meilleur cadrage IA, meilleurs prompts, meilleure coordination de crise</li>
+                                <li>Meilleurs réflexes de vigilance numérique — mesurables</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-10 bg-impro-yellow border-4 border-black p-8 shadow-brutal text-center">
+                <p class="text-2xl font-display font-black leading-tight">
+                    Le résultat attendu n'est pas une meilleure compréhension du sujet.<br>
+                    <span class="underline decoration-4 decoration-black">C'est une amélioration observable des pratiques.</span>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact CTA -->
+    <section id="contact" class="py-24 bg-white relative">
+        <div class="container mx-auto px-4 text-center">
+            <div class="max-w-4xl mx-auto border-4 border-black p-8 md:p-16 bg-white shadow-brutal relative">
+                <div class="absolute top-4 left-4 w-4 h-4 bg-black rounded-full"></div>
+                <div class="absolute top-4 right-4 w-4 h-4 bg-black rounded-full"></div>
+                <div class="absolute bottom-4 left-4 w-4 h-4 bg-black rounded-full"></div>
+                <div class="absolute bottom-4 right-4 w-4 h-4 bg-black rounded-full"></div>
+                <h2 class="font-display font-black text-4xl md:text-6xl mb-6 uppercase">Prêt à hacker l'ennui ?</h2>
+                <p class="text-xl mb-10 font-medium">Réservez votre "Tech-Comedy Show" pédagogique maintenant.</p>
+                <form class="space-y-4 max-w-md mx-auto text-left">
+                    <div>
+                        <label class="font-bold block mb-1">Votre Nom</label>
+                        <input type="text" class="w-full border-2 border-black p-3 bg-gray-50 focus:bg-impro-yellow focus:outline-none transition-colors" placeholder="Jean-Michel DSI">
+                    </div>
+                    <div>
+                        <label class="font-bold block mb-1">Votre Email</label>
+                        <input type="email" class="w-full border-2 border-black p-3 bg-gray-50 focus:bg-impro-yellow focus:outline-none transition-colors" placeholder="jean-michel@entreprise.fr">
+                    </div>
+                    <div>
+                        <label class="font-bold block mb-1">Programme(s) souhaité(s)</label>
+                        <select class="w-full border-2 border-black p-3 bg-gray-50 focus:bg-impro-yellow focus:outline-none transition-colors font-sans">
+                            <option>L'IA au Codir : Visionnaire ou Illusionniste ?</option>
+                            <option>Mon Nouveau Collègue s'appelle Algorithme</option>
+                            <option>Hack-Moi Si Tu Peux : Gouvernance</option>
+                            <option>Le Maillon Faible, C'est Pas Moi !</option>
+                            <option>Plusieurs programmes / Parcours sur mesure</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="font-bold block mb-1">Votre message</label>
+                        <textarea rows="3" class="w-full border-2 border-black p-3 bg-gray-50 focus:bg-impro-yellow focus:outline-none transition-colors" placeholder="Contexte, effectif, dates souhaitées..."></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-black text-white text-xl font-bold py-4 border-2 border-black shadow-brutal hover:bg-impro-yellow hover:text-black hover:shadow-brutal-hover hover:translate-x-1 hover:translate-y-1 transition-all uppercase">
+                        Envoyer <i class="fa-solid fa-paper-plane ml-2"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white border-t-4 border-impro-yellow py-10">
+        <div class="container mx-auto px-4 text-center">
+            <p class="font-display text-2xl font-bold mb-2">IMPROVISACTION<span class="text-impro-yellow">.</span>TECH</p>
+            <p class="text-gray-500 text-sm mb-4">Le choc des cerveaux. Spectacle. Pédagogie. Expertise.</p>
+            <div class="flex justify-center gap-6 text-sm font-bold">
+                <a href="#le-concept" class="hover:text-impro-yellow transition-colors">Concept</a>
+                <a href="#le-duo" class="hover:text-impro-yellow transition-colors">Le Duo</a>
+                <a href="#les-programmes" class="hover:text-impro-yellow transition-colors">Programmes</a>
+                <a href="#formats" class="hover:text-impro-yellow transition-colors">Formats</a>
+                <a href="#contact" class="hover:text-impro-yellow transition-colors">Contact</a>
+            </div>
+            <p class="text-gray-700 text-xs mt-6">© 2025 Improvisaction.Tech — Tous droits réservés</p>
+        </div>
+    </footer>
+
+    <script>
+        function switchTab(tab) {
+            const aiContent = document.getElementById('content-ai');
+            const cyberContent = document.getElementById('content-cyber');
+            const btnAi = document.getElementById('btn-ai');
+            const btnCyber = document.getElementById('btn-cyber');
+
+            if (tab === 'ai') {
+                aiContent.classList.remove('hidden');
+                cyberContent.classList.add('hidden');
+                btnAi.classList.add('tab-active');
+                btnAi.classList.remove('tab-inactive');
+                btnCyber.classList.add('tab-inactive');
+                btnCyber.classList.remove('tab-active');
+            } else {
+                cyberContent.classList.remove('hidden');
+                aiContent.classList.add('hidden');
+                btnCyber.classList.add('tab-active');
+                btnCyber.classList.remove('tab-inactive');
+                btnAi.classList.add('tab-inactive');
+                btnAi.classList.remove('tab-active');
+            }
+        }
+    </script>
+
+</body>
+</html>

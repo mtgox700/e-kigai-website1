@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KEYIZEN | Votre Conciergerie Immo Digitale</title>
+    <meta name="description" content="Votre assistant personnel digital, partout en France. Simplifiez votre quotidien avec KEYIZEN.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Tailwind Config pour la Charte Graphique -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#0A1128',      // Bleu nuit / Fond principal
+                            darker: '#050814',    // Bleu très sombre
+                            gold: '#D4AF37',      // Doré (Premium/Clé)
+                            goldHover: '#F3D261', // Doré clair pour le hover
+                            turquoise: '#00B4D8', // Turquoise (Digital/Tech)
+                            silver: '#E2E8F0',    // Gris clair (Sobriété)
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Poppins', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Styles & Animations */
+        body {
+            background-color: #0A1128;
+            color: #E2E8F0;
+        }
+
+        /* Classes pour l'animation au scroll */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Effet Glassmorphism pour les cartes */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Dégradé de texte */
+        .text-gradient {
+            background: linear-gradient(135deg, #D4AF37, #F3D261);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased text-brand-silver bg-brand-dark overflow-x-hidden">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 transition-all duration-300 backdrop-blur-md bg-brand-dark/80 border-b border-white/10" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo KEYIZEN -->
+                <a href="#" class="flex items-center">
+                 <img src="logo-keyizen.png" alt="KEYIZEN - Votre Conciergerie Immo Digitale" class="h-12 w-auto">
+                </a>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="#about" class="text-sm font-medium hover:text-brand-turquoise transition-colors">À propos</a>
+                    <a href="#avantages" class="text-sm font-medium hover:text-brand-turquoise transition-colors">Avantages</a>
+                    <a href="#services" class="text-sm font-medium hover:text-brand-turquoise transition-colors">Services</a>
+                    <a href="#temoignages" class="text-sm font-medium hover:text-brand-turquoise transition-colors">Avis</a>
+                    <a href="#contact" class="px-5 py-2.5 rounded-full bg-brand-gold text-brand-darker font-medium hover:bg-brand-goldHover transition-all shadow-[0_0_15px_rgba(212,175,55,0.3)]">
+                        Contactez-nous
+                    </a>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-brand-silver hover:text-white focus:outline-none">
+                        <i data-lucide="menu" class="h-6 w-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-brand-darker border-b border-white/10 absolute w-full">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#about" class="block px-3 py-2 text-base font-medium hover:text-brand-turquoise mobile-link">À propos</a>
+                <a href="#avantages" class="block px-3 py-2 text-base font-medium hover:text-brand-turquoise mobile-link">Avantages</a>
+                <a href="#services" class="block px-3 py-2 text-base font-medium hover:text-brand-turquoise mobile-link">Services</a>
+                <a href="#temoignages" class="block px-3 py-2 text-base font-medium hover:text-brand-turquoise mobile-link">Avis</a>
+                <a href="#contact" class="block px-3 py-2 text-base font-medium text-brand-gold mobile-link">Contactez-nous</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative h-screen flex items-center justify-center overflow-hidden">
+        <!-- Background Image with Overlay -->
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1512428559087-560fa5ceab42?auto=format&fit=crop&q=80&w=2000" alt="Personne utilisant un smartphone" class="w-full h-full object-cover" />
+            <div class="absolute inset-0 bg-gradient-to-r from-brand-darker via-brand-dark/90 to-brand-dark/70"></div>
+        </div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal">
+            <h2 class="text-brand-turquoise font-medium tracking-wide uppercase text-sm md:text-base mb-4">Votre assistant personnel digital, partout en France.</h2>
+            <h1 class="font-heading text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
+                <span class="text-brand-gold">Votre conciergerie</span> <span class="text-brand-turquoise">digitale</span>,<br>
+                <span class="text-white">simple et disponible 7j/7.</span>
+            </h1>
+            <p class="mt-4 text-xl text-brand-silver/80 max-w-2xl mx-auto font-light mb-10">
+                Déléguez vos tâches administratives et fiscales liées à la gestion de vos biens à un expert dédié.  Retrouvez enfin du temps pour l'essentiel.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#contact" class="px-8 py-4 rounded-full bg-brand-gold text-brand-darker font-bold text-lg hover:bg-brand-goldHover transition-all transform hover:-translate-y-1 shadow-[0_10px_20px_rgba(212,175,55,0.2)]">
+                    Demandez votre assistant maintenant
+                </a>
+                <a href="#about" class="px-8 py-4 rounded-full border border-brand-silver/30 hover:bg-white/5 transition-all flex items-center justify-center gap-2 group">
+                    En savoir plus
+                    <i data-lucide="arrow-down" class="w-5 h-5 group-hover:translate-y-1 transition-transform"></i>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Decoration digitale -->
+        <div class="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-brand-dark to-transparent z-10"></div>
+    </section>
+
+    <!-- À Propos / Mission -->
+    <section id="about" class="py-24 bg-brand-dark relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="reveal">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-gold/10 text-brand-gold border border-brand-gold/20 mb-6">
+                        <i data-lucide="target" class="w-4 h-4"></i>
+                        <span class="text-sm font-medium">Notre Mission</span>
+                    </div>
+                    <h2 class="font-heading text-3xl md:text-4xl font-bold mb-6">
+                        La proximité humaine,<br><span class="text-brand-turquoise">l'efficacité numérique.</span>
+                    </h2>
+                    <p class="text-lg text-brand-silver/80 mb-6 font-light leading-relaxed">
+                        <span class="text-brand-gold">Le mot 'Key' de couleur or qui signifie 'clé' en anglais : Elle symbolise votre patrimoine immobilier, la ressource précieuse dont nous prenons soin au quotidien. C'est l'outil qui ouvre les portes de votre rentabilité.</span></br></br><span class="text-brand-turquoise"> ​Le I de couleur Bleu high tech) : À l'image du sigle Wi-Fi, le 'i' central incarne notre ADN digital et connecté. C'est le lien technologique qui fluidifie les échanges et modernise la gestion.</span></br></br> <span class="text-white">Le mot Zen en blanc  : À l'instar de la maison blanche de notre logo, cette couleur évoque la clarté , la transparence ainsi que la sérénité. </br>Notre mission est de vous rendre la sérénité que vous méritez.</br></br>Ensemble, ils forment le mot « KEYIZEN », un nom directement inspiré du concept japonais KAÏZEN 改善 (l'amélioration continue). Plus qu'une simple gestion, cette philosophie est au cœur de notre ADN : elle nous pousse à optimiser chaque jour nos processus pour vous offrir un service agile, toujours en phase avec vos besoins et les nouvelles technologies.</span> </br></br><span class="text-brand-gold font-bold">Keyizen : Votre immobilier,</span> <span class="text-brand-turquoise font-bold">notre technologie,</span> <span class="text-white font-bold">votre tranquillité.</span>
+                    </p>
+                    
+                    <ul class="space-y-4">
+                        <li class="flex items-center gap-3">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-brand-gold/20 flex items-center justify-center">
+                                <i data-lucide="check" class="w-4 h-4 text-brand-gold"></i>
+                            </div>
+                            <span>gain de temps considérable</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-brand-gold/20 flex items-center justify-center">
+                                <i data-lucide="check" class="w-4 h-4 text-brand-gold"></i>
+                            </div>
+                            <span>charge mentale allégée</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-brand-gold/20 flex items-center justify-center">
+                                <i data-lucide="check" class="w-4 h-4 text-brand-gold"></i>
+                            </div>
+                            <span>économie sur vos frais de gestion</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="relative reveal">
+                    <!-- Image décorative -->
+                    <div class="relative rounded-2xl overflow-hidden shadow-2xl z-10">
+                        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=1000" alt="Équipe KEYIZEN au travail" class="w-full h-auto" />
+                        <div class="absolute inset-0 bg-brand-turquoise/10 mix-blend-overlay"></div>
+                    </div>
+                    <!-- Éléments graphiques -->
+                    <div class="absolute -bottom-6 -left-6 w-48 h-48 bg-brand-gold/20 rounded-full blur-3xl -z-0"></div>
+                    <div class="absolute -top-6 -right-6 w-48 h-48 bg-brand-turquoise/20 rounded-full blur-3xl -z-0"></div>
+                    
+                    <div class="absolute -bottom-8 right-8 glass-card p-4 rounded-xl z-20 flex items-center gap-4">
+                        <div class="w-12 h-12 bg-brand-turquoise rounded-full flex items-center justify-center">
+                            <i data-lucide="shield-check" class="w-6 h-6 text-brand-darker"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-lg">100% Sécurisé</p>
+                            <p class="text-sm text-brand-silver/70">Confidentialité garantie</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Avantages -->
+    <section id="avantages" class="py-24 bg-brand-dark">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                <!-- Image/Illustration side -->
+                <div class="reveal flex justify-center items-center">
+                    <div class="relative w-full max-w-md">
+                        <div class="absolute inset-0 bg-gradient-to-tr from-brand-turquoise to-brand-gold opacity-20 blur-3xl rounded-full"></div>
+                        <div class="relative glass-card p-8 rounded-2xl text-center">
+                            <i data-lucide="smartphone" class="w-20 h-20 text-brand-silver mx-auto mb-6"></i>
+                            <h3 class="text-2xl font-bold mb-2 text-brand-turquoise">Interface 100% Digitale</h3>
+                            <p class="text-brand-silver/70">Échangez avec votre assistant via WhatsApp, Telegram, ou par email en un seul clic.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Text side -->
+                <div class="flex flex-col justify-center reveal">
+                    <h2 class="font-heading text-3xl md:text-4xl font-bold mb-8">Pourquoi <span class="text-brand-gold">nous choisir</span> ?</h2>
+                    
+                    <div class="space-y-6">
+                        <div class="flex gap-4">
+                            <div class="mt-1 w-10 h-10 rounded-full bg-brand-turquoise/10 flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="zap" class="w-5 h-5 text-brand-turquoise"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold mb-1">Gain de temps :</h4>
+                                <p class="text-brand-silver/70 text-sm">tout est géré, digital et simplifié.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div class="mt-1 w-10 h-10 rounded-full bg-brand-gold/10 flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="home" class="w-5 h-5 text-brand-gold"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold mb-1">Valorisation du bien :</h4>
+                                <p class="text-brand-silver/70 text-sm">travaux, diagnostics et optimisation rentabilité.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div class="mt-1 w-10 h-10 rounded-full bg-brand-turquoise/10 flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="search" class="w-5 h-5 text-brand-turquoise"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold mb-1">Opportunités exclusives :</h4>
+                                <p class="text-brand-silver/70 text-sm">acheteurs et biens adaptés à vos critères.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div class="mt-1 w-10 h-10 rounded-full bg-brand-gold/10 flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="eye" class="w-5 h-5 text-brand-gold"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold mb-1">Transparence totale :</h4>
+                                <p class="text-brand-silver/70 text-sm">suivi et reporting clair en ligne.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services -->
+    <section id="services" class="py-24 bg-brand-darker relative overflow-hidden">
+        <!-- Background accents -->
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-brand-turquoise/5 rounded-full blur-[100px] pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center max-w-3xl mx-auto mb-16 reveal">
+                <h2 class="font-heading text-3xl md:text-5xl font-bold mb-6">Des services pensés <span class="text-brand-turquoise">pour vous</span></h2>
+                <p class="text-lg text-brand-silver/70">Déléguez sans compter. Nous adaptons nos services à vos besoins spécifiques pour vous offrir une expérience sur mesure.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Service 1 -->
+                <div class="glass-card p-8 rounded-2xl hover:-translate-y-2 transition-transform duration-300 reveal group cursor-pointer border-t-4 border-t-transparent hover:border-t-brand-gold">
+                    <div class="w-14 h-14 bg-brand-dark rounded-xl flex items-center justify-center mb-6 group-hover:bg-brand-gold/10 transition-colors">
+                        <i data-lucide="file-text" class="w-7 h-7 text-brand-gold"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-bold mb-3">Assistance Administrative</h3>
+                    <p class="text-brand-silver/70 text-sm leading-relaxed mb-4">
+                        Rédaction, diffusion et gestion des annonces sur plusieurs plateformes.<br>
+                        Pré-qualification des candidats<br>
+                        Gestion des visites et états des lieux<br>
+                        Préparation des baux et annexes<br>
+                        Suivi locatif : relances + tableaux de suivi<br>
+                        Assistance fiscale et déclarative
+                    </p>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="glass-card p-8 rounded-2xl hover:-translate-y-2 transition-transform duration-300 reveal group cursor-pointer border-t-4 border-t-transparent hover:border-t-brand-turquoise" style="transition-delay: 100ms;">
+                    <div class="w-14 h-14 bg-brand-dark rounded-xl flex items-center justify-center mb-6 group-hover:bg-brand-turquoise/10 transition-colors">
+                        <i data-lucide="coffee" class="w-7 h-7 text-brand-turquoise"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-bold mb-3">Gestion du Quotidien</h3>
+                    <p class="text-brand-silver/70 text-sm leading-relaxed mb-4">
+                        Gestion physique & technique :<br>
+                        Selection et coordination des artisans et prestataires<br>
+                        Suivi travaux et devis<br>
+                        Diagnostics obligatoires (DPE, électricité…)<br>
+                        Reporting photo/vidéo avant–après<br>
+                        Gestion urgences et entretien annuel
+                    </p>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="glass-card p-8 rounded-2xl hover:-translate-y-2 transition-transform duration-300 reveal group cursor-pointer border-t-4 border-t-transparent hover:border-t-brand-gold" style="transition-delay: 200ms;">
+                    <div class="w-14 h-14 bg-brand-dark rounded-xl flex items-center justify-center mb-6 group-hover:bg-brand-gold/10 transition-colors">
+                        <i data-lucide="briefcase" class="w-7 h-7 text-brand-gold"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-bold mb-3">Aide Professionnelle</h3>
+                    <p class="text-brand-silver/70 text-sm leading-relaxed mb-4">
+                        Apport d’affaires & opportunités : <br>
+                        Trouvez acheteurs et biens recherchés rapidement.<br>
+                        Identification de futurs acheteurs ou investisseurs potentiels<br>
+                        Recherche de biens correspondant à vos critères <br>
+                        Analyse marché et estimation du prix<br>
+                        Préparation du bien pour faciliter la transaction (home staging, conformité, photos, annonces)
+                    </p>
+                </div>
+
+                <!-- Service 4 -->
+                <div class="glass-card p-8 rounded-2xl hover:-translate-y-2 transition-transform duration-300 reveal group cursor-pointer border-t-4 border-t-transparent hover:border-t-brand-turquoise" style="transition-delay: 300ms;">
+                    <div class="w-14 h-14 bg-brand-dark rounded-xl flex items-center justify-center mb-6 group-hover:bg-brand-turquoise/10 transition-colors">
+                        <i data-lucide="settings-2" class="w-7 h-7 text-brand-turquoise"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-bold mb-3">Formule Sur Mesure</h3>
+                    <p class="text-brand-silver/70 text-sm leading-relaxed mb-4">
+                        Abonnement mensuel ou prestations à la carte. Nous définissons ensemble un périmètre d'action adapté à votre rythme et à vos besoins.<br>
+                        
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Témoignages -->
+    <section id="temoignages" class="py-24 bg-brand-darker">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <h2 class="font-heading text-3xl md:text-5xl font-bold mb-4">Ils nous font confiance</h2>
+                <div class="w-20 h-1 bg-brand-gold mx-auto rounded-full"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Avis 1 -->
+                <div class="glass-card p-8 rounded-2xl reveal">
+                    <div class="flex text-brand-gold mb-4">
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                    </div>
+                    <p class="text-brand-silver/80 italic mb-6">
+                        "En tant qu'entrepreneur, je perdais des heures sur des tâches administratives. Depuis que j'utilise KEYIZEN, j'ai retrouvé mon équilibre pro/perso. Un simple message WhatsApp et c'est géré !"
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=150&h=150" alt="Marc D." class="w-12 h-12 rounded-full object-cover">
+                        <div>
+                            <h5 class="font-bold">Marc D.</h5>
+                            <span class="text-sm text-brand-turquoise">Chef d'entreprise</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Avis 2 -->
+                <div class="glass-card p-8 rounded-2xl reveal" style="transition-delay: 100ms;">
+                    <div class="flex text-brand-gold mb-4">
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                    </div>
+                    <p class="text-brand-silver/80 italic mb-6">
+                        "Leur réactivité est impressionnante. Ils ont organisé le déménagement de ma mère et géré tous les changements d'adresse. Un service d'une qualité rare, très humain."
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=150&h=150" alt="Sophie L." class="w-12 h-12 rounded-full object-cover">
+                        <div>
+                            <h5 class="font-bold">Sophie L.</h5>
+                            <span class="text-sm text-brand-turquoise">Cadre dirigeante</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Avis 3 -->
+                <div class="glass-card p-8 rounded-2xl reveal" style="transition-delay: 200ms;">
+                    <div class="flex text-brand-gold mb-4">
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                    </div>
+                    <p class="text-brand-silver/80 italic mb-6">
+                        "Expatrié en France depuis peu, j'étais perdu avec l'administration. Mon assistant KEYIZEN a tout pris en main, de l'ouverture des compteurs à la recherche de nounou."
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150&h=150" alt="Ahmed L." class="w-12 h-12 rounded-full object-cover">
+                        <div>
+                            <h5 class="font-bold">Ahmed L.</h5>
+                            <span class="text-sm text-brand-turquoise">Expatrié</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="py-20 relative overflow-hidden bg-brand-dark">
+        <div class="absolute inset-0 bg-gradient-to-r from-brand-darker to-brand-turquoise/20"></div>
+        <div class="max-w-4xl mx-auto px-4 relative z-10 text-center reveal">
+            <h2 class="font-heading text-3xl md:text-5xl font-bold mb-6 text-white">Prêt à vous libérer l'esprit ?</h2>
+            <p class="text-xl text-brand-silver/90 mb-10">Réservez un appel découverte sans engagement pour évaluer vos besoins, ou commencez directement.</p>
+            <a href="#contact" class="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-brand-turquoise text-white font-bold text-lg hover:bg-[#0099b8] transition-all transform hover:-translate-y-1 shadow-[0_10px_20px_rgba(0,180,216,0.2)]">
+                Je découvre la conciergerie digitale
+                <i data-lucide="arrow-right" class="w-5 h-5"></i>
+            </a>
+            <p class="mt-4 text-sm text-brand-silver/60">Essai gratuit possible sur demande.</p>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-24 bg-brand-darker">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                <!-- Info de contact -->
+                <div class="reveal">
+                    <h2 class="font-heading text-3xl md:text-4xl font-bold mb-6">Contactez votre <span class="text-brand-gold">assistant</span></h2>
+                    <p class="text-brand-silver/70 mb-10">
+                        Remplissez le formulaire pour nous faire part de vos besoins. Nous vous recontacterons dans les plus brefs délais pour vous proposer une solution adaptée.
+                    </p>
+
+                    <div class="space-y-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 glass-card rounded-full flex items-center justify-center">
+                                <i data-lucide="mail" class="w-5 h-5 text-brand-turquoise"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-brand-silver/50">Email</p>
+                                <p class="font-medium">contact@keyizen.fr</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 glass-card rounded-full flex items-center justify-center">
+                                <i data-lucide="map-pin" class="w-5 h-5 text-brand-gold"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-brand-silver/50">Zone d'intervention</p>
+                                <p class="font-medium">Partout en France (100% Digital)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulaire -->
+                <div class="glass-card p-8 rounded-2xl reveal relative">
+                    <!-- Formulaire actif -->
+                    <form id="contactForm" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-brand-silver/80 mb-2">Nom complet</label>
+                                <input type="text" id="name" required class="w-full bg-brand-dark border border-brand-silver/20 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-turquoise focus:ring-1 focus:ring-brand-turquoise transition-colors" placeholder="Jean Dupont">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-brand-silver/80 mb-2">Adresse E-mail</label>
+                                <input type="email" id="email" required class="w-full bg-brand-dark border border-brand-silver/20 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-turquoise focus:ring-1 focus:ring-brand-turquoise transition-colors" placeholder="jean@exemple.com">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label for="need" class="block text-sm font-medium text-brand-silver/80 mb-2">Type de besoin</label>
+                            <select id="need" class="w-full bg-brand-dark border border-brand-silver/20 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-turquoise appearance-none">
+                                <option value="general">Renseignement général</option>
+                                <option value="admin">Assistance Administrative</option>
+                                <option value="quotidien">Gestion du Quotidien</option>
+                                <option value="pro">Aide Professionnelle</option>
+                                <option value="sur_mesure">Formule Sur Mesure</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="message" class="block text-sm font-medium text-brand-silver/80 mb-2">Votre message</label>
+                            <textarea id="message" rows="4" required class="w-full bg-brand-dark border border-brand-silver/20 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-turquoise focus:ring-1 focus:ring-brand-turquoise transition-colors" placeholder="Comment pouvons-nous vous aider ?"></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full py-4 rounded-xl bg-brand-gold text-brand-darker font-bold hover:bg-brand-goldHover transition-colors flex justify-center items-center gap-2">
+                            Envoyer la demande
+                            <i data-lucide="send" class="w-5 h-5"></i>
+                        </button>
+                    </form>
+
+                    <!-- Message de succès caché par défaut -->
+                    <div id="successMessage" class="hidden absolute inset-0 bg-brand-darker/95 backdrop-blur-sm rounded-2xl flex-col items-center justify-center text-center p-8 z-10">
+                        <div class="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-4">
+                            <i data-lucide="check-circle" class="w-8 h-8 text-green-500"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-2">Message envoyé !</h3>
+                        <p class="text-brand-silver/70">Merci de nous avoir contactés. Votre futur assistant personnel vous répondra dans les plus brefs délais.</p>
+                        <button onclick="resetForm()" class="mt-6 text-brand-turquoise hover:underline text-sm">Envoyer un autre message</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Boutons Flottants Réseaux (WhatsApp / Telegram) -->
+    <div class="fixed bottom-6 right-6 z-50 flex flex-col gap-3">
+        <a href="https://t.me/+33762152145" target="_blank" rel="noopener noreferrer" class="w-12 h-12 bg-[#0088cc] text-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer" title="Contactez-nous sur Telegram au +33 7 62 15 21 45">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+        </a>
+        <a href="https://wa.me/33762152145" target="_blank" rel="noopener noreferrer" class="w-12 h-12 bg-[#25D366] text-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer" title="Contactez-nous sur WhatsApp au +33 7 62 15 21 45">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        </a>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-brand-dark border-t border-white/5 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <!-- Colonne 1 : Marque -->
+                <div class="col-span-1 md:col-span-1">
+                   <a href="#" class="inline-block mb-4">
+                        <img src="logo-keyizen.png" alt="KEYIZEN" class="h-10 w-auto">
+                    </a>            
+                    <p class="text-brand-silver/60 text-sm mb-6">
+                        Votre assistant personnel digital, partout en France. Simplifiez-vous la vie avec élégance et efficacité.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-brand-silver/60 hover:text-brand-turquoise transition-colors"><i data-lucide="linkedin" class="w-5 h-5"></i></a>
+                        <a href="#" class="text-brand-silver/60 hover:text-brand-turquoise transition-colors"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+                        <a href="#" class="text-brand-silver/60 hover:text-brand-turquoise transition-colors"><i data-lucide="facebook" class="w-5 h-5"></i></a>
+                    </div>
+                </div>
+
+                <!-- Colonne 2 : Liens rapides -->
+                <div>
+                    <h4 class="font-bold text-white mb-4">Navigation</h4>
+                    <ul class="space-y-2 text-sm text-brand-silver/60">
+                        <li><a href="#about" class="hover:text-brand-turquoise transition-colors">Notre Mission</a></li>
+                        <li><a href="#avantages" class="hover:text-brand-turquoise transition-colors">Avantages</a></li>
+                        <li><a href="#services" class="hover:text-brand-turquoise transition-colors">Nos Services</a></li>
+                        <li><a href="#temoignages" class="hover:text-brand-turquoise transition-colors">Témoignages</a></li>
+                    </ul>
+                </div>
+
+                <!-- Colonne 3 : Services -->
+                <div>
+                    <h4 class="font-bold text-white mb-4">Services</h4>
+                    <ul class="space-y-2 text-sm text-brand-silver/60">
+                        <li>Assistance Administrative</li>
+                        <li>Gestion du Quotidien</li>
+                        <li>Aide Professionnelle</li>
+                        <li>Abonnements Sur Mesure</li>
+                    </ul>
+                </div>
+
+                <!-- Colonne 4 : Contact -->
+                <div>
+                    <h4 class="font-bold text-white mb-4">Contact</h4>
+                    <ul class="space-y-3 text-sm text-brand-silver/60">
+                        <li class="flex items-start gap-2">
+                            <i data-lucide="mail" class="w-4 h-4 mt-0.5"></i>
+                            contact@keyizen.fr
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i data-lucide="globe" class="w-4 h-4 mt-0.5"></i>
+                            Service 100% Digital<br>Disponible dans toute la France
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-brand-silver/40">
+                <p>&copy; 2026 KEYIZEN. Tous droits réservés.</p>
+                <div class="flex space-x-4 mt-4 md:mt-0">
+                    <a href="#" class="hover:text-brand-silver transition-colors">Mentions légales</a>
+                    <a href="#" class="hover:text-brand-silver transition-colors">Politique de confidentialité</a>
+                    <a href="#" class="hover:text-brand-silver transition-colors">CGV</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts JavaScript -->
+    <script>
+        // Initialiser les icônes Lucide
+        lucide.createIcons();
+
+        // Gestion du Menu Mobile
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.add('hidden');
+            });
+        });
+
+        // Animation de la Navbar au scroll
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('shadow-lg', 'bg-brand-dark/95');
+                navbar.classList.remove('bg-brand-dark/80');
+            } else {
+                navbar.classList.remove('shadow-lg', 'bg-brand-dark/95');
+                navbar.classList.add('bg-brand-dark/80');
+            }
+        });
+
+        // Animations d'apparition au scroll (Intersection Observer)
+        const revealElements = document.querySelectorAll('.reveal');
+        
+        const revealCallback = (entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target); // Ne jouer l'animation qu'une seule fois
+                }
+            });
+        };
+
+        const revealOptions = {
+            threshold: 0.15, // L'élément doit être visible à 15% pour déclencher
+            rootMargin: "0px 0px -50px 0px"
+        };
+
+        const revealObserver = new IntersectionObserver(revealCallback, revealOptions);
+
+        revealElements.forEach(el => {
+            revealObserver.observe(el);
+        });
+
+        // Gestion du Formulaire (Simulation)
+        const contactForm = document.getElementById('contactForm');
+        const successMessage = document.getElementById('successMessage');
+
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Ici, vous ajouteriez la logique d'envoi réel (Fetch API, emailjs, etc.)
+            
+            // Simulation d'envoi
+            const btnSubmit = contactForm.querySelector('button[type="submit"]');
+            const originalText = btnSubmit.innerHTML;
+            btnSubmit.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Envoi en cours...';
+            lucide.createIcons();
+
+            setTimeout(() => {
+                contactForm.classList.add('hidden');
+                successMessage.classList.remove('hidden');
+                successMessage.classList.add('flex');
+                btnSubmit.innerHTML = originalText; // Reset le bouton pour le futur
+                lucide.createIcons();
+            }, 1000);
+        });
+
+        // Réinitialiser le formulaire
+        function resetForm() {
+            contactForm.reset();
+            successMessage.classList.add('hidden');
+            successMessage.classList.remove('flex');
+            contactForm.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

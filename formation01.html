@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>e-kigai | Formation IA — Automatise & Développe ton Activité</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --cream: #ffffef;
+            --dark: #3b3b3b;
+            --green: #00bf63;
+            --paper-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+        }
+
+        body {
+            background-color: var(--cream);
+            color: var(--dark);
+            font-family: 'Space Grotesk', sans-serif;
+            background-image: var(--paper-grain);
+            overflow-x: hidden;
+            cursor: crosshair;
+        }
+
+        h1, h2, h3, .brutal-font {
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: -0.04em;
+        }
+
+        .hand-font {
+            font-family: 'Gochi Hand', cursive;
+        }
+
+        .torn-paper-top {
+            clip-path: polygon(0% 10px, 5% 0px, 10% 12px, 15% 2px, 20% 10px, 25% 0px, 30% 12px, 35% 2px, 40% 10px, 45% 0px, 50% 12px, 55% 2px, 60% 10px, 65% 0px, 70% 12px, 75% 2px, 80% 10px, 85% 0px, 90% 12px, 95% 2px, 100% 10px, 100% 100%, 0% 100%);
+        }
+
+        .sticker {
+            background: white;
+            border: 2px solid var(--dark);
+            box-shadow: 4px 4px 0px var(--dark);
+            transition: all 0.2s ease;
+        }
+
+        .sticker:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px var(--green);
+        }
+
+        .organic-blob {
+            border-radius: 64% 36% 29% 71% / 58% 38% 62% 42%;
+            animation: morph 8s ease-in-out infinite;
+        }
+
+        @keyframes morph {
+            0% { border-radius: 64% 36% 29% 71% / 58% 38% 62% 42%; }
+            50% { border-radius: 36% 64% 71% 29% / 42% 62% 38% 58%; }
+            100% { border-radius: 64% 36% 29% 71% / 58% 38% 62% 42%; }
+        }
+
+        .marker-highlight {
+            background: linear-gradient(120deg, rgba(0,191,99,0) 0%, rgba(0,191,99,0.4) 100%);
+            background-repeat: no-repeat;
+            background-size: 100% 40%;
+            background-position: 0 88%;
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(2deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        .btn-wobble:hover {
+            animation: wobble 0.5s ease-in-out;
+        }
+
+        @keyframes wobble {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-3deg); }
+            75% { transform: rotate(3deg); }
+        }
+
+        .marquee-container {
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 25s linear infinite;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAV -->
+    <nav class="fixed w-full z-50 top-4 px-4 pointer-events-none">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="index.html" class="sticker bg-white px-3 py-1 -rotate-2 pointer-events-auto cursor-pointer hover:rotate-0 transition-transform flex items-center gap-2">
+                <span class="font-bold font-mono text-xl tracking-tighter">e-kigai</span>
+                <span class="text-xs bg-black text-white px-1">CAE</span>
+            </a>
+            <div class="hidden md:flex gap-4 pointer-events-auto items-center">
+                <a href="#programme" class="relative group">
+                    <div class="bg-white/80 backdrop-blur-sm px-4 py-1 border border-black transform transition-transform group-hover:-translate-y-1 rotate-[1deg]">
+                        <span class="font-medium font-mono text-sm">Programme</span>
+                    </div>
+                    <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-4 bg-white/40 rotate-2"></div>
+                </a>
+                <a href="#publics" class="relative group">
+                    <div class="bg-white/80 backdrop-blur-sm px-4 py-1 border border-black transform transition-transform group-hover:-translate-y-1 -rotate-[1deg]">
+                        <span class="font-medium font-mono text-sm">Pour qui ?</span>
+                    </div>
+                    <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-4 bg-white/40 rotate-2"></div>
+                </a>
+                <a href="#faq" class="relative group">
+                    <div class="bg-white/80 backdrop-blur-sm px-4 py-1 border border-black transform transition-transform group-hover:-translate-y-1 rotate-[1deg]">
+                        <span class="font-medium font-mono text-sm">FAQ</span>
+                    </div>
+                    <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-4 bg-white/40 rotate-2"></div>
+                </a>
+                <a href="#cta" class="relative group ml-4 hover:scale-105 transition-transform duration-300">
+                    <div class="bg-green-400 backdrop-blur-sm px-4 py-1 border border-black transform rotate-[2deg] shadow-[2px_2px_0px_rgba(0,0,0,1)]">
+                        <span class="font-bold font-mono text-sm">Accéder à la formation</span>
+                    </div>
+                    <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-4 bg-white/40 rotate-2"></div>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- DECOR -->
+    <div class="fixed top-20 left-10 w-32 h-32 bg-green-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 pointer-events-none animate-pulse"></div>
+    <div class="fixed bottom-20 right-10 w-48 h-48 bg-yellow-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 pointer-events-none animate-pulse"></div>
+
+    <main>
+        <!-- HERO -->
+        <section class="min-h-screen flex items-center justify-center pt-24 pb-12 relative">
+            <div class="absolute inset-0 z-0 opacity-10 pointer-events-none"
+                style="background-image:linear-gradient(#3b3b3b 1px, transparent 1px),linear-gradient(90deg,#3b3b3b 1px, transparent 1px);background-size:40px 40px;">
+            </div>
+            <div class="max-w-7xl mx-auto px-4 grid lg:grid-cols-12 gap-12 items-center relative z-10 w-full">
+                <div class="lg:col-span-7 space-y-8">
+                    <div class="inline-block -rotate-3 sticker bg-yellow-200 px-4 py-1 rounded-full border-black">
+                        <span class="hand-font font-bold text-lg">🧠 La compétence IA qui change ton quotidien</span>
+                    </div>
+                    <h1 class="text-5xl md:text-7xl font-bold leading-[0.9] text-black">
+                        Deviens l'entrepreneur<br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-green-400 italic">augmenté par l'IA</span><br>
+                        qui scale son activité
+                    </h1>
+                    <p class="text-xl md:text-2xl font-mono opacity-80 max-w-2xl bg-white/60 p-4 border-l-4 border-green-500 backdrop-blur-sm rotate-1">
+                        Automatise tes tâches répétitives, développe ton activité et récupère <span class="font-bold">10h par semaine</span> pour facturer — sans coder, en quelques semaines.
+                    </p>
+                    <div class="flex flex-wrap gap-3">
+                        <span class="sticker bg-white px-3 py-1 text-sm font-mono -rotate-1">⭐ 5.0 / retours apprenants</span>
+                        <span class="sticker bg-white px-3 py-1 text-sm font-mono -rotate-1">✅ Zéro code</span>
+                        <span class="sticker bg-white px-3 py-1 text-sm font-mono -rotate-1">✅ Accès à vie</span>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-6 pt-4">
+                        <a href="https://www.moncompteformation.gouv.fr/espace-prive/html/#/formation/recherche/38896452000018_AIAE01/38896452000018_AIAE011?contexteFormation=ACTIVITE_PROFESSIONNELLE" class="sticker bg-black text-white px-8 py-4 text-xl font-bold rounded-none hover:bg-green-600 hover:text-black hover:border-black transition-colors btn-wobble flex items-center gap-3">
+                            Accéder à la formation
+                            <span class="text-2xl">↗</span>
+                        </a>
+                        <a href="#programme" class="hand-font text-xl underline decoration-wavy decoration-green-500 hover:text-green-600 self-center">
+                            Voir le programme →
+                        </a>
+                    </div>
+                </div>
+                <div class="lg:col-span-5 relative h-[460px] hidden lg:block">
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 organic-blob w-72 h-72 bg-purple-200 mix-blend-multiply opacity-50 blur-xl"></div>
+                    <div class="absolute top-10 right-0 w-60 bg-white border-2 border-black p-4 rotate-3 shadow-[8px_8px_0px_rgba(0,0,0,1)] floating">
+                        <div class="font-mono text-xs mb-2 text-gray-500">AUTOMATISATION ACTIVE</div>
+                        <div class="text-4xl mb-2">🤖</div>
+                        <div class="font-bold text-xl">Ton robot bosse.<br>Tu factures.</div>
+                        <div class="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 bg-yellow-200/80 -rotate-2"></div>
+                    </div>
+                    <div class="absolute bottom-24 left-0 w-52 bg-green-400 border-2 border-black p-4 -rotate-6 shadow-[4px_4px_0px_#000] z-20 floating">
+                        <div class="font-mono text-xs mb-1">TEMPS RÉCUPÉRÉ</div>
+                        <div class="font-bold text-4xl leading-none">+10h</div>
+                        <div class="text-xs mt-1 border-t border-black pt-1">par semaine</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    <!-- BANDE INFO CO-ORGANISATION & FINANCEMENT -->
+    <section id="financement-ia" class="mt-20 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="sticker bg-black text-[#ffffef] px-6 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4 -rotate-1">
+                <div class="text-left">
+                    <p class="hand-font text-xl mb-1">
+                        Une formation co-organisée avec une école d’ingénieurs accréditée par la CTI.
+                    </p>
+                    <p class="font-mono text-sm opacity-80 max-w-2xl">
+                        Ce programme IA est construit en partenariat avec une école d’ingénieur reconnue par la 
+                        <span class="font-bold">CTI (Commission des Titres d’Ingénieur)</span>, pour garantir un haut niveau d’exigence pédagogique
+                        et une vraie valeur professionnelle sur ton CV.
+                    </p>
+                </div>
+                <div class="text-left md:text-right border-t md:border-t-0 md:border-l border-white/30 md:pl-4 pt-3 md:pt-0">
+                    <p class="font-mono text-xs uppercase tracking-widest text-green-300 mb-1">
+                        100% finançable
+                    </p>
+                    <p class="font-mono text-sm mb-2">
+                        Formation éligible au <span class="font-bold">CPF</span> et finançable par les <span class="font-bold">OPCO</span>.
+                    </p>
+                    <a href="https://www.moncompteformation.gouv.fr/espace-prive/html/#/formation/recherche/38896452000018_AIAE01/38896452000018_AIAE011?contexteFormation=ACTIVITE_PROFESSIONNELLE"
+                       class="inline-block bg-green-400 text-black px-4 py-2 text-xs md:text-sm font-bold border border-black hover:bg-white transition-colors"
+                       target="_blank" rel="noopener noreferrer">
+                        Vérifier mon éligibilité CPF
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+        <!-- MARQUEE -->
+        <div class="bg-black text-white py-4 border-y-4 border-black overflow-hidden">
+            <div class="marquee-container">
+                <div class="marquee-content font-mono text-sm uppercase tracking-widest">
+                    ⚡ Automatisation IA · 🤖 Zéro code · 🚀 +10h/semaine · 💸 ROI rapide · 🌱 Pour entrepreneurs et freelances · ✅ Accompagnement e-kigai · 
+                    ⚡ Automatisation IA · 🤖 Zéro code · 🚀 +10h/semaine · 💸 ROI rapide · 🌱 Pour entrepreneurs et freelances · ✅ Accompagnement e-kigai · 
+                </div>
+            </div>
+        </div>
+
+        <!-- DOULEUR -->
+        <section class="py-24 px-4 bg-white">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl md:text-6xl font-bold brutal-font mb-4">
+                        Tu sais faire ton métier.<br>
+                        <span class="marker-highlight">mais les tâches répétitives te bouffent 400h par an.</span>
+                    </h2>
+                    <p class="text-xl font-mono max-w-3xl mx-auto opacity-70">
+                        Livrables, clients, factures, mails, contenu, relances… Tu fais tout à la main. Résultat : moins de temps pour développer ton activité, plus de charge mentale.
+                    </p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                    <div class="sticker bg-red-50 p-6 -rotate-1">
+                        <div class="text-4xl mb-3">⏳</div>
+                        <h3 class="text-xl font-bold brutal-font mb-2">Submergé·e</h3>
+                        <p class="font-mono text-sm">Tu passes des heures sur des tâches que l'IA pourrait faire en 30 secondes.</p>
+                    </div>
+                    <div class="sticker bg-red-50 p-6 -rotate-1">
+                        <div class="text-4xl mb-3">🤯</div>
+                        <h3 class="text-xl font-bold brutal-font mb-2">5 casquettes à la fois</h3>
+                        <p class="font-mono text-sm">Presta, administratif, contenu, prospection, gestion… tout repose sur toi.</p>
+                    </div>
+                    <div class="sticker bg-red-50 p-6 -rotate-1">
+                        <div class="text-4xl mb-3">🌊</div>
+                        <h3 class="text-xl font-bold brutal-font mb-2">Épuisement mental</h3>
+                        <p class="font-mono text-sm">Tu sais ce qu'il faut faire, mais tu n'as jamais le temps de tout gérer.</p>
+                    </div>
+                    <div class="sticker bg-red-50 p-6 -rotate-1">
+                        <div class="text-4xl mb-3">💸</div>
+                        <h3 class="text-xl font-bold brutal-font mb-2">Argent perdu</h3>
+                        <p class="font-mono text-sm">Chaque heure passée sur du répétitif, c’est une heure non facturée.</p>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div class="inline-block bg-yellow-200 border-4 border-black p-6 -rotate-1 max-w-2xl">
+                        <p class="font-bold text-xl font-mono">
+                            👉 Tu n'as pas besoin d'un outil de plus.<br>
+                            Tu as besoin d'apprendre à <span class="text-green-600">faire bosser l'IA pour toi</span>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AVANT / APRÈS -->
+        <section class="py-24 px-4 bg-[#f0fdf4]">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-4xl md:text-6xl font-bold brutal-font text-center mb-16">
+                    Avec la formation IA e-kigai,<br>
+                    <span class="marker-highlight">ton quotidien change concrètement</span>
+                </h2>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="sticker bg-red-50 p-8 -rotate-1">
+                        <h3 class="text-2xl font-bold brutal-font mb-6 flex items-center gap-2">
+                            <span>❌</span> Avant
+                        </h3>
+                        <ul class="space-y-3 font-mono text-sm">
+                            <li>Tu crées tous tes contenus à la main.</li>
+                            <li>Tu relances tes prospects quand tu y penses.</li>
+                            <li>Tu gères devis, mails, factures au cas par cas.</li>
+                            <li>Tu n’oses pas automatiser par peur de la technique.</li>
+                        </ul>
+                    </div>
+                    <div class="sticker bg-green-50 p-8 rotate-1">
+                        <h3 class="text-2xl font-bold brutal-font mb-6 flex items-center gap-2">
+                            <span>✅</span> Après
+                        </h3>
+                        <ul class="space-y-3 font-mono text-sm">
+                            <li>Tu as des systèmes IA qui tournent en continu.</li>
+                            <li>Ton contenu, tes mails et une partie de ta prospection sont automatisés.</li>
+                            <li>Tu récupères des heures chaque semaine pour ton cœur de métier.</li>
+                            <li>Tu maîtrises une compétence rare et valorisable sur le marché.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROGRAMME -->
+        <section id="programme" class="py-24 px-4 bg-white">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-16">
+                    <div class="inline-block sticker bg-green-400 px-6 py-2 -rotate-2 mb-6">
+                        <span class="hand-font font-bold text-2xl">📅 Un parcours guidé, pas à pas</span>
+                    </div>
+                    <h2 class="text-4xl md:text-6xl font-bold brutal-font">
+                        Le programme de formation IA<br>
+                        <span class="marker-highlight">pensé pour les entrepreneurs e-kigai</span>
+                    </h2>
+                </div>
+
+                <div class="space-y-10">
+                    <div class="sticker bg-blue-50 p-8 -rotate-1">
+                        <h3 class="text-2xl font-bold brutal-font mb-2">Module 1 — Comprendre et apprivoiser l’IA</h3>
+                        <p class="font-mono text-sm mb-3">Les bases concrètes pour utiliser l’IA dans ton activité sans jargon technique.</p>
+                        <ul class="list-disc pl-5 font-mono text-sm space-y-1">
+                            <li>Comprendre ce que l’IA peut (et ne peut pas) faire pour toi.</li>
+                            <li>Structurer tes demandes pour obtenir des réponses utilisables.</li>
+                            <li>Créer tes premiers prompts efficaces pour ton métier.</li>
+                        </ul>
+                    </div>
+
+                    <div class="sticker bg-yellow-50 p-8 rotate-1">
+                        <h3 class="text-2xl font-bold brutal-font mb-2">Module 2 — Automatiser ton contenu et ta communication</h3>
+                        <p class="font-mono text-sm mb-3">Utiliser l’IA pour produire plus de contenu, plus régulier, sans y passer tes soirées.</p>
+                        <ul class="list-disc pl-5 font-mono text-sm space-y-1">
+                            <li>Générer des posts, newsletters, scripts vidéo alignés avec ton ton.</li>
+                            <li>Construire une bibliothèque de prompts réutilisables pour ta marque.</li>
+                            <li>Mettre en place une routine de contenu semi-automatisée.</li>
+                        </ul>
+                    </div>
+
+                    <div class="sticker bg-green-50 p-8 -rotate-1">
+                        <h3 class="text-2xl font-bold brutal-font mb-2">Module 3 — Fluidifier tes workflows et ton administratif</h3>
+                        <p class="font-mono text-sm mb-3">Alléger tout ce qui est répétitif dans ton quotidien d'entrepreneur.</p>
+                        <ul class="list-disc pl-5 font-mono text-sm space-y-1">
+                            <li>Aider à la rédaction de devis, mails, réponses clients.</li>
+                            <li>Préparer des modèles pour tes offres, contrats, supports.</li>
+                            <li>Organiser ton suivi d’activité avec l’IA comme copilote.</li>
+                        </ul>
+                    </div>
+
+                    <div class="sticker bg-purple-50 p-8 rotate-1">
+                        <h3 class="text-2xl font-bold brutal-font mb-2">Module 4 — IA & développement d’activité</h3>
+                        <p class="font-mono text-sm mb-3">Utiliser l’IA pour soutenir ta prospection et le développement de ton activité.</p>
+                        <ul class="list-disc pl-5 font-mono text-sm space-y-1">
+                            <li>Préparer des séquences de messages personnalisés.</li>
+                            <li>Identifier des pistes d’offres, de cibles, de contenus grâce à l’IA.</li>
+                            <li>Construire ton plan d'action IA pour les 3 prochains mois.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- POUR QUI -->
+        <section id="publics" class="py-24 px-4 bg-[#f0fdf4]">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-4xl md:text-6xl font-bold brutal-font text-center mb-16">
+                    Pour qui est cette formation IA ?
+                </h2>
+                <div class="grid md:grid-cols-3 gap-8 mb-12">
+                    <div class="sticker bg-white p-8">
+                        <div class="text-4xl mb-4">💼</div>
+                        <h3 class="text-xl font-bold brutal-font mb-3">Entrepreneurs & Salariés</h3>
+                        <p class="font-mono text-sm">
+                            Tu veux dégager du temps sur ton cœur de métier, développer ton portefeuille clients et sécuriser ton activité dans la coopérative.
+                        </p>
+                    </div>
+                    <div class="sticker bg-white p-8">
+                        <div class="text-4xl mb-4">🌱</div>
+                        <h3 class="text-xl font-bold brutal-font mb-3">Porteurs de projet</h3>
+                        <p class="font-mono text-sm">
+                            Tu es en CAPE et tu veux mettre toutes les chances de ton côté en structurant ton activité avec l’IA dès le départ.
+                        </p>
+                    </div>
+                    <div class="sticker bg-white p-8">
+                        <div class="text-4xl mb-4">🚀</div>
+                        <h3 class="text-xl font-bold brutal-font mb-3">Freelances & consultants</h3>
+                        <p class="font-mono text-sm">
+                            Tu souhaites passer d’un fonctionnement artisanal à un fonctionnement plus systématisé, sans perdre ton identité.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ (statique simplifiée) -->
+        <section id="faq" class="py-24 px-4 bg-white">
+            <div class="max-w-3xl mx-auto">
+                <h2 class="text-4xl md:text-6xl font-bold brutal-font text-center mb-16">
+                    <span class="marker-highlight">Questions fréquentes</span>
+                </h2>
+                <div class="space-y-4">
+                    <div class="sticker bg-white p-6">
+                        <h3 class="font-bold text-lg brutal-font mb-2">Faut-il avoir des compétences techniques ?</h3>
+                        <p class="font-mono text-sm">
+                            Non. La formation est pensée pour des profils non-techniciens. On reste sur des usages concrets, guidés, sans code.
+                        </p>
+                    </div>
+                    <div class="sticker bg-white p-6">
+                        <h3 class="font-bold text-lg brutal-font mb-2">Combien de temps dure la formation ?</h3>
+                        <p class="font-mono text-sm">
+                            Idéalement 3 à 5 jours assez intenses, puis environ 2 à 3 heures par semaine pendant 6 semaines. L’idée est que le temps “investi” soit rapidement compensé par les heures gagnées grâce à l’IA.
+                        </p>
+                    </div>
+                    <div class="sticker bg-white p-6">
+                        <h3 class="font-bold text-lg brutal-font mb-2">La formation est-elle intégrée au parcours e-kigai ?</h3>
+                        <p class="font-mono text-sm">
+                            Oui, elle s’inscrit aussi dans la logique d’accompagnement et de professionnalisation des entrepreneurs de la CAE, avec un focus sur l’autonomie et la montée en compétences.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section id="cta" class="py-24 px-4 bg-[#ffffef]">
+            <div class="max-w-4xl mx-auto text-center">
+                <div class="sticker bg-black text-[#ffffef] p-10 -rotate-1">
+                    <h2 class="text-4xl md:text-5xl font-bold brutal-font mb-4">
+                        Prêt·e à gagner du temps<br>et à muscler ton activité avec l’IA ?
+                    </h2>
+                    <p class="font-mono mb-6 max-w-2xl mx-auto">
+                        La formation IA d’e-kigai est pensée pour les réalités des entrepreneurs de la coopérative : concrète, accessible, orientée résultats.
+                    </p>
+                    <a href="https://mte.typeform.com/e-kigai" class="inline-block bg-green-400 text-black px-8 py-4 font-bold text-xl border-2 border-black hover:bg-white transition-all btn-wobble">
+                        Je veux être recontacté·e
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-black text-[#ffffef] pt-20 pb-10 relative mt-20">
+        <div class="absolute top-0 left-0 w-full h-10 bg-black torn-paper-top -translate-y-1/2"></div>
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <div class="inline-block border-2 border-white p-8 rotate-1 mb-10 hover:rotate-0 transition-transform duration-500">
+                <h2 class="text-4xl md:text-6xl font-bold mb-4">L’IA au service<br>de ton indépendance.</h2>
+                <p class="font-mono mb-8 max-w-xl mx-auto">
+                    Une compétence transversale, au service de ton projet, de ta coopérative et du territoire.
+                </p>
+                <a href="https://mte.typeform.com/e-kigai" class="inline-block bg-green-500 text-black px-8 py-3 font-bold text-xl border-2 border-transparent hover:border-white hover:bg-black hover:text-white transition-all">
+                    Démarrer la formation
+                </a>
+            </div>
+
+            <div class="grid md:grid-cols-4 gap-8 text-left font-mono text-sm opacity-60 border-t border-gray-800 pt-10">
+                <div>
+                    <div class="font-bold text-white mb-2">e-kigai.fr</div>
+                    <p>Coopérative d'Activité et d'Emploi à mission.</p>
+                </div>
+                <div>
+                    <div class="font-bold text-white mb-2">Liens</div>
+                    <ul class="space-y-1">
+                        <li><a href="manifeste.html" class="hover:text-green-400">Manifeste</a></li>
+                        <li><a href="simul.html" class="hover:text-green-400">Simulation</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="font-bold text-white mb-2">Légal</div>
+                    <ul class="space-y-1">
+                        <li><a href="mentions_legales.html" class="hover:text-green-400">Mentions légales</a></li>
+                        <li><a href="confid.html" class="hover:text-green-400">Politique de conf.</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="font-bold text-white mb-2">Social</div>
+                    <div class="flex gap-4 text-2xl">
+                        <span>in</span>
+                        <span>tw</span>
+                        <span>ig</span>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-12 text-xs font-mono opacity-30">
+                © 2026 e-kigai. Design: Made with 💚 by e-kigai.
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

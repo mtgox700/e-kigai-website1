@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de Note de Frais - IK avec API Routière</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; color: #333; margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1, h2, h3 { color: #2c3e50; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        input[type="text"], input[type="number"], select, input[type="month"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .checkbox-group { display: flex; align-items: center; gap: 10px; }
+        input[type="checkbox"] { width: 20px; height: 20px; }
+        
+        button { background-color: #3498db; color: white; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; width: 100%; margin-top: 10px;}
+        button:hover { background-color: #2980b9; }
+        .btn-api { background-color: #8e44ad; margin-bottom: 20px; }
+        .btn-api:hover { background-color: #732d91; }
+        .btn-print { background-color: #27ae60; margin-top: 15px; }
+        .btn-print:hover { background-color: #219653; }
+        
+        .api-section { background-color: #fdfefe; border: 1px solid #dcdcdc; padding: 15px; border-radius: 6px; margin-bottom: 20px; }
+        #api_status { font-size: 14px; font-style: italic; color: #e67e22; margin-top: 10px; text-align: center; }
+        
+        #resultat { display: none; margin-top: 30px; padding: 20px; border: 2px dashed #27ae60; border-radius: 8px; background-color: #eafaf1; }
+
+        /* Mini calendrier */
+        .calendar-container { border: 1px solid #ccc; border-radius: 4px; padding: 10px; background: #fafafa; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-top: 8px; }
+        .calendar-day-header { text-align: center; font-size: 12px; font-weight: bold; }
+        .calendar-cell { text-align: center; padding: 6px 2px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        .calendar-cell.disabled { color: #bbb; cursor: default; }
+        .calendar-cell.selected { background-color: #3498db; color: white; }
+        .calendar-cell.business { border: 1px solid #3498db; }
+
+        .calendar-summary { font-size: 12px; margin-top: 6px; color: #555; }
+
+        /* Styles impression */
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; border: none; padding: 0; }
+            .no-print { display: none !important; }
+            #resultat { display: block !important; border: none; background-color: white; padding: 0; margin-top: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="no-print">
+        <h1>Saisie de la Note de Frais (IK)</h1>
+        
+        <div class="form-group">
+            <label>Nom du déclarant :</label>
+            <input type="text" id="nom" placeholder="Ex: Jean Dupont">
+        </div>
+
+        <!-- Sélection de la période + calendrier des jours travaillés -->
+        <div class="form-group">
+            <label for="mois_periode">Mois de la période :</label>
+            <input type="month" id="mois_periode">
+        </div>
+
+        <div class="form-group">
+            <label>Jours travaillés sur place :</label>
+            <div class="calendar-container">
+                <div id="calendarHeader" style="font-size: 13px; font-weight: bold;"></div>
+                <div class="calendar-grid" id="calendarGrid">
+                    <!-- en JS -->
+                </div>
+                <div style="margin-top:6px;">
+                    <button type="button" id="btnFillBusinessDays">Sélectionner tous les jours ouvrés du mois</button>
+                </div>
+                <div class="calendar-summary" id="calendarSummary">
+                    Aucun jour sélectionné pour le moment.
+                </div>
+            </div>
+        </div>
+
+        <!-- Champ caché : liste des dates au format JSON -->
+        <input type="hidden" id="workDaysValues" name="workDaysValues">
+
+        <h2>Informations du Véhicule (Voiture)</h2>
+        <div class="form-group">
+            <label>Puissance fiscale (CV) :</label>
+            <select id="cv">
+                <option value="3">3 CV et moins</option>
+                <option value="4" selected>4 CV</option>
+                <option value="5">5 CV</option>
+                <option value="6">6 CV</option>
+                <option value="7">7 CV et plus</option>
+            </select>
+        </div>
+        <div class="form-group checkbox-group">
+            <input type="checkbox" id="electrique">
+            <label for="electrique" style="margin:0;">Véhicule 100% électrique (+20%)</label>
+        </div>
+
+        <h2>Calcul Automatique de l'Itinéraire (Optionnel)</h2>
+        <div class="api-section">
+            <div class="form-group">
+                <label>Adresse de départ :</label>
+                <input type="text" id="adresse_depart" placeholder="Ex: 10 rue de la Paix, Paris">
+            </div>
+            <div class="form-group">
+                <label>Adresse d'arrivée :</label>
+                <input type="text" id="adresse_arrivee" placeholder="Ex: 5 avenue Anatole France, Paris">
+            </div>
+
+            <button class="btn-api" onclick="calculerDistanceAPI()">📍 Calculer la distance via API</button>
+            <div id="api_status"></div>
+        </div>
+
+        <h2>Kilométrages</h2>
+        <div class="form-group">
+            <label>Ancien cumul kilométrique pro (depuis le 1er janvier) :</label>
+            <input type="number" id="ancien_cumul" placeholder="Ex: 4800" value="0">
+        </div>
+        <div class="form-group">
+            <label>Kilomètres parcourus ce mois-ci :</label>
+            <input type="number" id="distance_mois" placeholder="Saisi manuellement ou via l'API" value="0" step="0.1">
+        </div>
+
+        <button onclick="calculerIK()">Générer la Note de Frais</button>
+    </div>
+
+    <!-- Zone de résultat (Document généré) -->
+    <div id="resultat">
+        <h1 style="text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px;">NOTE DE FRAIS - INDEMNITÉS KILOMÉTRIQUES</h1>
+        <p><strong>Déclarant :</strong> <span id="out_nom"></span></p>
+        <p><strong>Période :</strong> <span id="out_mois"></span></p>
+        <p id="out_dates_travail" style="font-size: 13px; color: #555;"></p>
+
+        <p><strong>Véhicule :</strong> Voiture <span id="out_cv"></span> CV <span id="out_elec"></span></p>
+        
+        <div id="bloc_trajet" style="display:none; background-color: #f9f9f9; padding: 10px; border: 1px solid #eee; margin-bottom: 15px;">
+            <p style="margin: 0; font-size: 14px;"><strong>Trajet principal :</strong> <span id="out_depart"></span> ➔ <span id="out_arrivee"></span></p>
+            <p style="margin: 5px 0 0 0; font-size: 14px;"><strong>Fréquence :</strong> <span id="out_jours"></span> Allers-Retours (<span id="out_dist_unitaire"></span> km par trajet A/R)</p>
+        </div>
+
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+            <tr style="background-color: #f2f2f2; text-align: left;">
+                <th style="padding: 10px; border: 1px solid #ddd;">Libellé</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Valeur</th>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;">Ancien cumul kilométrique de l'année</td>
+                <td style="padding: 10px; border: 1px solid #ddd;"><span id="out_ancien_cumul"></span> km</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Distance parcourue ce mois-ci</strong></td>
+                <td style="padding: 10px; border: 1px solid #ddd;"><strong><span id="out_distance_mois"></span> km</strong></td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;">Nouveau cumul kilométrique de l'année</td>
+                <td style="padding: 10px; border: 1px solid #ddd;"><span id="out_nouveau_cumul"></span> km</td>
+            </tr>
+        </table>
+
+        <div style="background-color: #333; color: white; padding: 15px; text-align: center; font-size: 20px; border-radius: 4px;">
+            Montant total à rembourser : <strong><span id="out_montant"></span> €</strong>
+        </div>
+        <br>
+        <p style="font-size: 12px; color: #7f8c8d; text-align: justify;">
+            <em>Frais calculés selon le barème kilométrique de l'URSSAF. L'indemnité du mois est calculée par différence (Indemnité due sur le nouveau cumul annuel - Indemnité théorique sur l'ancien cumul) afin de gérer rigoureusement les franchissements de paliers (5 000 km et 20 000 km).</em>
+        </p>
+        
+        <button class="no-print btn-print" onclick="window.print()">Imprimer / Sauvegarder en PDF</button>
+    </div>
+</div>
+
+<script>
+    // Utilitaires dates
+    function formatDateYMD(date) {
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, '0');
+        const d = String(date.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+    }
+
+    function isBusinessDay(date) {
+        const day = date.getDay(); // 0 = dimanche, 6 = samedi
+        return day >= 1 && day <= 5;
+    }
+
+    // Mini calendrier avec cases cliquables
+    (function () {
+        const moisInput = document.getElementById('mois_periode');
+        const calendarHeader = document.getElementById('calendarHeader');
+        const calendarGrid = document.getElementById('calendarGrid');
+        const calendarSummary = document.getElementById('calendarSummary');
+        const btnFillBusinessDays = document.getElementById('btnFillBusinessDays');
+        const hiddenValues = document.getElementById('workDaysValues');
+
+        const selectedDates = new Set(); // "YYYY-MM-DD"
+
+        function renderCalendar() {
+            calendarGrid.innerHTML = '';
+
+            const value = moisInput.value;
+            if (!value) {
+                calendarHeader.textContent = "Veuillez choisir un mois.";
+                calendarSummary.textContent = "Aucun jour sélectionné pour le moment.";
+                selectedDates.clear();
+                hiddenValues.value = "[]";
+                return;
+            }
+
+            const [year, month] = value.split('-').map(Number);
+            const date = new Date(year, month - 1, 1);
+            const lastDay = new Date(year, month, 0).getDate();
+            const firstWeekDay = date.getDay(); // 0 dimanche
+
+            const moisNoms = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
+            calendarHeader.textContent = moisNoms[month - 1] + " " + year;
+
+            const jours = ["L", "M", "M", "J", "V", "S", "D"];
+            for (let j of jours) {
+                const h = document.createElement('div');
+                h.className = 'calendar-day-header';
+                h.textContent = j;
+                calendarGrid.appendChild(h);
+            }
+
+            let offset = firstWeekDay === 0 ? 6 : firstWeekDay - 1;
+            for (let i = 0; i < offset; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'calendar-cell disabled';
+                emptyCell.textContent = '';
+                calendarGrid.appendChild(emptyCell);
+            }
+
+            for (let day = 1; day <= lastDay; day++) {
+                const cellDate = new Date(year, month - 1, day);
+                const iso = formatDateYMD(cellDate);
+
+                const cell = document.createElement('div');
+                cell.className = 'calendar-cell';
+                cell.textContent = String(day);
+
+                if (isBusinessDay(cellDate)) {
+                    cell.classList.add('business');
+                }
+
+                if (selectedDates.has(iso)) {
+                    cell.classList.add('selected');
+                }
+
+                cell.addEventListener('click', function () {
+                    if (selectedDates.has(iso)) {
+                        selectedDates.delete(iso);
+                        cell.classList.remove('selected');
+                    } else {
+                        selectedDates.add(iso);
+                        cell.classList.add('selected');
+                    }
+                    updateSummaryAndHidden();
+                });
+
+                calendarGrid.appendChild(cell);
+            }
+
+            updateSummaryAndHidden();
+        }
+
+        function updateSummaryAndHidden() {
+            const arr = Array.from(selectedDates).sort();
+            hiddenValues.value = JSON.stringify(arr);
+
+            if (arr.length === 0) {
+                calendarSummary.textContent = "Aucun jour sélectionné pour le moment.";
+            } else {
+                calendarSummary.textContent = arr.length + " jour(s) sélectionné(s) : " + arr.join(', ');
+            }
+        }
+
+        moisInput.addEventListener('change', function () {
+            selectedDates.clear();
+            renderCalendar();
+        });
+
+        btnFillBusinessDays.addEventListener('click', function () {
+            const value = moisInput.value;
+            if (!value) {
+                alert("Veuillez d'abord choisir un mois.");
+                return;
+            }
+            const [year, month] = value.split('-').map(Number);
+            const start = new Date(year, month - 1, 1);
+            const end = new Date(year, month, 0);
+
+            selectedDates.clear();
+            for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+                if (isBusinessDay(d)) {
+                    selectedDates.add(formatDateYMD(d));
+                }
+            }
+            renderCalendar();
+        });
+
+        // Initialisation (si un mois par défaut est présent)
+        if (moisInput.value) {
+            renderCalendar();
+        }
+    })();
+
+    // --- API OpenStreetMap / OSRM ---
+    async function obtenirCoordonnees(adresse) {
+        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(adresse)}&limit=1`;
+        const reponse = await fetch(url);
+        const donnees = await reponse.json();
+        if (donnees && donnees.length > 0) {
+            return { lat: donnees[0].lat, lon: donnees[0].lon };
+        }
+        throw new Error(`Adresse introuvable : ${adresse}`);
+    }
+
+    async function calculerDistanceAPI() {
+        const adrDepart = document.getElementById('adresse_depart').value;
+        const adrArrivee = document.getElementById('adresse_arrivee').value;
+        const statusDiv = document.getElementById('api_status');
+        const workDaysValues = document.getElementById('workDaysValues').value;
+
+        let nbJours = 1;
+        try {
+            const dates = JSON.parse(workDaysValues || '[]');
+            nbJours = Array.isArray(dates) && dates.length > 0 ? dates.length : 1;
+        } catch (e) {
+            nbJours = 1;
+        }
+
+        if (!adrDepart || !adrArrivee) {
+            alert("Veuillez saisir les deux adresses.");
+            return;
+        }
+
+        statusDiv.style.color = "#3498db";
+        statusDiv.innerText = "Recherche des coordonnées GPS en cours...";
+
+        try {
+            const coordDepart = await obtenirCoordonnees(adrDepart);
+            const coordArrivee = await obtenirCoordonnees(adrArrivee);
+
+            statusDiv.innerText = "Calcul de l'itinéraire routier en cours...";
+
+            const urlOSRM = `https://router.project-osrm.org/route/v1/driving/${coordDepart.lon},${coordDepart.lat};${coordArrivee.lon},${coordArrivee.lat}?overview=false`;
+            const reponseOSRM = await fetch(urlOSRM);
+            const donneesOSRM = await reponseOSRM.json();
+
+            if (donneesOSRM.routes && donneesOSRM.routes.length > 0) {
+                let distanceAllerSimple = donneesOSRM.routes[0].distance / 1000;
+                let distanceAllerRetour = distanceAllerSimple * 2;
+                let distanceTotaleMois = distanceAllerRetour * nbJours;
+
+                distanceTotaleMois = Math.round(distanceTotaleMois * 10) / 10;
+                
+                document.getElementById('distance_mois').value = distanceTotaleMois;
+                document.getElementById('distance_mois').setAttribute('data-dist-unitaire', Math.round(distanceAllerRetour * 10) / 10);
+
+                statusDiv.style.color = "#27ae60";
+                statusDiv.innerText = `Succès ! Distance aller simple : ${Math.round(distanceAllerSimple*10)/10} km. Distance ajoutée pour le mois : ${distanceTotaleMois} km (sur ${nbJours} jours).`;
+            } else {
+                throw new Error("Impossible de calculer l'itinéraire routier entre ces deux points.");
+            }
+        } catch (erreur) {
+            statusDiv.style.color = "#e74c3c";
+            statusDiv.innerText = `Erreur : ${erreur.message}`;
+            console.error(erreur);
+        }
+    }
+
+    // --- Calcul URSSAF et génération du document ---
+    function baremeAnnuel(cv, distance) {
+        if (distance === 0) return 0;
+        if (cv <= 3) return distance <= 5000 ? distance * 0.529 : (distance <= 20000 ? (distance * 0.316) + 1065 : distance * 0.370);
+        if (cv === 4) return distance <= 5000 ? distance * 0.606 : (distance <= 20000 ? (distance * 0.340) + 1330 : distance * 0.407);
+        if (cv === 5) return distance <= 5000 ? distance * 0.636 : (distance <= 20000 ? (distance * 0.357) + 1395 : distance * 0.427);
+        if (cv === 6) return distance <= 5000 ? distance * 0.665 : (distance <= 20000 ? (distance * 0.374) + 1457 : distance * 0.447);
+        if (cv >= 7) return distance <= 5000 ? distance * 0.697 : (distance <= 20000 ? (distance * 0.394) + 1515 : distance * 0.470);
+        return 0;
+    }
+
+    function calculerIK() {
+        const nom = document.getElementById('nom').value || "Non renseigné";
+        const moisPeriode = document.getElementById('mois_periode').value || "";
+        const cv = parseInt(document.getElementById('cv').value);
+        const electrique = document.getElementById('electrique').checked;
+        const ancienCumul = parseFloat(document.getElementById('ancien_cumul').value) || 0;
+        const distanceMois = parseFloat(document.getElementById('distance_mois').value) || 0;
+
+        let periodeTexte = "Non renseigné";
+        if (moisPeriode) {
+            const [year, month] = moisPeriode.split('-');
+            const moisNoms = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
+            const idx = parseInt(month, 10) - 1;
+            periodeTexte = (moisNoms[idx] || "") + " " + year;
+        }
+
+        const adrDepart = document.getElementById('adresse_depart').value;
+        const adrArrivee = document.getElementById('adresse_arrivee').value;
+        const distUnitaire = document.getElementById('distance_mois').getAttribute('data-dist-unitaire') || "-";
+
+        const workDaysValues = document.getElementById('workDaysValues').value;
+        let nbJours = 0;
+        let datesArray = [];
+        try {
+            const dates = JSON.parse(workDaysValues || '[]');
+            if (Array.isArray(dates)) {
+                nbJours = dates.length;
+                datesArray = dates;
+            }
+        } catch (e) {
+            nbJours = 0;
+            datesArray = [];
+        }
+
+        const nouveauCumul = ancienCumul + distanceMois;
+        const droitTotalAnnuel = baremeAnnuel(cv, nouveauCumul);
+        const droitAncienCumul = baremeAnnuel(cv, ancienCumul);
+        
+        let indemniteMois = droitTotalAnnuel - droitAncienCumul;
+        
+        if (electrique) {
+            indemniteMois = indemniteMois * 1.20;
+        }
+
+        document.getElementById('out_nom').innerText = nom;
+        document.getElementById('out_mois').innerText = periodeTexte;
+        document.getElementById('out_cv').innerText = cv;
+        document.getElementById('out_elec').innerText = electrique ? "(100% Électrique)" : "(Thermique/Hybride)";
+        document.getElementById('out_ancien_cumul').innerText = ancienCumul;
+        document.getElementById('out_distance_mois').innerText = distanceMois;
+        document.getElementById('out_nouveau_cumul').innerText = nouveauCumul;
+        document.getElementById('out_montant').innerText = indemniteMois.toFixed(2);
+
+        const outDatesEl = document.getElementById('out_dates_travail');
+        if (nbJours > 0) {
+            outDatesEl.innerText = `Jours travaillés sur place (${nbJours} jour(s)) : ${datesArray.join(', ')}`;
+        } else {
+            outDatesEl.innerText = "Jours travaillés sur place : non renseignés.";
+        }
+
+        if (adrDepart && adrArrivee) {
+            document.getElementById('bloc_trajet').style.display = 'block';
+            document.getElementById('out_depart').innerText = adrDepart;
+            document.getElementById('out_arrivee').innerText = adrArrivee;
+            document.getElementById('out_jours').innerText = nbJours || "-";
+            document.getElementById('out_dist_unitaire').innerText = distUnitaire;
+        } else {
+            document.getElementById('bloc_trajet').style.display = 'none';
+        }
+
+        document.getElementById('resultat').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accompagnement & Services | e-kigai</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.29.7/babel.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Space+Grotesk:wght@300;500;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --cream: #ffffef;
+            --dark: #3b3b3b;
+            --green: #00bf63;
+            --paper-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+        }
+
+        body {
+            background-color: var(--cream);
+            color: var(--dark);
+            font-family: 'Space Grotesk', sans-serif;
+            background-image: var(--paper-grain);
+            overflow-x: hidden;
+            cursor: crosshair;
+        }
+
+        .hand-font { font-family: 'Gochi Hand', cursive; }
+        .mono-font { font-family: 'Courier Prime', monospace; }
+
+        /* Sticker Style */
+        .sticker {
+            background: white;
+            border: 2px solid var(--dark);
+            box-shadow: 4px 4px 0px var(--dark);
+            transition: all 0.2s ease;
+        }
+        .sticker:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px var(--green);
+        }
+
+        /* Post-it */
+        .post-it {
+            background: #fef3c7;
+            padding: 1.5rem;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+            transform: rotate(-1deg);
+            transition: transform 0.3s;
+        }
+        .post-it:hover {
+            transform: rotate(0deg) scale(1.05);
+            z-index: 10;
+        }
+
+        /* Brain/AI Effect */
+        .brain-network {
+            background-image: radial-gradient(circle, #00bf63 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // SVG Icons
+        const ScribbleIcon = ({ path, className }) => (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className} style={{overflow: 'visible'}}>
+                {path}
+            </svg>
+        );
+
+        const Icons = {
+            ArrowLeft: <path d="M19 12H5M12 19l-7-7 7-7" />,
+            UserCheck: <g><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><polyline points="16 11 18 13 22 9" /></g>,
+            Briefcase: <g><rect width="20" height="14" x="2" y="7" rx="2" ry="2" /><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" /></g>,
+            BrainCircuit: <g><path d="M12 4.5a2.5 2.5 0 0 0-4.96-.46 2.5 2.5 0 0 0-1.98 3 2.5 2.5 0 0 0-1.32 4.24 3 3 0 0 0 .34 5.58 2.5 2.5 0 0 0 2.96 3.08 2.5 2.5 0 0 0 4.91.05L12 20V4.5Z" /><path d="M16 8V5c0-1.1.9-2 2-2" /><path d="M12 13h4" /><path d="M12 18h6a2 2 0 0 1 2 2v1" /><path d="M12 8h8" /></g>,
+            Rocket: <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09zM12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2zM9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />,
+            Users: <g><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></g>,
+            Zap: <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+        };
+
+        const AccompagnementPage = () => {
+            return (
+                <div className="min-h-screen pb-20 relative">
+                    
+                    {/* --- DECORATION --- */}
+                    <div className="fixed inset-0 pointer-events-none z-0 opacity-5" style={{backgroundImage: 'radial-gradient(#3b3b3b 1px, transparent 1px)', backgroundSize: '30px 30px'}}></div>
+
+                    {/* --- NAV: RETOUR --- */}
+                    <nav className="fixed w-full z-50 top-6 left-6 pointer-events-none">
+                        <a href="index.html" className="sticker bg-white px-4 py-2 inline-flex items-center gap-2 pointer-events-auto hover:bg-black hover:text-white transition-colors group">
+                            <ScribbleIcon path={Icons.ArrowLeft} className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+                            <span className="font-bold font-mono">Retour Site</span>
+                        </a>
+                    </nav>
+
+                    {/* --- HERO SECTION --- */}
+                    <header className="pt-32 pb-16 px-4 text-center relative z-10">
+                        <div className="inline-block relative">
+                            <h1 className="text-5xl md:text-8xl font-bold tracking-tighter mb-4 text-black uppercase leading-[0.9]">
+                                GRANDIR <br/>
+                                <span className="text-green-600">ENSEMBLE</span>
+                            </h1>
+                            <div className="absolute -bottom-6 right-0 hand-font text-2xl rotate-[-3deg] text-gray-600 bg-white px-2 border border-black shadow-sm transform translate-y-1/2">
+                                Pas juste porter, propulser !
+                            </div>
+                        </div>
+                    </header>
+
+                    {/* --- 1. ACCOMPAGNEMENT INDIVIDUALISÉ --- */}
+                    <section className="max-w-6xl mx-auto px-4 mb-24 relative z-10">
+                        <div className="grid md:grid-cols-2 gap-12 items-center">
+                            <div className="bg-white border-2 border-black p-8 shadow-[8px_8px_0px_#00bf63] relative transform -rotate-1">
+                                <div className="absolute -top-4 left-8 sticker bg-blue-100 px-3 py-1 font-mono text-sm font-bold border-blue-800 rotate-2">
+                                    SUR-MESURE
+                                </div>
+                                <h2 className="text-3xl font-bold mb-6 font-sans flex items-center gap-3">
+                                    <ScribbleIcon path={Icons.UserCheck} className="w-8 h-8 text-blue-600"/>
+                                    Coaching 1-to-1
+                                </h2>
+                                <p className="font-mono text-sm leading-relaxed mb-6">
+                                    On ne vous lâche pas dans la nature. Dès votre arrivée, un référent vous est dédié pour :
+                                </p>
+                                <ul className="space-y-3 font-mono text-sm">
+                                    <li className="flex items-start gap-2">
+                                        <span className="text-green-500 font-bold">-></span>
+                                        Définir votre TJM et votre stratégie commerciale.
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <span className="text-green-500 font-bold">-></span>
+                                        Optimiser votre package de rémunération.
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <span className="text-green-500 font-bold">-></span>
+                                        Faire le point tous les trimestres sur vos objectifs.
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div className="relative h-64 md:h-80">
+                                {/* Visual metaphor: A roadmap drawn on paper */}
+                                <div className="absolute inset-0 bg-yellow-50 border-2 border-black rotate-2 shadow-lg p-6 flex flex-col justify-between">
+                                    <div className="hand-font text-xl text-gray-500 text-center border-b border-dashed border-gray-300 pb-2">Plan de carrière</div>
+                                    <div className="flex-1 relative">
+                                        <svg className="w-full h-full" viewBox="0 0 200 150">
+                                            <path d="M20,130 Q60,130 80,90 T180,30" fill="none" stroke="#3b3b3b" strokeWidth="2" strokeDasharray="5,5" />
+                                            <circle cx="20" cy="130" r="5" fill="#3b3b3b" />
+                                            <text x="20" y="145" className="text-[10px] font-mono" textAnchor="middle">Début</text>
+                                            <circle cx="180" cy="30" r="8" fill="#00bf63" stroke="black" strokeWidth="1" />
+                                            <text x="180" y="20" className="text-[10px] font-bold font-mono" textAnchor="middle">Objectif</text>
+                                        </svg>
+                                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 sticker bg-white px-2 py-1 text-xs font-bold border-red-500 text-red-500 rotate-[-10deg]">
+                                            On est là !
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* --- 2. SERVICES MUTUALISÉS (POST-IT WALL) --- */}
+                    <section className="py-24 px-4 bg-[#f3f4f6] border-y-4 border-black relative overflow-hidden">
+                        <div className="max-w-7xl mx-auto relative z-10">
+                            <h2 className="text-4xl font-bold text-center mb-16 flex items-center justify-center gap-3">
+                                <ScribbleIcon path={Icons.Users} className="w-8 h-8"/> 
+                                LA FORCE DU COLLECTIF
+                            </h2>
+                            
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                                <div className="post-it bg-yellow-200">
+                                    <h3 className="font-bold hand-font text-xl mb-2">Compta</h3>
+                                    <p className="font-mono text-xs">Expert-comptable inclus. Bilan, liasses, TVA... on gère tout.</p>
+                                </div>
+                                <div className="post-it bg-blue-200 rotate-1">
+                                    <h3 className="font-bold hand-font text-xl mb-2">Juridique</h3>
+                                    <p className="font-mono text-xs">Modèles de contrats validés, CGV blindées, recouvrement.</p>
+                                </div>
+                                <div className="post-it bg-green-200 rotate-[-2deg]">
+                                    <h3 className="font-bold hand-font text-xl mb-2">Outils</h3>
+                                    <p className="font-mono text-xs">Licences partagées, outil de facturation, espace membre.</p>
+                                </div>
+                                <div className="post-it bg-pink-200 rotate-2">
+                                    <h3 className="font-bold hand-font text-xl mb-2">Réseau</h3>
+                                    <p className="font-mono text-xs">Accès au Slack communautaire, apport d'affaires entre membres.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* --- 3. FOCUS IA & COMPÉTENCES (FUTURE LAB) --- */}
+                    <section className="py-24 px-4 relative">
+                        <div className="max-w-5xl mx-auto relative z-10">
+                            <div className="bg-black text-[#ffffef] p-8 md:p-12 border-4 border-green-500 shadow-[12px_12px_0px_#00bf63] relative overflow-hidden">
+                                {/* Tech Background */}
+                                <div className="absolute inset-0 opacity-10 brain-network"></div>
+
+                                <div className="relative z-10">
+                                    <div className="flex justify-between items-start mb-8">
+                                        <h2 className="text-4xl md:text-5xl font-bold leading-none">
+                                            FORMATION <br/>
+                                            <span className="text-green-500">& UPSKILLING</span>
+                                        </h2>
+                                        <ScribbleIcon path={Icons.BrainCircuit} className="w-16 h-16 text-green-500 animate-pulse"/>
+                                    </div>
+
+                                    <div className="grid md:grid-cols-2 gap-12">
+                                        <div>
+                                            <p className="font-mono text-lg mb-6">
+                                                Le marché change vite. Votre employabilité est votre actif n°1.
+                                                Nous investissons massivement pour que vous restiez à la pointe.
+                                            </p>
+                                            <div className="sticker bg-white text-black inline-block px-4 py-2 border-transparent rotate-[-1deg]">
+                                                <span className="font-bold font-mono">Budget Formation DÉDIÉ</span>
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-6">
+                                            <div className="border-l-4 border-green-500 pl-4">
+                                                <h3 className="text-xl font-bold text-green-400 mb-2 flex items-center gap-2">
+                                                    <ScribbleIcon path={Icons.Zap} className="w-5 h-5"/>
+                                                    Focus Intelligence Artificielle
+                                                </h3>
+                                                <p className="font-mono text-sm opacity-80">
+                                                    Ateliers pratiques : Prompt Engineering, Intégration d'IA dans vos workflows, Automatisation.
+                                                    Ne subissez pas l'IA, maîtrisez-la.
+                                                </p>
+                                            </div>
+                                            <div className="border-l-4 border-blue-500 pl-4">
+                                                <h3 className="text-xl font-bold text-blue-400 mb-2 flex items-center gap-2">
+                                                    <ScribbleIcon path={Icons.Rocket} className="w-5 h-5"/>
+                                                    Compétences Clés
+                                                </h3>
+                                                <p className="font-mono text-sm opacity-80">
+                                                    Soft skills, Négociation, Personal Branding... tout ce qui fait la différence entre un bon tech et un consultant incontournable.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* --- CTA FINAL --- */}
+                    <section className="py-20 px-4 text-center">
+                        <h2 className="text-4xl font-bold mb-8">On avance ensemble ?</h2>
+                        <a href="mailto:contact@e-kigai.fr?subject=Demande d'accompagnement" className="sticker bg-black text-white px-8 py-4 font-bold text-xl inline-block hover:bg-green-600 border-2 border-black transition-colors btn-wobble">
+                            DÉMARRER L'ACCOMPAGNEMENT
+                        </a>
+                    </section>
+
+                    <footer className="text-center mt-10 font-mono text-xs opacity-50 pb-10">
+                        © 2026 e-kigai. <a href="index.html" className="underline">Retour au site principal</a>
+                    </footer>
+
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<AccompagnementPage />);
+    </script>
+</body>
+</html>
